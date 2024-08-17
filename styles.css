@@ -130,6 +130,24 @@ nav ul li a:hover {
     text-align: center;
 }
 
+.controls.checklist-button {
+    flex: 1 1 45%; /* Ensure two columns on most screens */
+    padding: 10px;
+    margin: 5px;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    text-align: center;
+}
+
+.controls.checklist-button:hover {
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+
 .controls button:hover {
     background-color: rgba(0, 0, 0, 0.9);
 }
@@ -262,6 +280,29 @@ button.paused:hover {
 .result-column:nth-child(3) { /* Value column */
     flex: 2; /* Most space for value */
 }
+
+/* Checklist Styles */
+#apparel-production-checklist {
+    margin-top: 50px;
+  }
+  
+  #checklist {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  #checklist li {
+    margin-bottom: 10px;
+  }
+  
+  #checklist li input[type="checkbox"] {
+    margin-right: 10px;
+  }
+  
+  #reset-button:hover #reset-checklist-button:hover {
+    background-color: #45a049;
+  }
+  
 
 /* Smooth scrolling */
 html {
