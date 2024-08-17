@@ -123,43 +123,78 @@
     <section id="apparel-production-checklist">
         <div class="container">
             <div class="title">Apparel Production Checklist</div>
-            <ul id="checklist">
-                <li><input type="checkbox"> Tape screens*</li>
-                <li><input type="checkbox"> Register job (rough)</li>
-                <li><input type="checkbox"> Move pallets</li>
-                <li><input type="checkbox"> Adjust off-contact</li>
-                <li><input type="checkbox"> Squeegees (depth, pressure, and angle)</li>
-                <li><input type="checkbox"> Clean/glue pallets*</li>
-                <li><input type="checkbox"> Print registration screen and line up</li>
-                <li><input type="checkbox"> Dryer temperature and speed</li>
-                <li><input type="checkbox"> Print registration screen and line up</li>
-                <li><input type="checkbox"> Adjust flashes (is this a high-temp flash job?)</li>
-                <li><input type="checkbox"> Adjust stamp temp</li>
-                <li><input type="checkbox"> Program press</li>
-                <li><input type="checkbox"> Check trello for any extra notes</li>
-                <li><input type="checkbox"> Mix ink</li>
-                <li><input type="checkbox"> Find scrap shirts*</li>
-                <li><input type="checkbox"> Test print</li>
-                <li><input type="checkbox"> Double check proof vs. test print (VERY important)</li>
-                <li><input type="checkbox"> Take notes on set up</li>
-                <li><input type="checkbox"> Measure art size</li>
-                <li><input type="checkbox"> Find sample</li>
-                <li><input type="checkbox"> Check proof/take clipboard to back of dryer</li>
-                <li><input type="checkbox"> Check dryer speed</li>
-                <li><input type="checkbox"> Find out who is catching</li>
-                <li><input type="checkbox"> Check shopvox flags</li>
-                <li><input type="checkbox"> Drag card in Trello</li>
-                <li><input type="checkbox"> Return or save new sample</li>
-            </ul>
-            <button class="controls checklist-button" id="reset-checklist-button">Reset Checklist</button>
+
+            <!-- Pre-Production Section -->
+            <div class="checklist-section">
+                <label class="checklist-section-label"><input type="checkbox" class="section-toggle"> Pre-Production</label>
+                <ul class="checklist-items">
+                    <li><input type="checkbox"> Find sample</li>
+                    <li><input type="checkbox"> Tape screens</li>
+                    <li><input type="checkbox"> Register job (rough)</li>
+                    <li><input type="checkbox"> Move pallets</li>
+                    <li><input type="checkbox"> Set off-contact</li>
+                    <li><input type="checkbox"> Adjust squeegee depth, pressure, and angle</li>
+                    <li><input type="checkbox"> Clean/glue pallets</li>
+                    <li><input type="checkbox"> Print registration screen and line up</li>
+                </ul>
+            </div>
+    
+            <!-- Testing Section -->
+            <div class="checklist-section">
+                <label class="checklist-section-label"><input type="checkbox" class="section-toggle"> Testing</label>
+                <ul class="checklist-items">
+                    <li><input type="checkbox"> Set dryer temperature and speed</li>
+                    <li><input type="checkbox"> Adjust flashes (Is this a high-temp flash job?)</li>
+                    <li><input type="checkbox"> Adjust stamp temperature</li>
+                    <li><input type="checkbox"> Program press</li>
+                    <li><input type="checkbox"> Check Trello for any additional notes</li>
+                    <li><input type="checkbox"> Mix ink</li>
+                    <li><input type="checkbox"> Find scrap shirts</li>
+                    <li><input type="checkbox"> Test print</li>
+                    <li><input type="checkbox"> Double-check proof against test print</li>
+                    <li><input type="checkbox"> Measure artwork size</li>
+                    <li><input type="checkbox"> Take notes on setup</li>
+                </ul>
+            </div>
+    
+            <!-- Production Section -->
+            <div class="checklist-section">
+                <label class="checklist-section-label"><input type="checkbox" class="section-toggle"> Production</label>
+                <ul class="checklist-items">
+                    <li><input type="checkbox"> Check proof and place it at the back of the dryer</li>
+                    <li><input type="checkbox"> Verify dryer speed</li>
+                    <li><input type="checkbox"> Determine who is catching</li>
+                </ul>
+            </div>
+    
+            <!-- Post-Production Section -->
+            <div class="checklist-section">
+                <label class="checklist-section-label"><input type="checkbox" class="section-toggle"> Post-Production</label>
+                <ul class="checklist-items">
+                    <li><input type="checkbox"> Check ShopVox flags</li>
+                    <li><input type="checkbox"> Move card in Trello</li>
+                    <li><input type="checkbox"> Return or save sample</li>
+                </ul>
+            </div>
+    
+            <!-- Reset Button -->
+            <button id="reset-checklist-button" class="controls checklist-button">Reset Checklist</button>
         </div>
         <!-- Back to Top Link -->
         <div class="back-to-top">
             <a href="#top">Back to Top</a>
         </div>
     </section>
-      
+    
+          
     <!-- Add sections for future tools here -->
+
+    <!-- Footer Section -->
+    <footer>
+        <div class="container">
+            <p>Have any feature requests? Feel free to <a href="mailto:troygatrell@gmail.com">contact me</a>.</p>
+        </div>
+    </footer>
 
     <script src="production-time-calculator.js"></script>
     <script src="inventory-search.js"></script>

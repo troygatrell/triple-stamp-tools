@@ -1,33 +1,34 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const checklist = document.getElementById('checklist');
     const resetChecklistButton = document.getElementById('reset-checklist-button');
 
-    if (!resetChecklistButton) {
-        console.error('Reset Checklist button not found!');
-        return;
-    }
-
-    console.log('Reset Checklist button found');
-
-    // Handle item checking
-    checklist.addEventListener('change', (event) => {
-        if (event.target.tagName === 'INPUT' && event.target.type === 'checkbox') {
-            const listItem = event.target.parentElement;
+    // Handle section toggles to collapse or expand items
+    const sectionToggles = document.querySelectorAll('.section-toggle');
+    sectionToggles.forEach(toggle => {
+        toggle.addEventListener('change', (event) => {
+            const checklistItems = event.target.parentElement.nextElementSibling;
             if (event.target.checked) {
-                console.log('Item checked:', listItem.textContent.trim());
-                listItem.style.display = 'none'; // Hide the item when checked
+                checklistItems.style.display = 'none'; // Collapse items
+            } else {
+                checklistItems.style.display = 'block'; // Expand items
             }
-        }
+        });
     });
 
     // Reset the checklist
     resetChecklistButton.addEventListener('click', () => {
         console.log('Reset Checklist button clicked');
-        const checkboxes = checklist.querySelectorAll('input[type="checkbox"]');
+
+        // Uncheck all section toggles and expand all items
+        sectionToggles.forEach(toggle => {
+            toggle.checked = false;
+            const checklistItems = toggle.parentElement.nextElementSibling;
+            checklistItems.style.display = 'block'; // Show all checklist items
+        });
+
+        // Uncheck all item checkboxes
+        const checkboxes = document.querySelectorAll('.checklist-items input[type="checkbox"]');
         checkboxes.forEach(checkbox => {
-            console.log('Resetting:', checkbox.parentElement.textContent.trim());
             checkbox.checked = false; // Uncheck all items
-            checkbox.parentElement.style.display = 'block'; // Show all items again
         });
     });
 });

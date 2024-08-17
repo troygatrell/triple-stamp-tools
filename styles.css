@@ -15,7 +15,7 @@ header {
     padding: 10px 20px;
     background-color: rgba(0, 0, 0, 0.8);
     color: hsl(158deg, 40%, 90%);
-    border-bottom: 4px solid hsl(158deg, 40%, 30%);;
+    border-bottom: 4px solid hsl(158deg, 40%, 30%);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
     top: 0;
     z-index: 1000;
@@ -117,19 +117,7 @@ nav ul li a:hover {
     width: 100%;
 }
 
-.controls button {
-    flex: 1 1 45%; /* Ensure two columns on most screens */
-    padding: 10px;
-    margin: 5px;
-    border-radius: 5px;
-    background-color: rgba(0, 0, 0, 0.6);
-    color: white;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-    text-align: center;
-}
-
+.controls button,
 .controls.checklist-button {
     flex: 1 1 45%; /* Ensure two columns on most screens */
     padding: 10px;
@@ -143,12 +131,8 @@ nav ul li a:hover {
     text-align: center;
 }
 
+.controls button:hover,
 .controls.checklist-button:hover {
-    background-color: rgba(0, 0, 0, 0.9);
-}
-
-
-.controls button:hover {
     background-color: rgba(0, 0, 0, 0.9);
 }
 
@@ -245,9 +229,9 @@ button.paused:hover {
     margin-bottom: 20px;
     border-radius: 5px;
     border: 1px solid #ccc;
-    display: block;       /* Make the input block-level to allow centering */
-    margin-left: auto;    /* Center horizontally */
-    margin-right: auto;   /* Center horizontally */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .results-section {
@@ -284,30 +268,70 @@ button.paused:hover {
 /* Checklist Styles */
 #apparel-production-checklist {
     margin-top: 50px;
-  }
-  
-  #checklist {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  #checklist li {
+}
+
+.checklist-section {
+    margin-bottom: 20px;
+}
+
+.checklist-section-label {
+    font-weight: bold;
+    font-size: large;
+}
+
+.checklist-items {
+    list-style-type: none; /* Remove bullets from nested lists */
+    margin: 5px;
+}
+
+#checklist li {
     margin-bottom: 10px;
-  }
-  
-  #checklist li input[type="checkbox"] {
+}
+
+#checklist li input[type="checkbox"] {
     margin-right: 10px;
-  }
-  
-  #reset-button:hover #reset-checklist-button:hover {
+}
+
+.section-toggle:checked + .checklist-items {
+    display: none;
+}
+
+.section-toggle {
+    margin-right: 10px;
+    cursor: pointer;
+    transform: scale(1.2);
+}
+
+#reset-checklist-button:hover {
     background-color: #45a049;
-  }
-  
+}
 
 /* Smooth scrolling */
 html {
     scroll-behavior: smooth;
 }
+
+footer {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: hsl(158deg, 40%, 90%);
+    padding: 20px 0;
+    text-align: center;
+    border-top: 4px solid hsl(158deg, 40%, 30%);
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.5);
+    margin-top: 40px;
+}
+
+footer a {
+    color: hsl(158deg, 40%, 70%);
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+footer a:hover {
+    color: hsl(158deg, 40%, 50%);
+}
+
 
 /* Adjusting the layout for smaller screens */
 @media (max-width: 480px) {
