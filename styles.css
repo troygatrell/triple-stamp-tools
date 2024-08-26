@@ -379,11 +379,6 @@ input#shirtStyleInput {
   margin-top: 15px; /* Add some spacing at the top */
 }
 
-th,
-td {
-  padding: 5px;
-}
-
 input[type="text"],
 input[type="number"] {
   width: 90%;
@@ -438,6 +433,7 @@ footer a:hover {
 }
 
 /* Adjusting the layout for smaller screens */
+
 @media (max-width: 480px) {
   header h1 {
     /* margin-bottom: 10px; */
@@ -478,4 +474,28 @@ footer a:hover {
     backdrop-filter: blur(3px);
     margin: 20px 3px;
   }
+}
+
+/* Media query for screens with a width of 412px or less */
+@media (max-width: 412px) {
+    .button-container {
+        flex-direction: column;    /* Stack buttons vertically */
+        align-items: center;       /* Center buttons horizontally */
+    }
+
+    .button-container button {
+        width: 90%;                /* Ensure buttons take up most of the width without being misshapen */
+        max-width: 300px;          /* Set a maximum width to prevent them from stretching too wide */
+        margin: 5px 0;             /* Add margin to separate buttons vertically */
+        padding: 10px 15px;        /* Maintain consistent padding */
+        box-sizing: border-box;    /* Ensure padding is included in the width calculation */
+    }
+
+    td {
+        margin: 5px;
+        padding: 0.5px;
+        text-align: center;
+      }
+
+    
 }
