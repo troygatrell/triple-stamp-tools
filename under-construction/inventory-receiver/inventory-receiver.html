@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>T-Shirt Inventory Receiver</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1 id="mainTitle">T-Shirt Inventory Receiver</h1>
+      <input
+        type="text"
+        id="jobTitleInput"
+        placeholder="Enter Job Title"
+        style="width: 100%; margin-bottom: 20px"
+        oninput="updateJobTitle()"
+      />
+
+      <div id="tablesContainer">
+        <!-- Shirt style tables will be added here -->
+      </div>
+
+      <div class="button-container">
+        <button type="button" onclick="addStyleTable()">
+          Add Another Shirt Style
+        </button>
+      </div>
+
+      <div id="summaryBlock" class="summary"></div>
+      <div class="button-container">
+        <button type="button" onclick="copyToClipboard()">
+          Copy to Clipboard
+        </button>
+      </div>
+    </div>
+
+    <script src="inventory-receiver.js"></script>
+  </body>
+</html>

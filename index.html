@@ -1,282 +1,355 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Triple Stamp Tools</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body id="top">
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body id="top">
     <header>
-        <h1>Triple Stamp Tools</h1>
-        <nav>
-            <ul>
-                <li><a href="#inventory-search">Sample Inventory Search</a></li>
-                <li><a href="#production-time-calculator">Production Time Calculator</a></li>
-                <li><a href="#apparel-production-checklist">Apparel Production Checklist</a></li>
-                <!-- Future tools can be added here -->
-            </ul>
-        </nav>
+      <h1>Triple Stamp Tools</h1>
+      <nav>
+        <ul>
+          <li><a href="#inventory-search">Sample Inventory Search</a></li>
+          <li>
+            <a href="#production-time-calculator">Production Time Calculator</a>
+          </li>
+          <li>
+            <a href="#apparel-production-checklist"
+              >Apparel Production Checklist</a
+            >
+          </li>
+          <li><a href="#inventory-receiver">Check-In Assistant</a></li>
+          <!-- New navigation link -->
+        </ul>
+      </nav>
     </header>
 
     <!-- Inventory Search Tool Section -->
     <section id="inventory-search">
-        <div class="container">
-            <div class="title">Sample Inventory Search</div>
-            
-            <!-- Search Input -->
-            <input type="text" id="search-input" class="search-input" placeholder="Enter search term...">
+      <div class="container">
+        <div class="title">Sample Inventory Search</div>
 
-            <!-- Results Area -->
-            <div id="search-results" class="results-section">
-                <!-- Dynamic search results will be displayed here -->
-            </div>
-        </div>
+        <!-- Search Input -->
+        <input
+          type="text"
+          id="search-input"
+          class="search-input"
+          placeholder="Enter search term..."
+        />
 
-        <!-- Back to Top Link -->
-        <div class="back-to-top">
-            <a href="#top">Back to Top</a>
+        <!-- Results Area -->
+        <div id="search-results" class="results-section">
+          <!-- Dynamic search results will be displayed here -->
         </div>
+      </div>
+
+      <!-- Back to Top Link -->
+      <div class="back-to-top">
+        <a href="#top">Back to Top</a>
+      </div>
     </section>
 
     <!-- Production Time Calculator Section -->
     <section id="production-time-calculator">
-        <div class="container">
-            <div class="title">Production Time Calculator</div>
-            <div class="section-group">
-                <div class="section">
-                    <p class="value-label">Total</p>
-                    <span id="total" class="value-display">400</span>
-                    <div class="controls">
-                        <button onclick="incrementTotal(1)">+1</button>
-                        <button onclick="decrementTotal(1)">-1</button>
-                        <button onclick="incrementTotal(10)">+10</button>
-                        <button onclick="decrementTotal(10)">-10</button>
-                        <button onclick="incrementTotal(100)">+100</button>
-                        <button onclick="decrementTotal(100)">-100</button>
-                    </div>
-                </div>
-
-                <div class="section">
-                    <p class="value-label">Rate</p>
-                    <span id="rate" class="value-display">400</span>
-                    <div class="controls">
-                        <button onclick="incrementRate(1)">+1</button>
-                        <button onclick="decrementRate(1)">-1</button>
-                        <button onclick="incrementRate(10)">+10</button>
-                        <button onclick="decrementRate(10)">-10</button>
-                        <button onclick="incrementRate(100)">+100</button>
-                        <button onclick="decrementRate(100)">-100</button>
-                    </div>
-                </div>
-
-                <div class="section">
-                    <p class="value-label">Counter</p>
-                    <span id="counter" class="value-display">0</span>
-                    <div class="controls">
-                        <button onclick="incrementCounter(1)">+1</button>
-                        <button onclick="decrementCounter(1)">-1</button>
-                        <button onclick="incrementCounter(10)">+10</button>
-                        <button onclick="decrementCounter(10)">-10</button>
-                        <button onclick="incrementCounter(100)">+100</button>
-                        <button onclick="decrementCounter(100)">-100</button>
-                    </div>
-                </div>
+      <div class="container">
+        <div class="title">Production Time Calculator</div>
+        <div class="section-group">
+          <div class="section">
+            <p class="value-label">Total</p>
+            <span id="total" class="value-display">400</span>
+            <div class="controls">
+              <button onclick="incrementTotal(1)">+1</button>
+              <button onclick="decrementTotal(1)">-1</button>
+              <button onclick="incrementTotal(10)">+10</button>
+              <button onclick="decrementTotal(10)">-10</button>
+              <button onclick="incrementTotal(100)">+100</button>
+              <button onclick="decrementTotal(100)">-100</button>
             </div>
+          </div>
 
-            <!-- Progress Bar -->
-            <div class="progress-bar-container">
-                <div id="progress-bar" class="progress-bar">
-                    <span id="progress-text" class="progress-text">0%</span>
-                </div>
+          <div class="section">
+            <p class="value-label">Rate</p>
+            <span id="rate" class="value-display">400</span>
+            <div class="controls">
+              <button onclick="incrementRate(1)">+1</button>
+              <button onclick="decrementRate(1)">-1</button>
+              <button onclick="incrementRate(10)">+10</button>
+              <button onclick="decrementRate(10)">-10</button>
+              <button onclick="incrementRate(100)">+100</button>
+              <button onclick="decrementRate(100)">-100</button>
             </div>
+          </div>
 
-            <!-- Start, Pause, Reset Controls -->
-            <div class="section">
-                <div class="controls">
-                    <button id="start-button" onclick="start()">Start</button>
-                    <button id="pause-button" onclick="pause()">Pause</button>
-                    <button id="reset-button" onclick="stop()">Reset</button>
-                </div>
+          <div class="section">
+            <p class="value-label">Counter</p>
+            <span id="counter" class="value-display">0</span>
+            <div class="controls">
+              <button onclick="incrementCounter(1)">+1</button>
+              <button onclick="decrementCounter(1)">-1</button>
+              <button onclick="incrementCounter(10)">+10</button>
+              <button onclick="decrementCounter(10)">-10</button>
+              <button onclick="incrementCounter(100)">+100</button>
+              <button onclick="decrementCounter(100)">-100</button>
             </div>
-
-            <!-- Information Boxes -->
-            <div class="information-group">
-                <div class="information-box">
-                    <p>Time Left: <span id="timeLeft">--:--:--</span></p>
-                </div>
-                <div class="information-box">
-                    <p>Completion Time: <span id="completionTime">--:-- --</span></p>
-                </div>
-                <div class="information-box">
-                    <p>Pieces Remaining: <span id="piecesRemaining">0</span></p>
-                </div>
-            </div>
+          </div>
         </div>
-        <!-- Back to Top Link -->
-        <div class="back-to-top">
-            <a href="#top">Back to Top</a>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar-container">
+          <div id="progress-bar" class="progress-bar">
+            <span id="progress-text" class="progress-text">0%</span>
+          </div>
         </div>
+
+        <!-- Start, Pause, Reset Controls -->
+        <div class="section">
+          <div class="controls">
+            <button id="start-button" onclick="start()">Start</button>
+            <button id="pause-button" onclick="pause()">Pause</button>
+            <button id="reset-button" onclick="stop()">Reset</button>
+          </div>
+        </div>
+
+        <!-- Information Boxes -->
+        <div class="information-group">
+          <div class="information-box">
+            <p>Time Left: <span id="timeLeft">--:--:--</span></p>
+          </div>
+          <div class="information-box">
+            <p>Completion Time: <span id="completionTime">--:-- --</span></p>
+          </div>
+          <div class="information-box">
+            <p>Pieces Remaining: <span id="piecesRemaining">0</span></p>
+          </div>
+        </div>
+      </div>
+      <!-- Back to Top Link -->
+      <div class="back-to-top">
+        <a href="#top">Back to Top</a>
+      </div>
     </section>
 
     <!-- Apparel Production Checklist Section -->
     <section id="apparel-production-checklist">
-        <div class="container">
-            <div class="title">Apparel Production Checklist</div>
+      <div class="container">
+        <div class="title">Apparel Production Checklist</div>
 
-            <!-- Pre-Production Section -->
-            <div class="checklist-section">
-                <input type="checkbox" class="section-toggle" id="toggle-pre-production">
-                <label for="toggle-pre-production" class="checklist-section-label">Pre-Production</label>
-                <ul class="checklist-items" id="pre-production-items">
-                    <li>
-                        <input type="checkbox" id="item1">
-                        <label for="item1">Find sample</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="item2">
-                        <label for="item2">Tape screens</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="item3">
-                        <label for="item3">Register job with tri-lock</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="item4">
-                        <label for="item4">Move pallets</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="item5">
-                        <label for="item5">Set off-contact</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="item6">
-                        <label for="item6">Insert squeegees and floodbars, adjust depth, pressure, and angle</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="item7">
-                        <label for="item7">Clean/glue pallets</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="item8">
-                        <label for="item8">Print registration screen and line up (optional)</label>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Testing Section -->
-            <div class="checklist-section">
-                <input type="checkbox" class="section-toggle" id="toggle-testing">
-                <label for="toggle-testing" class="checklist-section-label">Testing</label>
-                <ul class="checklist-items" id="testing-items">
-                    <li>
-                        <input type="checkbox" id="item9">
-                        <label for="item9">Set dryer temperature and speed</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="item10">
-                        <label for="item10">Adjust flashes (Is this a high-temp flash job?)</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="item11">
-                        <label for="item11">Adjust stamp temperature</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="item12">
-                        <label for="item12">Program press</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="item13">
-                        <label for="item13">Check Trello for any additional notes</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="item14">
-                        <label for="item14">Mix ink</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="item15">
-                        <label for="item15">Find scrap shirts</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="item16">
-                        <label for="item16">Test print</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="item17">
-                        <label for="item17">Double-check proof against test print</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="item18">
-                        <label for="item18">Measure artwork size</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="item19">
-                        <label for="item19">Take notes on setup</label>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Production Section -->
-            <div class="checklist-section">
-                <input type="checkbox" class="section-toggle" id="toggle-production">
-                <label for="toggle-production" class="checklist-section-label">Production</label>
-                <ul class="checklist-items" id="production-items">
-                    <li>                        
-                        <input type="checkbox" id="item20">
-                        <label for="item20">Check proof and place it at the back of the dryer</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="item21">
-                        <label for="item21">Verify dryer speed</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="item22">
-                        <label for="item22">Determine who is catching</label>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Post-Production Section -->
-            <div class="checklist-section">
-                <input type="checkbox" class="section-toggle" id="toggle-post-production">
-                <label for="toggle-post-production" class="checklist-section-label">Post-Production</label>
-                <ul class="checklist-items" id="post-production-items">
-                    <li>
-                        <input type="checkbox" id="item23">
-                        <label for="item23">Check ShopVox flags</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="item24">
-                        <label for="item24">Move card in Trello</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="item25">
-                        <label for="item25">Return or save sample</label>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Reset Button -->
-            <button id="reset-checklist-button" onclick="resetChecklist()">Reset Checklist</button>
+        <!-- Pre-Production Section -->
+        <div class="checklist-section">
+          <input
+            type="checkbox"
+            class="section-toggle"
+            id="toggle-pre-production"
+          />
+          <label for="toggle-pre-production" class="checklist-section-label"
+            >Pre-Production</label
+          >
+          <ul class="checklist-items" id="pre-production-items">
+            <li>
+              <input type="checkbox" id="item1" />
+              <label for="item1">Find sample</label>
+            </li>
+            <li>
+              <input type="checkbox" id="item2" />
+              <label for="item2">Tape screens</label>
+            </li>
+            <li>
+              <input type="checkbox" id="item3" />
+              <label for="item3">Register job with tri-lock</label>
+            </li>
+            <li>
+              <input type="checkbox" id="item4" />
+              <label for="item4">Move pallets</label>
+            </li>
+            <li>
+              <input type="checkbox" id="item5" />
+              <label for="item5">Set off-contact</label>
+            </li>
+            <li>
+              <input type="checkbox" id="item6" />
+              <label for="item6"
+                >Insert squeegees and floodbars, adjust depth, pressure, and
+                angle</label
+              >
+            </li>
+            <li>
+              <input type="checkbox" id="item7" />
+              <label for="item7">Clean/glue pallets</label>
+            </li>
+            <li>
+              <input type="checkbox" id="item8" />
+              <label for="item8"
+                >Print registration screen and line up (optional)</label
+              >
+            </li>
+          </ul>
         </div>
-        <!-- Back to Top Link -->
-        <div class="back-to-top">
-            <a href="#top">Back to Top</a>
+
+        <!-- Testing Section -->
+        <div class="checklist-section">
+          <input type="checkbox" class="section-toggle" id="toggle-testing" />
+          <label for="toggle-testing" class="checklist-section-label"
+            >Testing</label
+          >
+          <ul class="checklist-items" id="testing-items">
+            <li>
+              <input type="checkbox" id="item9" />
+              <label for="item9">Set dryer temperature and speed</label>
+            </li>
+            <li>
+              <input type="checkbox" id="item10" />
+              <label for="item10"
+                >Adjust flashes (Is this a high-temp flash job?)</label
+              >
+            </li>
+            <li>
+              <input type="checkbox" id="item11" />
+              <label for="item11">Adjust stamp temperature</label>
+            </li>
+            <li>
+              <input type="checkbox" id="item12" />
+              <label for="item12">Program press</label>
+            </li>
+            <li>
+              <input type="checkbox" id="item13" />
+              <label for="item13">Check Trello for any additional notes</label>
+            </li>
+            <li>
+              <input type="checkbox" id="item14" />
+              <label for="item14">Mix ink</label>
+            </li>
+            <li>
+              <input type="checkbox" id="item15" />
+              <label for="item15">Find scrap shirts</label>
+            </li>
+            <li>
+              <input type="checkbox" id="item16" />
+              <label for="item16">Test print</label>
+            </li>
+            <li>
+              <input type="checkbox" id="item17" />
+              <label for="item17">Double-check proof against test print</label>
+            </li>
+            <li>
+              <input type="checkbox" id="item18" />
+              <label for="item18">Measure artwork size</label>
+            </li>
+            <li>
+              <input type="checkbox" id="item19" />
+              <label for="item19">Take notes on setup</label>
+            </li>
+          </ul>
         </div>
+
+        <!-- Production Section -->
+        <div class="checklist-section">
+          <input
+            type="checkbox"
+            class="section-toggle"
+            id="toggle-production"
+          />
+          <label for="toggle-production" class="checklist-section-label"
+            >Production</label
+          >
+          <ul class="checklist-items" id="production-items">
+            <li>
+              <input type="checkbox" id="item20" />
+              <label for="item20"
+                >Check proof and place it at the back of the dryer</label
+              >
+            </li>
+            <li>
+              <input type="checkbox" id="item21" />
+              <label for="item21">Verify dryer speed</label>
+            </li>
+            <li>
+              <input type="checkbox" id="item22" />
+              <label for="item22">Determine who is catching</label>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Post-Production Section -->
+        <div class="checklist-section">
+          <input
+            type="checkbox"
+            class="section-toggle"
+            id="toggle-post-production"
+          />
+          <label for="toggle-post-production" class="checklist-section-label"
+            >Post-Production</label
+          >
+          <ul class="checklist-items" id="post-production-items">
+            <li>
+              <input type="checkbox" id="item23" />
+              <label for="item23">Check ShopVox flags</label>
+            </li>
+            <li>
+              <input type="checkbox" id="item24" />
+              <label for="item24">Move card in Trello</label>
+            </li>
+            <li>
+              <input type="checkbox" id="item25" />
+              <label for="item25">Return or save sample</label>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Reset Button -->
+        <button onclick="resetChecklist()">
+          Reset Checklist
+        </button>
+      </div>
+      <!-- Back to Top Link -->
+      <div class="back-to-top">
+        <a href="#top">Back to Top</a>
+      </div>
     </section>
-    
-          
-    <!-- Add sections for future tools here -->
+
+    <!-- Check-In Assistant Section -->
+    <section id="inventory-receiver">
+      <div class="container">
+        <div class="title">Check-In Assistant</div>
+
+        <div id="tablesContainer">
+          <!-- Shirt style tables will be added here -->
+        </div>
+
+        <!-- <div class="button-container">
+          <button type="button" onclick="addStyleTable()">
+            Add Another Shirt Style
+          </button>
+        </div> -->
+
+        <div id="summaryBlock" class="summary"></div>
+        <div class="button-container">
+          <button type="button" onclick="copyToClipboard()">
+            Copy to Clipboard
+          </button>
+        </div>
+      </div>
+      <!-- Back to Top Link -->
+      <div class="back-to-top">
+        <a href="#top">Back to Top</a>
+      </div>
+    </section>
 
     <!-- Footer Section -->
     <footer>
-        <div class="container">
-            <p>Have any feature requests? Feel free to <a href="mailto:troygatrell@gmail.com">contact me</a>.</p>
-        </div>
+      <div class="container">
+        <p>
+          Have any feature requests? Feel free to
+          <a href="mailto:troygatrell@gmail.com">contact me</a>.
+        </p>
+      </div>
     </footer>
 
     <script src="production-time-calculator.js"></script>
     <script src="inventory-search.js"></script>
     <script src="apparel-production-checklist.js"></script>
-</body>
+    <script src="inventory-receiver.js"></script>
+    <!-- Add your new script here -->
+  </body>
 </html>
