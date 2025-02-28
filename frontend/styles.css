@@ -249,8 +249,10 @@ button.paused:hover {
   justify-content: space-between;
   align-items: center; /* Ensures that all items are centered vertically */
   padding: 10px;
-  border-bottom: 1px solid #ccc;
+  margin: 5px;
   gap: 10px; /* Adds space between columns */
+  background-color: rgba(0, 0, 0, 0.4);; /* Highlight the matching text */
+  border-radius: 10px;
 }
 
 .result-column {
