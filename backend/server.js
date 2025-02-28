@@ -1,21 +1,19 @@
 const express = require('express');
 const { MongoClient, ObjectId } = require('mongodb');
+const cors = require('cors'); // Import the cors package
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Replace with your MongoDB Atlas connection string
-const mongoURI = 'mongodb+srv://troygatrell:oNNaef4yC1WzLnXc@cluster0.rrcs0.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+// Get the MongoDB connection string from the environment variable
+const mongoURI = process.env.MONGO_URI;
 
-// Middleware to parse JSON request bodies
-app.use(express.json());
+// --- Middleware ---
+app.use(express.json()); // Parse JSON request bodies
 
-// Enable CORS for all origins (for development)
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    next();
-});
+// Enable CORS for your frontend's origin
+app.use(cors({
+    origin: 'https://triple-stamp-tools.onrender.com'
+}));
 
 let db;
 
@@ -28,7 +26,7 @@ async function connectToMongo() {
         console.log('Connected to MongoDB');
     } catch (error) {
         console.error('Error connecting to MongoDB:', error);
-        process.exit(1);
+        process.exit(1); // Exit the process if we can't connect to the database
     }
 }
 
@@ -96,7 +94,7 @@ app.post('/api/inventory', async (req, res) => {
     }
 });
 
-// Delete an inventory item (DELETE)  <-- ADD THIS ROUTE
+// Delete an inventory item (DELETE)
 app.delete('/api/inventory/:id', async (req, res) => {
     try {
         const { id } = req.params;
