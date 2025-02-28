@@ -1,8 +1,10 @@
 const express = require("express");
 const { MongoClient, ObjectId } = require("mongodb");
 const cors = require("cors"); // Import the cors package
+const jwt = require("jsonwebtoken"); // Import jsonwebtoken
 const app = express();
 const port = process.env.PORT || 3000;
+
 
 // Get the MongoDB connection string from the environment variable
 const mongoURI = process.env.MONGO_URI;
@@ -40,6 +42,25 @@ async function connectToMongo() {
 
 // --- API Endpoints ---
 
+// Authentication endpoint
+app.post("/api/authenticate", (req, res) => {
+  const providedPasskey = req.body.passkey;
+  const storedPasskey = process.env.PASSKEY; // Or fetch from database
+
+  if (providedPasskey === storedPasskey) {
+    // Generate JWT
+    const token = jwt.sign(
+      {
+        /* You can add user data here if needed */
+      },
+      process.env.JWT_SECRET
+    ); // Make sure to set JWT_SECRET in your environment variables
+    res.json({ token });
+  } else {
+    res.status(401).json({ error: "Invalid passkey" });
+  }
+});
+
 // Get all inventory items
 app.get("/api/inventory", async (req, res) => {
   try {
@@ -51,8 +72,25 @@ app.get("/api/inventory", async (req, res) => {
   }
 });
 
+// Middleware to protect edit route
+function authenticate(req, res, next) {
+  const token = req.header('Authorization');
+
+  if (!token) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded; // Make user data available in the route handler (if needed)
+    next();
+  } catch (error) {
+    res.status(401).json({ error: 'Invalid token' });
+  }
+}
+
 // Update an inventory item
-app.put("/api/inventory/:id", async (req, res) => {
+app.put('/api/inventory/:id', authenticate, async (req, res) => {
   try {
     const { id } = req.params;
     const updatedItem = req.body;
