@@ -192,55 +192,64 @@ function sortData(data) {
 
 //Modified
 
-function editEntryUI(resultItem, item) {
+async function editEntryUI(resultItem, item) {
   const yearDiv = resultItem.querySelector(".result-year");
-
   const monthDiv = resultItem.querySelector(".result-month");
-
   const valueDiv = resultItem.querySelector(".result-value");
-
   const buttonsDiv = resultItem.querySelector(".result-buttons");
 
+  // 1. Prompt for passkey
+  const passkey = prompt("Enter passkey:");
+
+  // 2. Send passkey to authentication endpoint
+  try {
+    const response = await fetch('/api/authenticate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ passkey })
+    });
+
+    if (!response.ok) {
+      throw new Error('Authentication failed');
+    }
+
+    const data = await response.json();
+    const token = data.token;
+
+    // 3. Store the token (e.g., in local storage)
+    localStorage.setItem('authToken', token);
+
+  } catch (error) {
+    console.error('Authentication error:', error);
+    alert('Invalid passkey');
+    return; // Exit the function if authentication fails
+  }
+
+  // --- If authentication is successful, proceed with setting up the edit UI ---
+
   yearDiv.dataset.originalContent = yearDiv.innerHTML;
-
   monthDiv.dataset.originalContent = monthDiv.innerHTML;
-
   valueDiv.dataset.originalContent = valueDiv.innerHTML;
 
   yearDiv.innerHTML = `<input type="text" class="edit-year" value="${item.sheet}">`;
-
   monthDiv.innerHTML = `<input type="text" class="edit-month" value="${item.month}">`;
-
   valueDiv.innerHTML = `<input type="text" class="edit-value" value="${item.value}">`;
 
   buttonsDiv.innerHTML = `
-
-<button class="save-button">Save</button>
-
-<button class="cancel-button">Cancel</button>
-
-<button class="restore-button">Restore</button>
-
-<button class="delete-button">Delete</button>
-
-`;
+    <button class="save-button">Save</button>
+    <button class="cancel-button">Cancel</button>
+    <button class="restore-button">Restore</button>
+    <button class="delete-button">Delete</button>
+  `;
 
   const saveButton = buttonsDiv.querySelector(".save-button");
-
   const cancelButton = buttonsDiv.querySelector(".cancel-button");
-
   const restoreButton = buttonsDiv.querySelector(".restore-button");
-
   const deleteButton = buttonsDiv.querySelector(".delete-button");
 
   saveButton.addEventListener("click", () => saveChanges(resultItem, item));
-
   cancelButton.addEventListener("click", () => cancelChanges(resultItem, item));
-
-  restoreButton.addEventListener("click", () =>
-    restoreOriginal(resultItem, item)
-  );
-
+  restoreButton.addEventListener("click", () => restoreOriginal(resultItem, item));
   deleteButton.addEventListener("click", () => deleteEntry(resultItem, item));
 }
 
