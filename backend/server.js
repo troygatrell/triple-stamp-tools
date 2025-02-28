@@ -13,7 +13,11 @@ app.use(express.json()); // Parse JSON request bodies
 // Enable CORS for your frontend's origin
 app.use(
   cors({
-    origin: ["https://triplestamptools.onrender.com", "http://localhost:3000"],
+    origin: [
+      "https://triplestamptools.onrender.com",
+      "http://localhost:3000", // Keep this for local server testing
+      "http://127.0.0.1:5500", // Add this for your local development environment
+    ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })

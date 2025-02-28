@@ -9,6 +9,7 @@ body {
   text-shadow: 1px 1px 0 #000;
   background-color: hsla(0deg, 0%, 20%, 1);
   background-blend-mode: overlay;
+  font-family: 'Source Sans Pro', sans-serif; /* Add Roboto as the primary font */
 }
 
 header {
