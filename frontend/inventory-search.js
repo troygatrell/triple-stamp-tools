@@ -1,4 +1,4 @@
-let allData = []; // Global variable to store the data
+// let allData = []; // Global variable to store the data //
 
 // --- Data Loading (from your server) ---
 
