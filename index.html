@@ -21,37 +21,24 @@
             >
           </li>
           <li><a href="#inventory-receiver">Check-In Assistant</a></li>
-          <!-- New navigation link -->
         </ul>
       </nav>
     </header>
 
-    <!-- Inventory Search Tool Section -->
     <section id="inventory-search">
       <div class="container">
         <div class="title">Sample Inventory Search</div>
-
-        <!-- Search Input -->
-        <input
-          type="text"
-          id="search-input"
-          class="search-input"
-          placeholder="Enter search term..."
-        />
-
-        <!-- Results Area -->
-        <div id="search-results" class="results-section">
-          <!-- Dynamic search results will be displayed here -->
-        </div>
+        <input type="text" id="search-input" placeholder="Search..." />
+        <button id="new-entry-button">New Entry</button> <!- ADD THIS BUTTON -->
+        <div id="search-results"></div>
+        <script src="inventory-search.js"></script>
       </div>
 
-      <!-- Back to Top Link -->
       <div class="back-to-top">
         <a href="#top">Back to Top</a>
       </div>
     </section>
 
-    <!-- Production Time Calculator Section -->
     <section id="production-time-calculator">
       <div class="container">
         <div class="title">Production Time Calculator</div>
@@ -96,14 +83,12 @@
           </div>
         </div>
 
-        <!-- Progress Bar -->
         <div class="progress-bar-container">
           <div id="progress-bar" class="progress-bar">
             <span id="progress-text" class="progress-text">0%</span>
           </div>
         </div>
 
-        <!-- Start, Pause, Reset Controls -->
         <div class="section">
           <div class="controls">
             <button id="start-button" onclick="start()">Start</button>
@@ -112,7 +97,6 @@
           </div>
         </div>
 
-        <!-- Information Boxes -->
         <div class="information-group">
           <div class="information-box">
             <p>Time Left: <span id="timeLeft">--:--:--</span></p>
@@ -125,18 +109,15 @@
           </div>
         </div>
       </div>
-      <!-- Back to Top Link -->
       <div class="back-to-top">
         <a href="#top">Back to Top</a>
       </div>
     </section>
 
-    <!-- Apparel Production Checklist Section -->
     <section id="apparel-production-checklist">
       <div class="container">
         <div class="title">Apparel Production Checklist</div>
 
-        <!-- Pre-Production Section -->
         <div class="checklist-section">
           <input
             type="checkbox"
@@ -187,7 +168,6 @@
           </ul>
         </div>
 
-        <!-- Testing Section -->
         <div class="checklist-section">
           <input type="checkbox" class="section-toggle" id="toggle-testing" />
           <label for="toggle-testing" class="checklist-section-label"
@@ -243,7 +223,6 @@
           </ul>
         </div>
 
-        <!-- Production Section -->
         <div class="checklist-section">
           <input
             type="checkbox"
@@ -271,7 +250,6 @@
           </ul>
         </div>
 
-        <!-- Post-Production Section -->
         <div class="checklist-section">
           <input
             type="checkbox"
@@ -297,31 +275,18 @@
           </ul>
         </div>
 
-        <!-- Reset Button -->
-        <button onclick="resetChecklist()">
-          Reset Checklist
-        </button>
+        <button onclick="resetChecklist()">Reset Checklist</button>
       </div>
-      <!-- Back to Top Link -->
       <div class="back-to-top">
         <a href="#top">Back to Top</a>
       </div>
     </section>
 
-    <!-- Check-In Assistant Section -->
     <section id="inventory-receiver">
       <div class="container">
         <div class="title">Check-In Assistant</div>
 
-        <div id="tablesContainer">
-          <!-- Shirt style tables will be added here -->
-        </div>
-
-        <!-- <div class="button-container">
-          <button type="button" onclick="addStyleTable()">
-            Add Another Shirt Style
-          </button>
-        </div> -->
+        <div id="tablesContainer"></div>
 
         <div id="summaryBlock" class="summary"></div>
         <div class="button-container">
@@ -330,13 +295,11 @@
           </button>
         </div>
       </div>
-      <!-- Back to Top Link -->
       <div class="back-to-top">
         <a href="#top">Back to Top</a>
       </div>
     </section>
 
-    <!-- Footer Section -->
     <footer>
       <div class="container">
         <p>
@@ -350,6 +313,5 @@
     <script src="inventory-search.js"></script>
     <script src="apparel-production-checklist.js"></script>
     <script src="inventory-receiver.js"></script>
-    <!-- Add your new script here -->
   </body>
 </html>

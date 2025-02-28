@@ -2,7 +2,7 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background: url("https://i.ibb.co/hZRrBSk/triplestamptools-background.jpg")
+  background: url("img/triplestamptools_background.JPG")
     no-repeat center center fixed;
   background-size: cover;
   color: hsl(158deg, 40%, 90%);
@@ -271,6 +271,15 @@ button.paused:hover {
 .result-column:nth-child(3) {
   /* Value column */
   flex: 2; /* Most space for value */
+}
+
+.result-buttons {
+  display: flex; /* Use flexbox to arrange items inline */
+  align-items: center; /* Vertically align the buttons */
+}
+
+.result-buttons > * { /* Target direct children of .result-buttons */
+  margin-right: 5px; /* Add some space between the buttons */
 }
 
 /* Checklist section style */

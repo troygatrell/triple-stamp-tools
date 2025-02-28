@@ -1,0 +1,25 @@
+{
+  "name": "triple-stamp-tools",
+  "version": "1.0.0",
+  "main": "._apparel-production-checklist.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/troygatrell/production-time-calculator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/troygatrell/production-time-calculator/issues"
+  },
+  "homepage": "https://github.com/troygatrell/production-time-calculator#readme",
+  "description": "",
+  "dependencies": {
+    "express": "^4.21.2",
+    "mongodb": "^6.13.1"
+  }
+}
