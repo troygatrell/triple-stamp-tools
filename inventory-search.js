@@ -4,7 +4,9 @@ let allData = []; // Global variable to store the data
 
 async function loadData() {
   try {
-    const response = await fetch("http://localhost:3000/api/inventory"); // Correct URL for local testing
+    const response = await fetch(
+      "https://inventory-search.onrender.com/api/inventory"
+    );
 
     if (!response.ok) {
       throw new Error(`Failed to fetch inventory: ${response.status}`);
@@ -361,7 +363,7 @@ async function saveChanges(resultItem, item) {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/inventory/${item.id}`,
+        `https://inventory-search.onrender.com/api/inventory/${item.id}`,
         {
           method: "PUT",
           headers: {
@@ -416,13 +418,16 @@ async function saveChanges(resultItem, item) {
     };
 
     try {
-      const response = await fetch("http://localhost:3000/api/inventory", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newItem),
-      });
+      const response = await fetch(
+        "https://inventory-search.onrender.com/api/inventory",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newItem),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -507,7 +512,7 @@ async function deleteEntry(resultItem, item) {
   if (confirm("Are you sure you want to delete this entry?")) {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/inventory/${item.id}`,
+        `https://inventory-search.onrender.com/api/inventory/${item.id}`,
         {
           method: "DELETE",
         }
