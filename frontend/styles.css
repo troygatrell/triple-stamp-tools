@@ -1,5 +1,5 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: Roboto, sans-serif;
   margin: 0;
   padding: 0;
   background: url("img/triplestamptools_background.JPG")
@@ -249,8 +249,10 @@ button.paused:hover {
   justify-content: space-between;
   align-items: center; /* Ensures that all items are centered vertically */
   padding: 10px;
-  border-bottom: 1px solid #ccc;
+  margin: 0.5rem;
   gap: 10px; /* Adds space between columns */
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
 }
 
 .result-column {

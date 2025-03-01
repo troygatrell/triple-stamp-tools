@@ -1,7 +1,6 @@
 const express = require("express");
 const { MongoClient, ObjectId } = require("mongodb");
 const cors = require("cors");
-const jwt = require("jsonwebtoken");
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -35,21 +34,6 @@ async function connectToMongo() {
   }
 }
 
-// Authentication endpoint
-app.post("/api/authenticate", (req, res) => {
-  const providedPasskey = req.body.passkey;
-  const storedPasskey = process.env.PASSKEY;
-
-  if (providedPasskey === storedPasskey) {
-    const token = jwt.sign({}, process.env.JWT_SECRET);
-    res.json({ token });
-  } else {
-    res
-      .status(401)
-      .set("Content-Type", "application/json")
-      .json({ error: "Invalid passkey" });
-  }
-});
 
 app.get("/api/inventory", async (req, res) => {
   try {
@@ -61,24 +45,7 @@ app.get("/api/inventory", async (req, res) => {
   }
 });
 
-// Middleware to protect edit route
-function authenticate(req, res, next) {
-  const token = req.header("Authorization");
-
-  if (!token) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch (error) {
-    res.status(401).json({ error: "Invalid token" });
-  }
-}
-
-app.put("/api/inventory/:id", authenticate, async (req, res) => {
+app.put("/api/inventory/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const updatedItem = req.body;

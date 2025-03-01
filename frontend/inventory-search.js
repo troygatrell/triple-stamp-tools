@@ -118,32 +118,38 @@ function setupEditButtonDelegation() {
   const resultsContainer = document.getElementById("search-results");
 
   resultsContainer.addEventListener("click", (event) => {
-    // Check if the clicked element is either an edit or a delete button
-    if (
-      event.target.classList.contains("edit-button") ||
-      event.target.classList.contains("delete-button")
-    ) {
-      const resultItem = event.target.closest(".result-item");
-      const itemId = resultItem.dataset.id;
+    // Check if the clicked element is a descendant of a button with the class "edit-button" or "delete-button"
+    const button = event.target.closest(".edit-button, .delete-button"); 
 
-      // Check if itemId is valid before proceeding
-      if (itemId) {
-        const item = allData.find((item) => item.id === itemId);
+    if (button) { 
+      event.stopPropagation();
+      const resultItem = button.closest(".result-item"); // Find the closest result item
 
-        if (item) {
-          // If the edit button was pressed, proceed with editEntryUI
-          if (event.target.classList.contains("edit-button")) {
-            editEntryUI(resultItem, item);
-          }
-          // If the delete button was pressed, proceed with deleteEntry
-          else if (event.target.classList.contains("delete-button")) {
-            deleteEntry(resultItem, item);
+      if (resultItem) {
+        const itemId = resultItem.dataset.id; 
+
+        // Check if itemId is valid before proceeding
+        if (itemId) {
+          const item = allData.find((item) => item.id === itemId);
+
+          if (item) {
+            // If the edit button was pressed, proceed with editEntryUI
+            if (button.classList.contains("edit-button")) {
+              editEntryUI(resultItem, item);
+            }
+            // If the delete button was pressed, proceed with deleteEntry
+            else if (button.classList.contains("delete-button")) {
+              deleteEntry(resultItem, item);
+            }
+          } else {
+            console.error("Could not find item in allData with ID:", itemId);
           }
         } else {
-          console.error("Could not find item in allData with ID:", itemId);
+          console.error("Result Item is missing data-id attribute");
         }
       } else {
-        console.error("Result Item is missing data-id attribute");
+        console.log(resultItem)
+        console.error("Could not find result item"); // This shouldn't happen if the HTML structure is correct
       }
     }
   });
@@ -197,35 +203,6 @@ async function editEntryUI(resultItem, item) {
   const monthDiv = resultItem.querySelector(".result-month");
   const valueDiv = resultItem.querySelector(".result-value");
   const buttonsDiv = resultItem.querySelector(".result-buttons");
-
-  // 1. Prompt for passkey
-  const passkey = prompt("Enter passkey:");
-
-  // 2. Send passkey to authentication endpoint
-  try {
-    const response = await fetch('/api/authenticate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ passkey })
-    });
-
-    if (!response.ok) {
-      throw new Error('Authentication failed');
-    }
-
-    const data = await response.json();
-    const token = data.token;
-
-    // 3. Store the token (e.g., in local storage)
-    localStorage.setItem('authToken', token);
-
-  } catch (error) {
-    console.error('Authentication error:', error);
-    alert('Invalid passkey');
-    return; // Exit the function if authentication fails
-  }
-
-  // --- If authentication is successful, proceed with setting up the edit UI ---
 
   yearDiv.dataset.originalContent = yearDiv.innerHTML;
   monthDiv.dataset.originalContent = monthDiv.innerHTML;
