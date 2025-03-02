@@ -1,9 +1,14 @@
-let allData =[] // Global variable to store the data
+let allData = []; // Global variable to store the data
 
 // --- Data Loading (from your server) ---
 
 async function loadData() {
   try {
+
+
+    // Hide the search input box
+    document.getElementById("search-input").style.display = "none";
+
     const response = await fetch(
       "https://inventory-search.onrender.com/api/inventory"
     );
@@ -27,6 +32,12 @@ async function loadData() {
     console.log("Data loaded from server");
   } catch (error) {
     console.error("Error loading data:", error);
+  } finally {
+    // Hide the loading indicator in the `finally` block to ensure it's always hidden, even if an error occurs
+    document.getElementById("loading-indicator").style.display = "none";
+
+    // Show the search input box again
+    document.getElementById("search-input").style.display = "block";
   }
 }
 
@@ -287,7 +298,7 @@ async function saveChanges(resultItem, item) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(updatedItem),
-          credentials: 'include' // Add this line
+          credentials: "include", // Add this line
         }
       );
 
@@ -301,9 +312,11 @@ async function saveChanges(resultItem, item) {
         }
 
         // Check if the error response contains a 'message' property
-        const errorMessage = errorData.message || "Unknown error"; 
+        const errorMessage = errorData.message || "Unknown error";
 
-        throw new Error(`Failed to update entry: ${response.status} - ${errorMessage}`);
+        throw new Error(
+          `Failed to update entry: ${response.status} - ${errorMessage}`
+        );
       }
 
       // Update allData after successful save

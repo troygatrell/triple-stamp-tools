@@ -28,8 +28,14 @@
     <section id="inventory-search">
       <div class="container">
         <div class="title">Sample Inventory Search</div>
+        <div id="loading-indicator" hidden>
+          <div class="loading-content">
+            <div class="spinner"></div>
+            <div class="loading-message">Loading data from server (this takes longer after periods of inactivity)...</div>
+          </div>
+        </div>
         <input type="text" id="search-input" placeholder="Search..." />
-        <button id="new-entry-button">New Entry</button> <!- ADD THIS BUTTON -->
+        <button id="new-entry-button">New Entry (under construction)</button>
         <div id="search-results"></div>
         <script src="inventory-search.js"></script>
       </div>
