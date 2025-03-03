@@ -4,8 +4,6 @@ let allData = []; // Global variable to store the data
 
 async function loadData() {
   try {
-
-
     // Hide the search input box
     document.getElementById("search-input").style.display = "none";
 
@@ -254,20 +252,29 @@ function restoreOriginal(resultItem, item) {
     // Update allData values
     const index = allData.findIndex((i) => i.id === item.id);
     if (index !== -1) {
-      allData[index].value = item.originalValue;
-      allData[index].sheet = item.originalSheet;
-      allData[index].month = item.originalMonth;
+      // Access original values directly from allData after saveChanges completes
+      const savedItem = allData[index];
+      allData[index].value = savedItem.originalValue;
+      allData[index].sheet = savedItem.originalSheet;
+      allData[index].month = savedItem.originalMonth;
+
+      // Update the displayed values (outside of edit mode)
+      resultItem.querySelector(".result-year").innerHTML =
+        savedItem.originalSheet;
+      resultItem.querySelector(".result-month").innerHTML =
+        savedItem.originalMonth;
+      resultItem.querySelector(".result-value").innerHTML =
+        savedItem.originalValue;
+
+      // No need to update item here as we're using the updated values from allData
+    } else {
+      console.error("Could not find item in allData with ID:", item.id);
     }
 
-    // Update the input field values (stay in edit mode)
-    resultItem.querySelector(".edit-year").value = item.originalSheet;
-    resultItem.querySelector(".edit-month").value = item.originalMonth;
-    resultItem.querySelector(".edit-value").value = item.originalValue;
-
-    // Update item
-    item.value = item.originalValue;
-    item.sheet = item.originalSheet;
-    item.month = item.originalMonth;
+    // Switch back to the Edit button
+    const buttonsDiv = resultItem.querySelector(".result-buttons");
+    buttonsDiv.innerHTML = `<button class="edit-button" data-index="${item.id}">Edit</button>
+                             <button class="delete-button" data-index="${item.id}">Delete</button>`;
   }
 }
 
@@ -345,7 +352,66 @@ async function saveChanges(resultItem, item) {
     }
   } else {
     // New entry: Create
-    // ... (rest of your code for creating a new entry)
+    const newItem = {
+      sheet: year,
+      month: month,
+      value: newValue,
+    };
+
+    try {
+      fetch("https://inventory-search.onrender.com/api/inventory", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newItem),
+      })
+        .then(async (response) => {
+          if (!response.ok) {
+            const errorData = await response.json(); // Try to parse error response
+            throw new Error(
+              `Failed to create new entry: ${response.status} - ${
+                errorData.message || "Unknown error"
+              }`
+            );
+          }
+
+          const savedItem = await response.json();
+
+          // Store original values directly on the item object
+          savedItem.originalValue = savedItem.value;
+          savedItem.originalSheet = savedItem.sheet;
+          savedItem.originalMonth = savedItem.month;
+
+          // Add the newly created item to allData
+          allData.push(savedItem);
+
+          // Update the display with the saved item's data and ID
+          resultItem.dataset.id = savedItem.id; // Set the data-id attribute
+          resultItem.querySelector(".result-year").innerHTML = savedItem.sheet;
+          resultItem.querySelector(".result-month").innerHTML = savedItem.month;
+          resultItem.querySelector(".result-value").innerHTML = savedItem.value;
+
+          location.reload();
+          
+          // Update the data-original-* attributes
+          resultItem.dataset.originalValue = savedItem.value;
+          resultItem.dataset.originalSheet = savedItem.sheet;
+          resultItem.dataset.originalMonth = savedItem.month;
+
+          // Update the buttons after saving
+          const buttonsDiv = resultItem.querySelector(".result-buttons");
+          buttonsDiv.innerHTML = `<button class="edit-button" data-index="${savedItem.id}">Edit</button>
+                                   <button class="delete-button" data-index="${savedItem.id}">Delete</button>`;
+        })
+        .catch((error) => {
+          console.error("Error creating new item:", error);
+          alert("Failed to create new entry. See console for details.");
+        });
+    } catch (error) {
+      console.error("Error creating new item:", error);
+      alert("Failed to create new entry. See console for details.");
+    }
   }
 }
 
@@ -355,6 +421,11 @@ function createNewEntryUI() {
   const resultsContainer = document.getElementById("search-results");
   const resultItem = document.createElement("div");
   resultItem.className = "result-item";
+
+  // Set the data-original attributes
+  resultItem.dataset.originalValue = ""; // Or an appropriate default value
+  resultItem.dataset.originalSheet = ""; // Or an appropriate default value
+  resultItem.dataset.originalMonth = ""; // Or an appropriate default value
 
   // Create the input fields directly, with placeholders. NO data-id yet.
   resultItem.innerHTML = `
