@@ -459,6 +459,15 @@ html {
   align-items: center;     /* Center vertically */
 }
 
+.input-group {
+  display: flex;
+  align-items: center; /* Vertically align items */
+}
+
+.input-group label {
+  margin-right: 10px; /* Add some space between label and input */
+}
+
 footer {
   background-color: rgba(0, 0, 0, 0.8);
   color: hsl(158deg, 40%, 90%);
