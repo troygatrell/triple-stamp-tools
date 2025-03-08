@@ -5,23 +5,23 @@
 body {
   font-family: Roboto, sans-serif;
   margin: 0;
-  padding-top: 70px; /* Add padding here */
-  background: url("img/triplestamptools_background.JPG") no-repeat center center
-    fixed;
+  padding-top: 60px;
+  background: url("img/triplestamptools_background.JPG") no-repeat center center;
   background-size: cover;
   background-color: hsla(0deg, 0%, 20%, 1);
   background-blend-mode: overlay;
   color: hsl(158deg, 40%, 90%);
   text-shadow: 1px 1px 0 #000;
+  overflow-x: hidden; /* Prevent horizontal scroll on body */
 }
 
 html {
-  scroll-behavior: smooth; /* Smooth scrolling */
+  scroll-behavior: smooth;
 }
 
 /* ==========================================================================
-     Typography
-     ========================================================================== */
+       Typography
+       ========================================================================== */
 
 h2 {
   text-align: center;
@@ -50,12 +50,14 @@ h2 {
 }
 
 /* ==========================================================================
-     Header
-     ========================================================================== */
+       Header
+       ========================================================================== */
 
 header {
+  box-sizing: border-box; /* Include padding and border in height */
   text-align: center;
-  padding: 10px 20px;
+  padding: 5px 10px;
+  height: 70px;
   background-color: rgba(0, 0, 0, 0.8);
   color: hsl(158deg, 40%, 90%);
   border-bottom: 4px solid hsl(158deg, 40%, 30%);
@@ -68,7 +70,7 @@ header {
 }
 
 header h1 {
-  margin: 0 0 -12px 0;
+  margin: 0 auto -12px auto;
   font-size: 40px;
   text-transform: uppercase;
   letter-spacing: -1px;
@@ -77,8 +79,8 @@ header h1 {
 }
 
 /* ==========================================================================
-     Navigation
-     ========================================================================== */
+       Navigation
+       ========================================================================== */
 
 nav ul {
   list-style-type: none;
@@ -108,8 +110,8 @@ nav ul li a:hover {
 }
 
 /* ==========================================================================
-     Containers and Sections
-     ========================================================================== */
+       Containers and Sections
+       ========================================================================== */
 
 .container {
   max-width: 800px;
@@ -122,7 +124,7 @@ nav ul li a:hover {
 }
 
 section {
-  scroll-margin-top: 90px;
+  scroll-margin-top: 80px;
 }
 
 .section-group {
@@ -163,8 +165,8 @@ section {
 }
 
 /* ==========================================================================
-     Loading Indicator
-     ========================================================================== */
+       Loading Indicator
+       ========================================================================== */
 
 #loading-indicator {
   display: flex;
@@ -197,8 +199,8 @@ section {
 }
 
 /* ==========================================================================
-     Controls and Buttons
-     ========================================================================== */
+       Controls and Buttons
+       ========================================================================== */
 
 .controls {
   display: flex;
@@ -267,8 +269,8 @@ button:hover {
 }
 
 /* ==========================================================================
-     Progress Bar
-     ========================================================================== */
+       Progress Bar
+       ========================================================================== */
 
 .progress-bar-container {
   width: 97%;
@@ -303,8 +305,8 @@ button:hover {
 }
 
 /* ==========================================================================
-     Back to Top
-     ========================================================================== */
+       Back to Top
+       ========================================================================== */
 
 .back-to-top {
   text-align: center;
@@ -328,8 +330,8 @@ button:hover {
 }
 
 /* ==========================================================================
-     Inventory Search Tool
-     ========================================================================== */
+       Inventory Search Tool
+       ========================================================================== */
 
 .search-input {
   display: block;
@@ -388,8 +390,8 @@ button:hover {
 }
 
 /* ==========================================================================
-     Checklist
-     ========================================================================== */
+       Checklist
+       ========================================================================== */
 
 .checklist-section {
   margin-bottom: 30px;
@@ -443,8 +445,8 @@ input[type="checkbox"]:checked + label {
 }
 
 /* ==========================================================================
-     Summary
-     ========================================================================== */
+       Summary
+       ========================================================================== */
 
 .summary {
   margin-top: 20px;
@@ -462,8 +464,8 @@ input[type="checkbox"]:checked + label {
 }
 
 /* ==========================================================================
-     Input Fields
-     ========================================================================== */
+       Input Fields
+       ========================================================================== */
 
 input[type="text"],
 input[type="number"] {
@@ -504,8 +506,8 @@ td {
 }
 
 /* ==========================================================================
-   Footer
-   ========================================================================== */
+     Footer
+     ========================================================================== */
 
 footer {
   background-color: rgba(0, 0, 0, 0.8);
@@ -529,27 +531,31 @@ footer a:hover {
 }
 
 /* ==========================================================================
-   Media Queries
-   ========================================================================== */
+     Media Queries
+     ========================================================================== */
 
 /* Adjusting the layout for smaller screens */
 
-@media (max-width: 857px) {
+@media (max-width: 877px) {
   body {
-    padding-top: 90px; /* Adjusted padding */
+    padding-top: 70px; /* Adjusted padding */
+  }
+
+  header {
+    height: 80px;
   }
 
   .container {
     max-width: 90%;
-
-    section {
-      scroll-margin-top: 110px;
-    }
   }
 
-  @media (max-width: 620px) {
+  section {
+    scroll-margin-top: 90px;
+  }
+
+  @media (max-width: 632px) {
     body {
-      padding-top: 70px; /* Adjusted padding */
+      padding-top: 60px; /* Adjusted padding */
     }
 
     nav ul li a {
@@ -557,7 +563,9 @@ footer a:hover {
     }
 
     header {
-      height: 55px;
+      height: 70px;
+      margin: auto;
+      padding: 4px;
     }
 
     header h1 {
@@ -566,7 +574,7 @@ footer a:hover {
     }
 
     section {
-      scroll-margin-top: 90px;
+      scroll-margin-top: 80px;
     }
 
     .result-item {
@@ -646,21 +654,21 @@ footer a:hover {
     }
   }
 
-  @media (max-width: 550px) {
+  @media (max-width: 555px) {
     html {
       font-size: 0.9rem;
     }
 
     body {
-      padding-top: 60px; /* Adjusted padding */
+      padding-top: 50px; /* Adjusted padding */
     }
 
     header {
-      height: 50px;
+      height: 60px;
     }
 
     section {
-      scroll-margin-top: 80px;
+      scroll-margin-top: 70px;
     }
 
     nav ul {
