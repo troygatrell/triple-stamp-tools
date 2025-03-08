@@ -10,6 +10,7 @@ body {
   background-size: cover;
   background-color: hsla(0deg, 0%, 20%, 1);
   background-blend-mode: overlay;
+  background-attachment: fixed;
   color: hsl(158deg, 40%, 90%);
   text-shadow: 1px 1px 0 #000;
   overflow-x: hidden; /* Prevent horizontal scroll on body */
@@ -538,11 +539,11 @@ footer a:hover {
 
 @media (max-width: 877px) {
   body {
-    padding-top: 70px; /* Adjusted padding */
+    padding-top: 80px; /* Adjusted padding */
   }
 
   header {
-    height: 80px;
+    height: 90px;
   }
 
   .container {
@@ -550,20 +551,21 @@ footer a:hover {
   }
 
   section {
-    scroll-margin-top: 90px;
+    scroll-margin-top: 100px;
   }
 
   @media (max-width: 632px) {
     body {
-      padding-top: 60px; /* Adjusted padding */
+      padding-top: 70px; /* Adjusted padding */
     }
 
     nav ul li a {
       font-size: 14px;
+      margin-bottom: 3px;
     }
 
     header {
-      height: 70px;
+      height: 80px;
       margin: auto;
       padding: 4px;
     }
@@ -574,7 +576,7 @@ footer a:hover {
     }
 
     section {
-      scroll-margin-top: 80px;
+      scroll-margin-top: 90px;
     }
 
     .result-item {
@@ -660,15 +662,15 @@ footer a:hover {
     }
 
     body {
-      padding-top: 50px; /* Adjusted padding */
+      padding-top: 60px; /* Adjusted padding */
     }
 
     header {
-      height: 60px;
+      height: 70px;
     }
 
     section {
-      scroll-margin-top: 70px;
+      scroll-margin-top: 80px;
     }
 
     nav ul {
@@ -723,6 +725,51 @@ footer a:hover {
       margin: 5px;
       padding: 0.5px;
       text-align: center;
+    }
+  }
+
+  @media (max-width: 318px) {
+    body {
+      padding-top: 50px; /* Adjusted padding */
+    }
+
+    header {
+      height: 60px;
+    }
+
+    section {
+      scroll-margin-top: 70px;
+    }
+
+    header h1 {
+      font-size: 24px;
+    }
+
+    .button-container button {
+      font-size: 12px; /* Reduce font size for smaller screens */
+    }
+
+    .container {
+      padding: 15px;
+      background: hsla(158deg, 25%, 30%, 0.7);
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(3px);
+      margin: 20px auto;
+    }
+
+    .title {
+      font-size: 20px;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      font-size: 10px;
+      padding: 5px;
+    }
+
+    .back-to-top a {
+      font-size: 12px;
     }
   }
 }
