@@ -11,7 +11,7 @@
       <h1>Triple Stamp Tools</h1>
       <nav>
         <ul>
-          <li><a href="#inventory-search">Sample Inventory</a></li>
+          <li><a href="#inventory-search">Sample Inventory Search</a></li>
           <li>
             <a href="#production-time-calculator">Production Time Calculator</a>
           </li>
@@ -20,7 +20,6 @@
               >Apparel Production Checklist</a
             >
           </li>
-          <li><a href="#video-feed">Live Video Feed</a></li>
           <li><a href="#inventory-receiver">Check-In Assistant</a></li>
         </ul>
       </nav>
@@ -36,7 +35,7 @@
           </div>
         </div>
         <input type="text" id="search-input" placeholder="Search..." />
-        <button id="new-entry-button">New Entry (under construction)</button>
+        <button id="new-entry-button">New Entry</button>
         <div id="search-results"></div>
         <script src="inventory-search.js"></script>
       </div>
@@ -289,24 +288,6 @@
       </div>
     </section>
 
-    <section id="video-feed">
-      <div class="container">
-        <h2>Live Video Feed</h2>
-        <div class="input-group">
-          <label for="stream-id">Stream ID:</label>
-          <input type="text" id="stream-id" value="triplestamp">
-        </div>
-        
-        <div class="input-group">
-          <label for="room-code">Room Code:</label>
-          <input type="text" id="room-code" value="triplestamp">
-        </div>
-          <div class="iframe-container">
-          <iframe id="video-iframe" src="https://vdo.ninja/?v=triplestamp&r=triplestamp&scn&p=0"></iframe>
-        </div>
-      </div>
-    </section>
-    
     <section id="inventory-receiver">
       <div class="container">
         <div class="title">Check-In Assistant</div>
@@ -338,7 +319,5 @@
     <script src="inventory-search.js"></script>
     <script src="apparel-production-checklist.js"></script>
     <script src="inventory-receiver.js"></script>
-    <script src="video-feed.js"></script>
-
   </body>
 </html>
