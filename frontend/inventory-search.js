@@ -171,7 +171,19 @@ function sortData(data) {
     }
 
     // 3. If years are the same, sort by month in reverse order
-    return monthOrder[b.month] - monthOrder[a.month];
+    // Ensure month values are valid before comparing
+    const monthA = monthOrder[a.month];
+    const monthB = monthOrder[b.month];
+
+    if (monthA === undefined && monthB === undefined) {
+      return 0; // Both are invalid, so keep original order
+    } else if (monthA === undefined) {
+      return 1; // a is invalid, so goes to the bottom
+    } else if (monthB === undefined) {
+      return -1; // b is invalid, so goes to the bottom
+    }
+
+    return monthB - monthA;
   });
 }
 
@@ -393,7 +405,7 @@ async function saveChanges(resultItem, item) {
           resultItem.querySelector(".result-value").innerHTML = savedItem.value;
 
           location.reload();
-          
+
           // Update the data-original-* attributes
           resultItem.dataset.originalValue = savedItem.value;
           resultItem.dataset.originalSheet = savedItem.sheet;
@@ -431,7 +443,7 @@ function createNewEntryUI() {
   resultItem.innerHTML = `
         <div class="result-column result-year"><input type="text" class="edit-year" placeholder="Year"></div>
         <div class="result-column result-month"><input type="text" class="edit-month" placeholder="Month"></div>
-        <div class="result-column result-value"><input type="text" class="edit-value" placeholder="Value"></div>
+        <div class="result-column result-value"><input type="text" class="edit-value" placeholder="Job Name"></div>
         <div class="result-column result-buttons">
             <button class="save-button">Save</button>
             <button class="cancel-button">Cancel</button>
