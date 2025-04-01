@@ -391,6 +391,13 @@ button:hover {
   margin-right: 5px; /* Add some space between the buttons */
 }
 
+.edit-year,
+.edit-month {
+    font-size: 16px;
+    padding: 7px;
+    color: #333;
+}
+
 /* ==========================================================================
        Checklist
        ========================================================================== */
@@ -472,7 +479,7 @@ input[type="checkbox"]:checked + label {
 input[type="text"],
 input[type="number"] {
   display: block;
-  width: 90%;
+  width: 95%;
   margin: 10px auto;
   padding: 10px;
   font-size: 16px;

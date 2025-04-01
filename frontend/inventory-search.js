@@ -201,28 +201,76 @@ function editEntryUI(resultItem, item) {
   valueDiv.dataset.originalContent = valueDiv.innerHTML;
 
   // Replace content with input fields
-  yearDiv.innerHTML = `<input type="text" class="edit-year" value="${item.sheet}">`;
-  monthDiv.innerHTML = `<input type="text" class="edit-month" value="${item.month}">`;
+  yearDiv.innerHTML = `
+        <select class="edit-year">
+            <option value="2023" ${
+              item.sheet === "2023" ? "selected" : ""
+            }>2023</option>
+            <option value="2024" ${
+              item.sheet === "2024" ? "selected" : ""
+            }>2024</option>
+            <option value="2025" ${
+              item.sheet === "2025" ? "selected" : ""
+            }>2025</option>
+            // Add more year options as needed
+        </select>
+    `;
+  monthDiv.innerHTML = `
+    <select class="edit-month">
+        <option value="January" ${
+          item.month === "January" ? "selected" : ""
+        }>January</option>
+        <option value="February" ${
+          item.month === "February" ? "selected" : ""
+        }>February</option>
+        <option value="March" ${
+          item.month === "March" ? "selected" : ""
+        }>March</option>
+        // Add options for all months
+        <option value="April" ${
+          item.month === "April" ? "selected" : ""
+        }>April</option>
+        <option value="May" ${
+          item.month === "May" ? "selected" : ""
+        }>May</option>
+        <option value="June" ${
+          item.month === "June" ? "selected" : ""
+        }>June</option>
+        <option value="July" ${
+          item.month === "July" ? "selected" : ""
+        }>July</option>
+        <option value="August" ${
+          item.month === "August" ? "selected" : ""
+        }>August</option>
+        <option value="September" ${
+          item.month === "September" ? "selected" : ""
+        }>September</option>
+        <option value="October" ${
+          item.month === "October" ? "selected" : ""
+        }>October</option>
+        <option value="November" ${
+          item.month === "November" ? "selected" : ""
+        }>November</option>
+        <option value="December" ${
+          item.month === "December" ? "selected" : ""
+        }>December</option>
+    </select>
+`;
   valueDiv.innerHTML = `<input type="text" class="edit-value" value="${item.value}">`;
 
   buttonsDiv.innerHTML = `
         <button class="save-button">Save</button>
         <button class="cancel-button">Cancel</button>
-        <button class="restore-button">Restore</button>
         <button class="delete-button">Delete</button>
     `;
 
   // Add event listeners to the buttons
   const saveButton = buttonsDiv.querySelector(".save-button");
   const cancelButton = buttonsDiv.querySelector(".cancel-button");
-  const restoreButton = buttonsDiv.querySelector(".restore-button");
   const deleteButton = buttonsDiv.querySelector(".delete-button");
 
   saveButton.addEventListener("click", () => saveChanges(resultItem, item));
   cancelButton.addEventListener("click", () => cancelChanges(resultItem, item));
-  restoreButton.addEventListener("click", () =>
-    restoreOriginal(resultItem, item)
-  );
   deleteButton.addEventListener("click", () => deleteEntry(resultItem, item));
 }
 
@@ -254,39 +302,6 @@ function cancelChanges(resultItem, item) {
   } else {
     // If there is no item, it was canceled.
     resultItem.remove();
-  }
-}
-
-// --- Restore Original ---
-
-function restoreOriginal(resultItem, item) {
-  if (confirm("Discard all edits and revert to original values?")) {
-    // Update allData values
-    const index = allData.findIndex((i) => i.id === item.id);
-    if (index !== -1) {
-      // Access original values directly from allData after saveChanges completes
-      const savedItem = allData[index];
-      allData[index].value = savedItem.originalValue;
-      allData[index].sheet = savedItem.originalSheet;
-      allData[index].month = savedItem.originalMonth;
-
-      // Update the displayed values (outside of edit mode)
-      resultItem.querySelector(".result-year").innerHTML =
-        savedItem.originalSheet;
-      resultItem.querySelector(".result-month").innerHTML =
-        savedItem.originalMonth;
-      resultItem.querySelector(".result-value").innerHTML =
-        savedItem.originalValue;
-
-      // No need to update item here as we're using the updated values from allData
-    } else {
-      console.error("Could not find item in allData with ID:", item.id);
-    }
-
-    // Switch back to the Edit button
-    const buttonsDiv = resultItem.querySelector(".result-buttons");
-    buttonsDiv.innerHTML = `<button class="edit-button" data-index="${item.id}">Edit</button>
-                             <button class="delete-button" data-index="${item.id}">Delete</button>`;
   }
 }
 
@@ -441,8 +456,30 @@ function createNewEntryUI() {
 
   // Create the input fields directly, with placeholders. NO data-id yet.
   resultItem.innerHTML = `
-        <div class="result-column result-year"><input type="text" class="edit-year" placeholder="Year"></div>
-        <div class="result-column result-month"><input type="text" class="edit-month" placeholder="Month"></div>
+        <div class="result-column result-year">
+            <select class="edit-year">
+              <option value="2025">2025</option>
+              <option value="2024">2024</option>
+              <option value="2023">2023</option>
+              // Add more year options as needed
+            </select>
+        </div>
+        <div class="result-column result-month">
+            <select class="edit-month">
+                <option value="January">January</option>
+                <option value="February">February</option>
+                <option value="March">March</option>
+                <option value="April">April</option>
+                <option value="May">May</option>
+                <option value="June">June</option>
+                <option value="July">July</option>
+                <option value="August">August</option>
+                <option value="September">September</option>
+                <option value="October">October</option>
+                <option value="November">November</option>
+                <option value="December">December</option>
+            </select>
+        </div>
         <div class="result-column result-value"><input type="text" class="edit-value" placeholder="Job Name"></div>
         <div class="result-column result-buttons">
             <button class="save-button">Save</button>
