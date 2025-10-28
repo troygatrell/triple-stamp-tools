@@ -398,6 +398,30 @@ button:hover {
     color: #333;
 }
 
+/* Hold button styles */
+.hold-button {
+  background-color: rgba(100, 100, 100, 0.6);
+  color: white;
+  border: 2px solid rgba(150, 150, 150, 0.5);
+}
+
+.hold-button:hover {
+  background-color: rgba(150, 150, 150, 0.8);
+  border-color: rgba(200, 200, 200, 0.7);
+}
+
+.hold-button.active-hold {
+  background-color: hsl(45deg, 70%, 50%);
+  border: 2px solid hsl(45deg, 80%, 40%);
+  color: #000;
+  font-weight: bold;
+}
+
+.hold-button.active-hold:hover {
+  background-color: hsl(45deg, 80%, 60%);
+  border-color: hsl(45deg, 90%, 50%);
+}
+
 /* ==========================================================================
        Checklist
        ========================================================================== */

@@ -48,13 +48,21 @@ function setupSearch(data) {
     const searchTerm = searchInput.value.toLowerCase();
 
     if (!searchTerm) {
-      displayResults();
+      displayResults(allData);
       return;
     }
 
-    const results = data.filter((item) =>
-      item.value.toLowerCase().includes(searchTerm)
+    // Get held items (always show these)
+    const heldItems = data.filter((item) => item.hold === true);
+
+    // Get items matching the search term
+    const matchingItems = data.filter(
+      (item) =>
+        item.value.toLowerCase().includes(searchTerm) && item.hold !== true
     );
+
+    // Combine held items with matching items (held items first due to sortData)
+    const results = [...heldItems, ...matchingItems];
 
     displayResults(results);
   });
@@ -62,7 +70,7 @@ function setupSearch(data) {
 
 // --- Display Results & Editing ---
 
-function displayResults(results) {
+function displayResults(results = allData) {
   const resultsContainer = document.getElementById("search-results");
   resultsContainer.innerHTML = ""; // Clear previous results
 
@@ -89,6 +97,9 @@ function displayResults(results) {
       yearColumn = `<div class="result-column result-year"></div>`;
     }
 
+    const holdButtonText = item.hold ? "Unhold" : "Hold";
+    const holdButtonClass = item.hold ? "hold-button active-hold" : "hold-button";
+
     resultItem.innerHTML = `
             ${yearColumn}
             <div class="result-column result-month">${item.month}</div>
@@ -96,6 +107,7 @@ function displayResults(results) {
             <div class="result-column result-buttons">
                 <button class="edit-button" data-index="${item.id}">Edit</button>
                 <button class="delete-button" data-index="${item.id}">Delete</button>
+                <button class="${holdButtonClass}" data-index="${item.id}">${holdButtonText}</button>
             </div>
         `;
 
@@ -109,10 +121,11 @@ function setupEditButtonDelegation() {
   const resultsContainer = document.getElementById("search-results");
 
   resultsContainer.addEventListener("click", (event) => {
-    // Check if the clicked element is either an edit or a delete button
+    // Check if the clicked element is either an edit, delete, or hold button
     if (
       event.target.classList.contains("edit-button") ||
-      event.target.classList.contains("delete-button")
+      event.target.classList.contains("delete-button") ||
+      event.target.classList.contains("hold-button")
     ) {
       const resultItem = event.target.closest(".result-item");
       const itemId = resultItem.dataset.id;
@@ -125,6 +138,8 @@ function setupEditButtonDelegation() {
             editEntryUI(resultItem, item);
           } else if (event.target.classList.contains("delete-button")) {
             deleteEntry(resultItem, item);
+          } else if (event.target.classList.contains("hold-button")) {
+            toggleHold(resultItem, item);
           }
         } else {
           console.error("Could not find item in allData with ID:", itemId);
@@ -155,6 +170,16 @@ function sortData(data) {
   };
 
   return data.sort((a, b) => {
+    // 0. Prioritize held items first
+    const aHold = a.hold === true;
+    const bHold = b.hold === true;
+
+    if (aHold && !bHold) {
+      return -1; // a (held) goes first
+    } else if (!aHold && bHold) {
+      return 1; // b (held) goes first
+    }
+
     // 1. Check if either entry has a non-numeric year
     const aIsText = isNaN(parseInt(a.sheet));
     const bIsText = isNaN(parseInt(b.sheet));
@@ -296,9 +321,12 @@ function cancelChanges(resultItem, item) {
     monthDiv.innerHTML = item.month;
     valueDiv.innerHTML = item.value;
 
-    // Switch back to the Edit button
+    // Switch back to the Edit, Delete, and Hold buttons
+    const holdButtonText = item.hold ? "Unhold" : "Hold";
+    const holdButtonClass = item.hold ? "hold-button active-hold" : "hold-button";
     buttonsDiv.innerHTML = `<button class="edit-button" data-index="${resultItem.dataset.id}">Edit</button>
-                             <button class="delete-button" data-index="${resultItem.dataset.id}">Delete</button>`;
+                             <button class="delete-button" data-index="${resultItem.dataset.id}">Delete</button>
+                             <button class="${holdButtonClass}" data-index="${resultItem.dataset.id}">${holdButtonText}</button>`;
   } else {
     // If there is no item, it was canceled.
     resultItem.remove();
@@ -371,8 +399,11 @@ async function saveChanges(resultItem, item) {
 
       // Update the buttons after saving
       const buttonsDiv = resultItem.querySelector(".result-buttons");
+      const holdButtonText = item.hold ? "Unhold" : "Hold";
+      const holdButtonClass = item.hold ? "hold-button active-hold" : "hold-button";
       buttonsDiv.innerHTML = `<button class="edit-button" data-index="${item.id}">Edit</button>
-                               <button class="delete-button" data-index="${item.id}">Delete</button>`;
+                               <button class="delete-button" data-index="${item.id}">Delete</button>
+                               <button class="${holdButtonClass}" data-index="${item.id}">${holdButtonText}</button>`;
     } catch (error) {
       console.error("Error updating item:", error);
       alert("Failed to save changes. See console for details.");
@@ -527,6 +558,48 @@ async function deleteEntry(resultItem, item) {
       console.error("Error deleting item:", error);
       alert("Failed to delete entry. See console for details.");
     }
+  }
+}
+
+// --- Toggle Hold ---
+
+async function toggleHold(resultItem, item) {
+  try {
+    // Toggle the hold value
+    const newHoldValue = !item.hold;
+
+    // Update the item in the database
+    const updatedItem = {
+      sheet: item.sheet,
+      month: item.month,
+      value: item.value,
+      originalValue: item.originalValue,
+      originalSheet: item.originalSheet,
+      originalMonth: item.originalMonth,
+      hold: newHoldValue,
+    };
+
+    const response = await fetch(
+      `https://inventory-search.onrender.com/api/inventory/${item.id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedItem),
+        credentials: "include",
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to update hold status: ${response.status}`);
+    }
+
+    // Reload the page to refresh the results with the new hold status
+    location.reload();
+  } catch (error) {
+    console.error("Error toggling hold status:", error);
+    alert("Failed to toggle hold status. See console for details.");
   }
 }
 
