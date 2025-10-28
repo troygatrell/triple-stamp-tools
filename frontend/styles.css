@@ -29,12 +29,23 @@ h2 {
 }
 
 .title {
-  font-size: 32px;
-  font-weight: bold;
+  font-size: 42px;
+  font-weight: 900;
   text-align: center;
-  margin-bottom: 5px;
+  margin-top: 0;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
   color: hsl(158deg, 40%, 90%);
   text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.7);
+  border-bottom: 3px solid hsl(158deg, 40%, 50%);
+}
+
+.title-icon {
+  display: inline-block;
+  font-size: 40px;
+  margin-right: 10px;
+  vertical-align: middle;
+  filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.7));
 }
 
 .value-label {
@@ -116,8 +127,8 @@ nav ul li a:hover {
 
 .container {
   max-width: 800px;
-  margin: 20px auto; /* Center the container horizontally */
-  padding: 15px;
+  margin: 50px auto; /* Increased spacing between sections for better visual hierarchy */
+  padding: 25px;
   background: hsla(158deg, 25%, 30%, 0.7);
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
@@ -704,7 +715,7 @@ footer a:hover {
       border-radius: 10px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
       backdrop-filter: blur(3px);
-      margin: 20px auto;
+      margin: 35px auto;
     }
 
     button {
@@ -712,8 +723,9 @@ footer a:hover {
     }
 
     .title {
-      font-size: 28px;
-      margin-bottom: 15px;
+      font-size: 32px;
+      margin-bottom: 25px;
+      padding-bottom: 18px;
     }
 
     input[type="text"],
@@ -769,7 +781,9 @@ footer a:hover {
     }
 
     .title {
-      font-size: 24px;
+      font-size: 28px;
+      margin-bottom: 22px;
+      padding-bottom: 16px;
     }
 
     input[type="text"],
@@ -832,11 +846,13 @@ footer a:hover {
       border-radius: 10px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
       backdrop-filter: blur(3px);
-      margin: 20px auto;
+      margin: 30px auto;
     }
 
     .title {
-      font-size: 20px;
+      font-size: 24px;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
     }
 
     input[type="text"],
