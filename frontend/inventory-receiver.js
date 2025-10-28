@@ -18,6 +18,7 @@ function addStyleTable() {
       <table>
           <thead>
               <tr>
+                  <th class="drag-handle-header"></th>
                   <th>Size</th>
                   <th>Expected</th>
                   <th>Received</th>
@@ -26,35 +27,40 @@ function addStyleTable() {
               </tr>
           </thead>
           <tbody id="shirtRows${tableCount}">
-              <tr>
+              <tr draggable="true">
+                  <td class="drag-handle">⋮⋮</td>
                   <td>S</td>
                   <td><input type="number" name="expected" placeholder="Expected " oninput="calculateDifference(this)"></td>
                   <td><input type="number" name="received" placeholder="Received " oninput="calculateDifference(this)"></td>
                   <td class="difference">---</td>
                   <td><button type="button" onclick="removeRow(this)">Remove</button></td>
               </tr>
-              <tr>
+              <tr draggable="true">
+                  <td class="drag-handle">⋮⋮</td>
                   <td>M</td>
                   <td><input type="number" name="expected" placeholder="Expected " oninput="calculateDifference(this)"></td>
                   <td><input type="number" name="received" placeholder="Received " oninput="calculateDifference(this)"></td>
                   <td class="difference">---</td>
                   <td><button type="button" onclick="removeRow(this)">Remove</button></td>
               </tr>
-              <tr>
+              <tr draggable="true">
+                  <td class="drag-handle">⋮⋮</td>
                   <td>L</td>
                   <td><input type="number" name="expected" placeholder="Expected " oninput="calculateDifference(this)"></td>
                   <td><input type="number" name="received" placeholder="Received " oninput="calculateDifference(this)"></td>
                   <td class="difference">---</td>
                   <td><button type="button" onclick="removeRow(this)">Remove</button></td>
               </tr>
-              <tr>
+              <tr draggable="true">
+                  <td class="drag-handle">⋮⋮</td>
                   <td>XL</td>
                   <td><input type="number" name="expected" placeholder="Expected " oninput="calculateDifference(this)"></td>
                   <td><input type="number" name="received" placeholder="Received " oninput="calculateDifference(this)"></td>
                   <td class="difference">---</td>
                   <td><button type="button" onclick="removeRow(this)">Remove</button></td>
               </tr>
-              <tr>
+              <tr draggable="true">
+                  <td class="drag-handle">⋮⋮</td>
                   <td>2XL</td>
                   <td><input type="number" name="expected" placeholder="Expected " oninput="calculateDifference(this)"></td>
                   <td><input type="number" name="received" placeholder="Received " oninput="calculateDifference(this)"></td>
@@ -70,6 +76,10 @@ function addStyleTable() {
       </div>
   `;
   document.getElementById('tablesContainer').appendChild(tableDiv);
+
+  // Add drag and drop event listeners to all rows
+  const tbody = document.getElementById(`shirtRows${tableCount}`);
+  setupDragAndDrop(tbody);
 
   updateRemoveButtons(); // Check and update the state of the remove buttons
 
@@ -122,14 +132,21 @@ function calculateDifference(input) {
 // Function to add a new row for a t-shirt size in a specific table
 function addRow(tableNumber) {
   const row = document.createElement('tr');
+  row.setAttribute('draggable', 'true');
   row.innerHTML = `
+      <td class="drag-handle">⋮⋮</td>
       <td><input type="text" id="additional-size-input" name="size" placeholder="(size)"></td>
       <td><input type="number" name="expected" placeholder="Expected" oninput="calculateDifference(this)"></td>
       <td><input type="number" name="received" placeholder="Received" oninput="calculateDifference(this)"></td>
       <td class="difference">---</td>
       <td><button type="button" onclick="removeRow(this)">Remove</button></td>
   `;
-  document.getElementById(`shirtRows${tableNumber}`).appendChild(row);
+  const tbody = document.getElementById(`shirtRows${tableNumber}`);
+  tbody.appendChild(row);
+
+  // Add drag and drop event listeners to the new row
+  setupDragAndDrop(tbody);
+
   generateSummary(); // Update summary after adding a new size
 }
 
@@ -162,8 +179,9 @@ function generateSummary() {
 
           rows.forEach((row, index) => {
               console.log(`Row ${index + 1} HTML:`, row.innerHTML);
-              
-              const sizeElement = row.querySelector('td:nth-child(1)');
+
+              // Updated to account for drag handle column - size is now in 2nd column
+              const sizeElement = row.querySelector('td:nth-child(2)');
               const sizeInput = sizeElement.querySelector('input[name="size"]');
               const size = sizeInput ? sizeInput.value.trim() : sizeElement.textContent.trim();
               const expectedInput = row.querySelector('input[name="expected"]');
@@ -216,6 +234,95 @@ function copyToClipboard() {
   alert('Summary copied to clipboard!');
 }
 
+
+// Drag and Drop functionality
+let draggedRow = null;
+
+function setupDragAndDrop(tbody) {
+  const rows = tbody.querySelectorAll('tr[draggable="true"]');
+
+  rows.forEach(row => {
+    // Remove existing listeners to prevent duplicates
+    row.removeEventListener('dragstart', handleDragStart);
+    row.removeEventListener('dragover', handleDragOver);
+    row.removeEventListener('drop', handleDrop);
+    row.removeEventListener('dragend', handleDragEnd);
+    row.removeEventListener('dragenter', handleDragEnter);
+    row.removeEventListener('dragleave', handleDragLeave);
+
+    // Add event listeners
+    row.addEventListener('dragstart', handleDragStart);
+    row.addEventListener('dragover', handleDragOver);
+    row.addEventListener('drop', handleDrop);
+    row.addEventListener('dragend', handleDragEnd);
+    row.addEventListener('dragenter', handleDragEnter);
+    row.addEventListener('dragleave', handleDragLeave);
+  });
+}
+
+function handleDragStart(e) {
+  draggedRow = this;
+  this.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/html', this.innerHTML);
+}
+
+function handleDragOver(e) {
+  if (e.preventDefault) {
+    e.preventDefault();
+  }
+  e.dataTransfer.dropEffect = 'move';
+  return false;
+}
+
+function handleDragEnter(e) {
+  if (this !== draggedRow) {
+    this.classList.add('drag-over');
+  }
+}
+
+function handleDragLeave(e) {
+  this.classList.remove('drag-over');
+}
+
+function handleDrop(e) {
+  if (e.stopPropagation) {
+    e.stopPropagation();
+  }
+
+  if (draggedRow !== this) {
+    // Get the parent tbody
+    const tbody = this.parentNode;
+    const allRows = [...tbody.querySelectorAll('tr[draggable="true"]')];
+    const draggedIndex = allRows.indexOf(draggedRow);
+    const targetIndex = allRows.indexOf(this);
+
+    // Determine where to insert the dragged row
+    if (draggedIndex < targetIndex) {
+      // Insert after the target
+      tbody.insertBefore(draggedRow, this.nextSibling);
+    } else {
+      // Insert before the target
+      tbody.insertBefore(draggedRow, this);
+    }
+
+    generateSummary();
+  }
+
+  this.classList.remove('drag-over');
+  return false;
+}
+
+function handleDragEnd(e) {
+  this.classList.remove('dragging');
+
+  // Remove drag-over class from all rows
+  const tbody = this.parentNode;
+  const rows = tbody.querySelectorAll('tr[draggable="true"]');
+  rows.forEach(row => {
+    row.classList.remove('drag-over');
+  });
+}
 
 // Automatically add the first shirt style table when the page loads
 window.onload = addStyleTable;
