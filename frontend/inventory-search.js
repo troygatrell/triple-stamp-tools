@@ -27,6 +27,9 @@ async function loadData() {
 
     setupSearch(allData);
 
+    // Display only held items initially
+    displayResults(getHeldItems());
+
     console.log("Data loaded from server");
   } catch (error) {
     console.error("Error loading data:", error);
@@ -39,6 +42,12 @@ async function loadData() {
   }
 }
 
+// --- Helper Functions ---
+
+function getHeldItems() {
+  return allData.filter((item) => item.hold === true);
+}
+
 // --- Search Setup ---
 
 function setupSearch(data) {
@@ -48,7 +57,7 @@ function setupSearch(data) {
     const searchTerm = searchInput.value.toLowerCase();
 
     if (!searchTerm) {
-      displayResults(allData);
+      displayResults(getHeldItems());
       return;
     }
 
