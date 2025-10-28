@@ -539,6 +539,51 @@ td {
 }
 
 /* ==========================================================================
+   Drag and Drop Styles
+   ========================================================================== */
+
+.drag-handle-header {
+  width: 30px;
+  min-width: 30px;
+  max-width: 30px;
+}
+
+.drag-handle {
+  cursor: grab;
+  user-select: none;
+  color: hsl(158deg, 40%, 70%);
+  font-weight: bold;
+  font-size: 18px;
+  padding: 5px 10px;
+  width: 30px;
+  min-width: 30px;
+  max-width: 30px;
+}
+
+.drag-handle:hover {
+  color: hsl(158deg, 50%, 90%);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+tr[draggable="true"].dragging {
+  opacity: 0.5;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+tr[draggable="true"].drag-over {
+  border-top: 3px solid hsl(158deg, 50%, 50%);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+tr[draggable="true"] {
+  transition: background-color 0.2s ease;
+}
+
+/* ==========================================================================
      Footer
      ========================================================================== */
 
