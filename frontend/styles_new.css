@@ -21,7 +21,7 @@ body {
 /* Adjust body padding when sidebar is open on desktop */
 @media (min-width: 769px) {
   body.sidebar-open {
-    padding-left: 280px;
+    padding-left: 320px;
   }
 }
 
@@ -167,7 +167,9 @@ header h1 {
 }
 
 .sidebar.open {
-  width: 280px;
+  width: max-content;
+  min-width: 250px;
+  max-width: 320px;
 }
 
 .sidebar nav {
@@ -180,7 +182,7 @@ header h1 {
 .sidebar-link {
   display: flex;
   align-items: center;
-  padding: 15px;
+  padding: 15px 20px;
   text-decoration: none;
   color: hsl(158deg, 40%, 90%);
   transition: background-color 0.3s ease, color 0.3s ease;
@@ -768,7 +770,9 @@ footer a {
 
   .sidebar {
     transform: translateX(-100%);
-    width: 280px;
+    width: max-content;
+    min-width: 250px;
+    max-width: 320px;
     top: 70px;
   }
 
@@ -777,12 +781,12 @@ footer a {
   }
 
   /* Add overlay when sidebar is open on mobile */
-  .sidebar.open::before {
+  .sidebar.open::after {
     content: '';
     position: fixed;
     top: 70px;
-    left: 280px;
-    width: calc(100vw - 280px);
+    left: 100%;
+    width: 100vw;
     height: calc(100vh - 70px);
     background: rgba(0, 0, 0, 0.5);
     z-index: -1;
@@ -1491,7 +1495,7 @@ footer a {
 }
 
 /* Responsive styles for Ink Formula Formatter */
-@media screen and (max-width: 576px) {
+@media screen and (max-width: 716px) {
   #ink-formula-formatter .header-inputs {
     flex-direction: column;
   }
