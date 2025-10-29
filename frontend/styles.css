@@ -5,7 +5,7 @@
 body {
   font-family: Roboto, sans-serif;
   margin: 0;
-  padding-top: 60px;
+  padding-top: 80px;
   background: url("img/triplestamptools_background.JPG") no-repeat center center;
   background-size: cover;
   background-color: hsla(0deg, 0%, 20%, 1);
@@ -69,7 +69,7 @@ header {
   box-sizing: border-box; /* Include padding and border in height */
   text-align: center;
   padding: 5px 10px;
-  height: 70px;
+  height: 80px;
   background-color: rgba(0, 0, 0, 0.8);
   color: hsl(158deg, 40%, 90%);
   border-bottom: 4px solid hsl(158deg, 40%, 30%);
@@ -136,7 +136,7 @@ nav ul li a:hover {
 }
 
 section {
-  scroll-margin-top: 80px;
+  scroll-margin-top: 90px;
 }
 
 .section-group {
@@ -627,11 +627,11 @@ footer a:hover {
 
 @media (max-width: 877px) {
   body {
-    padding-top: 80px; /* Adjusted padding */
+    padding-top: 90px; /* Adjusted padding */
   }
 
   header {
-    height: 90px;
+    height: 100px;
   }
 
   .container {
@@ -639,12 +639,12 @@ footer a:hover {
   }
 
   section {
-    scroll-margin-top: 100px;
+    scroll-margin-top: 110px;
   }
 
   @media (max-width: 632px) {
     body {
-      padding-top: 70px; /* Adjusted padding */
+      padding-top: 80px; /* Adjusted padding */
     }
 
     nav ul li a {
@@ -653,7 +653,7 @@ footer a:hover {
     }
 
     header {
-      height: 80px;
+      height: 90px;
       margin: auto;
       padding: 4px;
     }
@@ -664,7 +664,7 @@ footer a:hover {
     }
 
     section {
-      scroll-margin-top: 90px;
+      scroll-margin-top: 100px;
     }
 
     .result-item {
@@ -751,15 +751,15 @@ footer a:hover {
     }
 
     body {
-      padding-top: 60px; /* Adjusted padding */
+      padding-top: 70px; /* Adjusted padding */
     }
 
     header {
-      height: 70px;
+      height: 80px;
     }
 
     section {
-      scroll-margin-top: 80px;
+      scroll-margin-top: 90px;
     }
 
     nav ul {
@@ -821,15 +821,15 @@ footer a:hover {
 
   @media (max-width: 318px) {
     body {
-      padding-top: 50px; /* Adjusted padding */
+      padding-top: 60px; /* Adjusted padding */
     }
 
     header {
-      height: 60px;
+      height: 70px;
     }
 
     section {
-      scroll-margin-top: 70px;
+      scroll-margin-top: 80px;
     }
 
     header h1 {
