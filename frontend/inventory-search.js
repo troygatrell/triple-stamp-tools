@@ -97,7 +97,7 @@ function displayResults(results = allData) {
       yearColumn = `<div class="result-column result-year"></div>`;
     }
 
-    const holdButtonText = item.hold ? "Unhold" : "Hold";
+    const holdButtonText = item.hold ? "Drop" : "Hold";
     const holdButtonClass = item.hold ? "hold-button active-hold" : "hold-button";
 
     resultItem.innerHTML = `
@@ -322,7 +322,7 @@ function cancelChanges(resultItem, item) {
     valueDiv.innerHTML = item.value;
 
     // Switch back to the Edit, Delete, and Hold buttons
-    const holdButtonText = item.hold ? "Unhold" : "Hold";
+    const holdButtonText = item.hold ? "Drop" : "Hold";
     const holdButtonClass = item.hold ? "hold-button active-hold" : "hold-button";
     buttonsDiv.innerHTML = `<button class="edit-button" data-index="${resultItem.dataset.id}">Edit</button>
                              <button class="delete-button" data-index="${resultItem.dataset.id}">Delete</button>
@@ -399,7 +399,7 @@ async function saveChanges(resultItem, item) {
 
       // Update the buttons after saving
       const buttonsDiv = resultItem.querySelector(".result-buttons");
-      const holdButtonText = item.hold ? "Unhold" : "Hold";
+      const holdButtonText = item.hold ? "Drop" : "Hold";
       const holdButtonClass = item.hold ? "hold-button active-hold" : "hold-button";
       buttonsDiv.innerHTML = `<button class="edit-button" data-index="${item.id}">Edit</button>
                                <button class="delete-button" data-index="${item.id}">Delete</button>
