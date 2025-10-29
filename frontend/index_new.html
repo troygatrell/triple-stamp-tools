@@ -8,23 +8,38 @@
   </head>
   <body id="top">
     <header>
+      <button id="hamburger-menu" class="hamburger" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
       <h1>Triple Stamp Tools</h1>
-      <nav>
-        <ul>
-          <li><a href="#inventory-search">Sample Inventory Search</a></li>
-          <li>
-            <a href="#production-time-calculator">Production Time Calculator</a>
-          </li>
-          <li>
-            <a href="#apparel-production-checklist"
-              >Apparel Production Checklist</a
-            >
-          </li>
-          <li><a href="#inventory-receiver">Check-In Assistant</a></li>
-          <li><a href="#ink-formula-formatter">Ink Formula Formatter</a></li>
-        </ul>
-      </nav>
     </header>
+
+    <aside id="sidebar" class="sidebar">
+      <nav>
+        <a href="#inventory-search" class="sidebar-link">
+          <span class="sidebar-icon">🔍</span>
+          <span class="sidebar-text">Sample Inventory Search</span>
+        </a>
+        <a href="#production-time-calculator" class="sidebar-link">
+          <span class="sidebar-icon">⏱️</span>
+          <span class="sidebar-text">Production Time Calculator</span>
+        </a>
+        <a href="#apparel-production-checklist" class="sidebar-link">
+          <span class="sidebar-icon">✓</span>
+          <span class="sidebar-text">Apparel Production Checklist</span>
+        </a>
+        <a href="#inventory-receiver" class="sidebar-link">
+          <span class="sidebar-icon">👕</span>
+          <span class="sidebar-text">Check-In Assistant</span>
+        </a>
+        <a href="#ink-formula-formatter" class="sidebar-link">
+          <span class="sidebar-icon">🎨</span>
+          <span class="sidebar-text">Ink Formula Formatter</span>
+        </a>
+      </nav>
+    </aside>
 
     <section id="inventory-search">
       <div class="container">
@@ -371,5 +386,61 @@
     <script src="apparel-production-checklist.js"></script>
     <script src="inventory-receiver.js"></script>
     <script src="ink-formula-formatter.js"></script>
+
+    <script>
+      // Sidebar toggle functionality
+      document.addEventListener('DOMContentLoaded', function() {
+        const hamburger = document.getElementById('hamburger-menu');
+        const sidebar = document.getElementById('sidebar');
+        const body = document.body;
+
+        // Set initial state based on viewport width
+        function setInitialState() {
+          if (window.innerWidth > 768) {
+            // Desktop: sidebar open by default
+            sidebar.classList.add('open');
+            body.classList.add('sidebar-open');
+          } else {
+            // Mobile: sidebar closed by default
+            sidebar.classList.remove('open');
+            body.classList.remove('sidebar-open');
+          }
+        }
+
+        // Toggle sidebar on hamburger click
+        hamburger.addEventListener('click', function() {
+          sidebar.classList.toggle('open');
+          hamburger.classList.toggle('active');
+          if (window.innerWidth > 768) {
+            body.classList.toggle('sidebar-open');
+          }
+        });
+
+        // Close sidebar when clicking on a link (on mobile)
+        const sidebarLinks = document.querySelectorAll('.sidebar-link');
+        sidebarLinks.forEach(link => {
+          link.addEventListener('click', function() {
+            if (window.innerWidth <= 768) {
+              sidebar.classList.remove('open');
+              hamburger.classList.remove('active');
+            }
+          });
+        });
+
+        // Set initial state on load
+        setInitialState();
+
+        // Update state on window resize
+        window.addEventListener('resize', function() {
+          // Only auto-adjust if user hasn't manually toggled
+          if (window.innerWidth > 768 && !sidebar.classList.contains('open')) {
+            sidebar.classList.add('open');
+            body.classList.add('sidebar-open');
+          } else if (window.innerWidth <= 768) {
+            body.classList.remove('sidebar-open');
+          }
+        });
+      });
+    </script>
   </body>
 </html>
