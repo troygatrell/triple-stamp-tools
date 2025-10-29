@@ -5,7 +5,7 @@
 body {
   font-family: Roboto, sans-serif;
   margin: 0;
-  padding-top: 60px;
+  padding-top: 90px;
   background: url("img/triplestamptools_background.JPG") no-repeat center center;
   background-size: cover;
   background-color: hsla(0deg, 0%, 20%, 1);
@@ -68,8 +68,8 @@ h2 {
 header {
   box-sizing: border-box; /* Include padding and border in height */
   text-align: center;
-  padding: 5px 10px;
-  height: 70px;
+  padding: 5px 10px 10px 10px;
+  height: 95px;
   background-color: rgba(0, 0, 0, 0.8);
   color: hsl(158deg, 40%, 90%);
   border-bottom: 4px solid hsl(158deg, 40%, 30%);
@@ -100,6 +100,8 @@ nav ul {
   margin: 5px;
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
   border-radius: 5px;
 }
 
@@ -112,8 +114,10 @@ nav ul li a {
   color: hsl(158deg, 40%, 90%);
   font-size: 16px;
   font-weight: bold;
+  padding: 6px 10px;
   border-radius: 5px;
   transition: color 0.3s ease, background-color 0.3s ease;
+  display: inline-block;
 }
 
 nav ul li a:hover {
@@ -136,7 +140,7 @@ nav ul li a:hover {
 }
 
 section {
-  scroll-margin-top: 80px;
+  scroll-margin-top: 105px;
 }
 
 .section-group {
@@ -627,11 +631,12 @@ footer a:hover {
 
 @media (max-width: 877px) {
   body {
-    padding-top: 80px; /* Adjusted padding */
+    padding-top: 100px; /* Adjusted padding */
   }
 
   header {
-    height: 90px;
+    height: 110px;
+    padding-bottom: 12px;
   }
 
   .container {
@@ -639,23 +644,23 @@ footer a:hover {
   }
 
   section {
-    scroll-margin-top: 100px;
+    scroll-margin-top: 120px;
   }
 
   @media (max-width: 632px) {
     body {
-      padding-top: 70px; /* Adjusted padding */
+      padding-top: 90px; /* Adjusted padding */
     }
 
     nav ul li a {
       font-size: 14px;
-      margin-bottom: 3px;
+      padding: 5px 8px;
     }
 
     header {
-      height: 80px;
+      height: 100px;
       margin: auto;
-      padding: 4px;
+      padding: 4px 4px 10px 4px;
     }
 
     header h1 {
@@ -664,7 +669,7 @@ footer a:hover {
     }
 
     section {
-      scroll-margin-top: 90px;
+      scroll-margin-top: 110px;
     }
 
     .result-item {
@@ -751,15 +756,16 @@ footer a:hover {
     }
 
     body {
-      padding-top: 60px; /* Adjusted padding */
+      padding-top: 80px; /* Adjusted padding */
     }
 
     header {
-      height: 70px;
+      height: 90px;
+      padding-bottom: 8px;
     }
 
     section {
-      scroll-margin-top: 80px;
+      scroll-margin-top: 100px;
     }
 
     nav ul {
@@ -769,6 +775,10 @@ footer a:hover {
       justify-content: flex-start; /* Align items to the start */
       -webkit-overflow-scrolling: touch; /* Enable smooth scrolling on iOS */
       padding: 10px; /* Add some padding */
+    }
+
+    nav ul li a {
+      padding: 5px 8px;
     }
 
     nav ul li {
@@ -821,19 +831,25 @@ footer a:hover {
 
   @media (max-width: 318px) {
     body {
-      padding-top: 50px; /* Adjusted padding */
+      padding-top: 70px; /* Adjusted padding */
     }
 
     header {
-      height: 60px;
+      height: 80px;
+      padding-bottom: 6px;
     }
 
     section {
-      scroll-margin-top: 70px;
+      scroll-margin-top: 90px;
     }
 
     header h1 {
       font-size: 24px;
+    }
+
+    nav ul li a {
+      font-size: 13px;
+      padding: 4px 6px;
     }
 
     .button-container button {
@@ -1403,7 +1419,7 @@ footer a:hover {
 }
 
 /* Responsive styles for Ink Formula Formatter */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 600px) {
   #ink-formula-formatter .header-inputs {
     flex-direction: column;
   }
