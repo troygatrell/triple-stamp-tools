@@ -21,7 +21,7 @@ body {
 /* Adjust body padding when sidebar is open on desktop */
 @media (min-width: 769px) {
   body.sidebar-open {
-    padding-left: 250px;
+    padding-left: 280px;
   }
 }
 
@@ -95,11 +95,12 @@ header {
 
 header h1 {
   margin: 0;
-  font-size: 32px;
+  font-size: 36px;
+  font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: -1px;
-  color: hsl(158deg, 40%, 50%);
-  text-shadow: 4px 4px 6px rgba(0, 0, 0, 0.7);
+  letter-spacing: 1px;
+  color: hsl(158deg, 45%, 55%);
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9), 0 0 20px rgba(80, 180, 140, 0.3);
 }
 
 /* ==========================================================================
@@ -124,11 +125,6 @@ header h1 {
   align-items: center;
   gap: 5px;
   transition: all 0.3s ease;
-}
-
-.hamburger:hover {
-  background: rgba(0, 0, 0, 0.95);
-  border-color: hsl(158deg, 40%, 50%);
 }
 
 .hamburger span {
@@ -171,7 +167,7 @@ header h1 {
 }
 
 .sidebar.open {
-  width: 250px;
+  width: 280px;
 }
 
 .sidebar nav {
@@ -192,11 +188,6 @@ header h1 {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.sidebar-link:hover {
-  background-color: hsl(158deg, 40%, 30%);
-  color: #fff;
-}
-
 .sidebar-link:active,
 .sidebar-link:focus {
   background-color: hsl(158deg, 40%, 25%);
@@ -212,7 +203,7 @@ header h1 {
 
 .sidebar-text {
   margin-left: 15px;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: bold;
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -337,11 +328,6 @@ section {
   text-align: center;
 }
 
-.controls button:hover,
-.controls .checklist-button:hover {
-  background-color: rgba(0, 0, 0, 0.9);
-}
-
 /* Active state */
 button.active,
 button.active:hover {
@@ -370,8 +356,79 @@ button {
   margin: 5px;
 }
 
-button:hover {
-  background-color: hsl(158deg, 40%, 30%);
+/* Only apply hover effects on devices that support hover (non-touch devices) */
+@media (hover: hover) {
+  button:hover {
+    background-color: hsl(158deg, 40%, 30%);
+  }
+
+  .controls button:hover,
+  .controls .checklist-button:hover {
+    background-color: rgba(0, 0, 0, 0.9);
+  }
+
+  .sidebar-link:hover {
+    background-color: hsl(158deg, 40%, 30%);
+    color: #fff;
+  }
+
+  .hamburger:hover {
+    background: rgba(0, 0, 0, 0.95);
+    border-color: hsl(158deg, 40%, 50%);
+  }
+
+  .back-to-top a:hover {
+    background-color: hsl(158deg, 40%, 30%);
+    color: #fff;
+  }
+
+  .hold-button:hover {
+    background-color: rgba(150, 150, 150, 0.8);
+    border-color: rgba(200, 200, 200, 0.7);
+  }
+
+  .hold-button.active-hold:hover {
+    background-color: hsl(45deg, 80%, 60%);
+    border-color: hsl(45deg, 90%, 50%);
+  }
+
+  #reset-checklist-button:hover {
+    background-color: #45a049;
+  }
+
+  #formula-table .delete-btn:hover,
+  #formula-table .remove-ingredient-btn:hover,
+  #formula-table .add-ingredient-btn:hover,
+  .up-down-btn:hover {
+    background-color: hsl(158deg, 40%, 30%);
+  }
+
+  #add-row-btn:hover,
+  #add-flash-btn:hover {
+    background-color: hsl(158deg, 40%, 30%);
+  }
+
+  #copy-btn:hover {
+    background-color: hsl(158deg, 40%, 30%);
+  }
+
+  #formula-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  footer a:hover {
+    color: hsl(158deg, 40%, 50%);
+  }
+}
+
+/* Active state for touch devices - provides immediate visual feedback */
+@media (hover: none) {
+  button:active,
+  .controls button:active,
+  .sidebar-link:active {
+    opacity: 0.7;
+    transform: scale(0.98);
+  }
 }
 
 .button-container {
@@ -437,11 +494,6 @@ button:hover {
   background-color: rgba(0, 0, 0, 0.6);
   border-radius: 5px;
   transition: background-color 0.3s ease;
-}
-
-.back-to-top a:hover {
-  background-color: hsl(158deg, 40%, 30%);
-  color: #fff;
 }
 
 /* ==========================================================================
@@ -518,21 +570,11 @@ button:hover {
   border: 2px solid rgba(150, 150, 150, 0.5);
 }
 
-.hold-button:hover {
-  background-color: rgba(150, 150, 150, 0.8);
-  border-color: rgba(200, 200, 200, 0.7);
-}
-
 .hold-button.active-hold {
   background-color: hsl(45deg, 70%, 50%);
   border: 2px solid hsl(45deg, 80%, 40%);
   color: #000;
   font-weight: bold;
-}
-
-.hold-button.active-hold:hover {
-  background-color: hsl(45deg, 80%, 60%);
-  border-color: hsl(45deg, 90%, 50%);
 }
 
 /* ==========================================================================
@@ -584,10 +626,6 @@ input[type="checkbox"]:checked + label {
   border-radius: 5px;
   cursor: pointer;
   font-size: 1em;
-}
-
-#reset-checklist-button:hover {
-  background-color: #45a049;
 }
 
 /* ==========================================================================
@@ -717,10 +755,6 @@ footer a {
   transition: color 0.3s ease;
 }
 
-footer a:hover {
-  color: hsl(158deg, 40%, 50%);
-}
-
 /* ==========================================================================
      Media Queries
      ========================================================================== */
@@ -734,7 +768,7 @@ footer a:hover {
 
   .sidebar {
     transform: translateX(-100%);
-    width: 250px;
+    width: 280px;
     top: 70px;
   }
 
@@ -747,8 +781,8 @@ footer a:hover {
     content: '';
     position: fixed;
     top: 70px;
-    left: 250px;
-    width: calc(100vw - 250px);
+    left: 280px;
+    width: calc(100vw - 280px);
     height: calc(100vh - 70px);
     background: rgba(0, 0, 0, 0.5);
     z-index: -1;
@@ -1046,46 +1080,48 @@ footer a:hover {
 }
 
 /* Enhanced hover states - brightens and adds glow */
-.btn-increment.btn-small:hover {
-  background: linear-gradient(135deg, rgba(90, 150, 110, 0.85), rgba(70, 130, 90, 0.85));
-  border-color: rgba(90, 150, 110, 0.7);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4), 0 0 12px rgba(80, 140, 100, 0.5);
-  transform: translateY(-2px);
-}
+@media (hover: hover) {
+  .btn-increment.btn-small:hover {
+    background: linear-gradient(135deg, rgba(90, 150, 110, 0.85), rgba(70, 130, 90, 0.85));
+    border-color: rgba(90, 150, 110, 0.7);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4), 0 0 12px rgba(80, 140, 100, 0.5);
+    transform: translateY(-2px);
+  }
 
-.btn-increment.btn-medium:hover {
-  background: linear-gradient(135deg, rgba(70, 170, 110, 0.9), rgba(50, 150, 90, 0.9));
-  border-color: rgba(70, 170, 110, 0.8);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4), 0 0 16px rgba(60, 160, 100, 0.6);
-  transform: translateY(-2px);
-}
+  .btn-increment.btn-medium:hover {
+    background: linear-gradient(135deg, rgba(70, 170, 110, 0.9), rgba(50, 150, 90, 0.9));
+    border-color: rgba(70, 170, 110, 0.8);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4), 0 0 16px rgba(60, 160, 100, 0.6);
+    transform: translateY(-2px);
+  }
 
-.btn-increment.btn-large:hover {
-  background: linear-gradient(135deg, rgba(50, 190, 110, 1), rgba(30, 170, 90, 1));
-  border-color: rgba(50, 190, 110, 0.9);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5), 0 0 20px rgba(40, 180, 100, 0.7);
-  transform: translateY(-3px);
-}
+  .btn-increment.btn-large:hover {
+    background: linear-gradient(135deg, rgba(50, 190, 110, 1), rgba(30, 170, 90, 1));
+    border-color: rgba(50, 190, 110, 0.9);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5), 0 0 20px rgba(40, 180, 100, 0.7);
+    transform: translateY(-3px);
+  }
 
-.btn-decrement.btn-small:hover {
-  background: linear-gradient(135deg, rgba(150, 90, 70, 0.85), rgba(130, 70, 50, 0.85));
-  border-color: rgba(150, 90, 70, 0.7);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4), 0 0 12px rgba(140, 80, 60, 0.5);
-  transform: translateY(-2px);
-}
+  .btn-decrement.btn-small:hover {
+    background: linear-gradient(135deg, rgba(150, 90, 70, 0.85), rgba(130, 70, 50, 0.85));
+    border-color: rgba(150, 90, 70, 0.7);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4), 0 0 12px rgba(140, 80, 60, 0.5);
+    transform: translateY(-2px);
+  }
 
-.btn-decrement.btn-medium:hover {
-  background: linear-gradient(135deg, rgba(170, 80, 60, 0.9), rgba(150, 60, 40, 0.9));
-  border-color: rgba(170, 80, 60, 0.8);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4), 0 0 16px rgba(160, 70, 50, 0.6);
-  transform: translateY(-2px);
-}
+  .btn-decrement.btn-medium:hover {
+    background: linear-gradient(135deg, rgba(170, 80, 60, 0.9), rgba(150, 60, 40, 0.9));
+    border-color: rgba(170, 80, 60, 0.8);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4), 0 0 16px rgba(160, 70, 50, 0.6);
+    transform: translateY(-2px);
+  }
 
-.btn-decrement.btn-large:hover {
-  background: linear-gradient(135deg, rgba(190, 70, 50, 1), rgba(170, 50, 30, 1));
-  border-color: rgba(190, 70, 50, 0.9);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5), 0 0 20px rgba(180, 60, 40, 0.7);
-  transform: translateY(-3px);
+  .btn-decrement.btn-large:hover {
+    background: linear-gradient(135deg, rgba(190, 70, 50, 1), rgba(170, 50, 30, 1));
+    border-color: rgba(190, 70, 50, 0.9);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5), 0 0 20px rgba(180, 60, 40, 0.7);
+    transform: translateY(-3px);
+  }
 }
 
 /* Active/pressed state - provides tactile feedback */
@@ -1338,22 +1374,10 @@ footer a:hover {
   color: white;
 }
 
-#formula-table .delete-btn:hover,
-#formula-table .remove-ingredient-btn:hover,
-#formula-table .add-ingredient-btn:hover,
-.up-down-btn:hover {
-  background-color: hsl(158deg, 40%, 30%);
-}
-
 #add-row-btn,
 #add-flash-btn {
   background-color: rgba(0, 0, 0, 0.6);
   color: white;
-}
-
-#add-row-btn:hover,
-#add-flash-btn:hover {
-  background-color: hsl(158deg, 40%, 30%);
 }
 
 /* Output section styles */
@@ -1389,10 +1413,6 @@ footer a:hover {
   margin-top: 10px;
 }
 
-#copy-btn:hover {
-  background-color: hsl(158deg, 40%, 30%);
-}
-
 #copy-btn:disabled {
   background-color: rgba(108, 117, 125, 0.5);
   cursor: not-allowed;
@@ -1413,10 +1433,6 @@ footer a:hover {
 
 #formula-table tbody tr:active {
   cursor: grabbing;
-}
-
-#formula-table tbody tr:hover {
-  background-color: rgba(255, 255, 255, 0.05);
 }
 
 /* Styles for nested formula inputs */
@@ -1475,7 +1491,7 @@ footer a:hover {
 }
 
 /* Responsive styles for Ink Formula Formatter */
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 576px) {
   #ink-formula-formatter .header-inputs {
     flex-direction: column;
   }
@@ -1641,10 +1657,6 @@ footer a:hover {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-  }
-
-  .up-down-btn:hover {
-    background-color: hsl(158deg, 40%, 30%);
   }
 
   #formula-table td:last-child .add-ingredient-btn,

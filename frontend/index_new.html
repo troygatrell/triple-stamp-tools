@@ -400,10 +400,12 @@
             // Desktop: sidebar open by default
             sidebar.classList.add('open');
             body.classList.add('sidebar-open');
+            hamburger.classList.add('active'); // Show X icon when sidebar is open
           } else {
             // Mobile: sidebar closed by default
             sidebar.classList.remove('open');
             body.classList.remove('sidebar-open');
+            hamburger.classList.remove('active'); // Show hamburger lines when closed
           }
         }
 
@@ -436,8 +438,15 @@
           if (window.innerWidth > 768 && !sidebar.classList.contains('open')) {
             sidebar.classList.add('open');
             body.classList.add('sidebar-open');
+            hamburger.classList.add('active');
           } else if (window.innerWidth <= 768) {
             body.classList.remove('sidebar-open');
+            // On mobile, sync hamburger with sidebar state
+            if (sidebar.classList.contains('open')) {
+              hamburger.classList.add('active');
+            } else {
+              hamburger.classList.remove('active');
+            }
           }
         });
       });
