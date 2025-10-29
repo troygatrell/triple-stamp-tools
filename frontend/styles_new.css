@@ -1104,3 +1104,457 @@ footer a:hover {
     min-width: 75px;
   }
 }
+
+/* ==========================================================================
+   Ink Formula Formatter Styles
+   ========================================================================== */
+
+/* Header inputs for formula metadata */
+#ink-formula-formatter .header-inputs {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+#ink-formula-formatter .input-group {
+  flex: 1;
+  min-width: 150px;
+}
+
+#ink-formula-formatter .input-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: hsl(158deg, 40%, 90%);
+  text-shadow: 1px 1px 0 #000;
+}
+
+#ink-formula-formatter .input-group input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  box-sizing: border-box;
+  background-color: rgba(255, 255, 255, 0.95);
+  color: #333;
+  font-size: 16px;
+}
+
+/* Formula table styles */
+#formula-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+#formula-table th,
+#formula-table td {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 12px;
+  text-align: left;
+  vertical-align: top;
+}
+
+#formula-table th {
+  background-color: rgba(0, 0, 0, 0.6);
+  font-weight: bold;
+  color: hsl(158deg, 40%, 90%);
+  text-shadow: 1px 1px 0 #000;
+}
+
+#formula-table td input,
+#formula-table td select {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-bottom: 5px;
+  background-color: rgba(255, 255, 255, 0.95);
+  color: #333;
+}
+
+/* Custom column widths for better layout */
+#formula-table th:nth-child(2),
+#formula-table td:nth-child(2) {
+  width: 110px;
+}
+
+#formula-table th:nth-child(3),
+#formula-table td:nth-child(3) {
+  width: 300px;
+}
+
+#formula-table th:nth-child(4),
+#formula-table td:nth-child(4) {
+  width: 150px;
+}
+
+/* Action buttons in the table */
+.delete-btn,
+.remove-ingredient-btn,
+.add-ingredient-btn,
+.up-down-btn {
+  padding: 5px 10px;
+  font-size: 14px;
+  border-radius: 4px;
+  margin: 2px auto;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.delete-btn {
+  background-color: rgba(220, 53, 69, 0.8);
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: rgba(200, 35, 51, 0.9);
+}
+
+.add-ingredient-btn {
+  background-color: rgba(40, 167, 69, 0.8);
+  color: white;
+}
+
+.add-ingredient-btn:hover {
+  background-color: rgba(33, 136, 56, 0.9);
+}
+
+.remove-ingredient-btn {
+  background-color: rgba(255, 193, 7, 0.8);
+  color: #333;
+}
+
+.remove-ingredient-btn:hover {
+  background-color: rgba(224, 168, 0, 0.9);
+}
+
+#add-flash-btn {
+  background-color: rgba(108, 117, 125, 0.8);
+  color: white;
+}
+
+#add-flash-btn:hover {
+  background-color: rgba(90, 98, 104, 0.9);
+}
+
+/* Output section styles */
+.output-section {
+  margin-top: 30px;
+}
+
+.output-section h2 {
+  color: hsl(158deg, 40%, 90%);
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.7);
+  margin-bottom: 15px;
+}
+
+#output-text {
+  width: 100%;
+  min-height: 200px;
+  padding: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: hsl(158deg, 40%, 90%);
+  font-family: monospace;
+  font-size: 14px;
+  box-sizing: border-box;
+  white-space: pre;
+  text-shadow: 1px 1px 0 #000;
+  resize: vertical;
+}
+
+#copy-btn {
+  background-color: rgba(40, 167, 69, 0.8);
+  color: white;
+  margin-top: 10px;
+}
+
+#copy-btn:hover {
+  background-color: rgba(33, 136, 56, 0.9);
+}
+
+#copy-btn:disabled {
+  background-color: rgba(108, 117, 125, 0.5);
+  cursor: not-allowed;
+}
+
+/* jQuery UI sortable placeholder */
+.ui-state-highlight {
+  height: 50px;
+  background-color: rgba(240, 248, 255, 0.2);
+  border: 1px dashed hsl(158deg, 40%, 50%);
+}
+
+#formula-table tbody tr {
+  cursor: grab;
+  transition: background-color 0.2s ease;
+}
+
+#formula-table tbody tr:active {
+  cursor: grabbing;
+}
+
+#formula-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Styles for nested formula inputs */
+.formula-ingredients-container {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.formula-ingredient-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 3px;
+  border: none;
+  padding: 0;
+  border-radius: 4px;
+}
+
+.formula-ingredient-group input[type="number"] {
+  flex: 0 0 60px;
+  margin-right: 0;
+}
+
+.formula-ingredient-group select {
+  flex: 1;
+  min-width: 80px;
+  margin-right: 0;
+}
+
+.formula-ingredient-group .other-input-container {
+  flex: 1 1 100px;
+  margin-right: 0;
+}
+
+.formula-ingredient-group .remove-ingredient-btn {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* Mobile-specific styles for collapse/expand */
+.collapse-toggle,
+.up-down-buttons {
+  display: none;
+}
+
+/* Responsive styles for Ink Formula Formatter */
+@media screen and (max-width: 768px) {
+  #ink-formula-formatter .header-inputs {
+    flex-direction: column;
+  }
+
+  #ink-formula-formatter .input-group {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+
+  #formula-table,
+  #formula-table thead,
+  #formula-table tbody,
+  #formula-table th,
+  #formula-table td,
+  #formula-table tr {
+    display: block;
+  }
+
+  #formula-table thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  #formula-table tr {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 10px;
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+  }
+
+  #formula-table td {
+    border: none;
+    position: relative;
+    padding: 10px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    gap: 5px;
+  }
+
+  #formula-table td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    color: hsl(158deg, 40%, 90%);
+    text-shadow: 1px 1px 0 #000;
+  }
+
+  /* Hide the Actions header */
+  #formula-table td[data-label="Actions"]::before {
+    content: none;
+  }
+
+  #formula-table td:last-child {
+    border-bottom: none;
+    padding-top: 15px;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+  }
+
+  #formula-table tr.collapsed td:last-child .add-ingredient-btn,
+  #formula-table tr.collapsed td:last-child .delete-btn {
+    display: none;
+  }
+
+  #formula-table tr:not(.collapsed) td:last-child .add-ingredient-btn,
+  #formula-table tr:not(.collapsed) td:last-child .delete-btn {
+    display: block;
+    width: 100%;
+  }
+
+  #formula-table th,
+  #formula-table td {
+    width: auto !important;
+  }
+
+  .formula-ingredients-container {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 3px;
+    padding: 3px;
+  }
+
+  .formula-ingredient-group input[type="number"] {
+    flex: 0 0 50px;
+  }
+
+  .formula-ingredient-group select {
+    flex: 1;
+    min-width: 80px;
+  }
+
+  .formula-ingredient-group .other-input-container {
+    flex: 1;
+    min-width: 80px;
+  }
+
+  .formula-ingredient-group .remove-ingredient-btn {
+    flex-shrink: 0;
+    margin-left: 5px;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    line-height: 1;
+  }
+
+  .collapse-toggle {
+    display: inline-block;
+    background: none;
+    border: none;
+    color: hsl(158deg, 40%, 90%);
+    font-size: 1.2em;
+    padding: 0;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .collapse-toggle.expanded {
+    transform: rotate(90deg);
+  }
+
+  #formula-table tr.collapsed td:not(:first-child) {
+    display: none;
+  }
+
+  .up-down-buttons {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  #formula-table tr.collapsed .up-down-buttons {
+    display: flex;
+  }
+
+  .up-down-btn {
+    padding: 5px;
+    font-size: 12px;
+    background-color: rgba(108, 117, 125, 0.8);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 30px;
+    height: 15px;
+    line-height: 1;
+    padding: 0;
+  }
+
+  .up-down-btn:hover {
+    background-color: rgba(90, 98, 104, 0.9);
+  }
+
+  #formula-table td:last-child .add-ingredient-btn,
+  #formula-table td:last-child .delete-btn {
+    display: none;
+  }
+
+  #formula-table td:first-child {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+
+  #formula-table td:first-child::before {
+    content: none;
+  }
+
+  #formula-table td:first-child .up-down-buttons {
+    flex-direction: column;
+    flex-shrink: 0;
+    margin-left: auto;
+  }
+
+  #formula-table td:first-child .color-input {
+    flex: 1;
+  }
+
+  #formula-table tr[data-type="flash"] td:first-child .color-input {
+    display: none;
+  }
+
+  #formula-table tr[data-type="flash"] td:first-child .color-text {
+    font-weight: bold;
+    flex: 1;
+    color: hsl(158deg, 40%, 90%);
+  }
+
+  #formula-table tr[data-type="flash"] td:nth-child(2),
+  #formula-table tr[data-type="flash"] td:nth-child(3) {
+    display: none;
+  }
+
+  #formula-table tr[data-type="flash"] td[data-label="Base"]::before,
+  #formula-table tr[data-type="flash"] td[data-label="Formula"]::before {
+    content: none;
+  }
+}
