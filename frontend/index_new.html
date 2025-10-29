@@ -21,6 +21,7 @@
             >
           </li>
           <li><a href="#inventory-receiver">Check-In Assistant</a></li>
+          <li><a href="#ink-formula-formatter">Ink Formula Formatter</a></li>
         </ul>
       </nav>
     </header>
@@ -302,6 +303,58 @@
       </div>
     </section>
 
+    <section id="ink-formula-formatter">
+      <div class="container">
+        <div class="title"><span class="title-icon">🎨</span> Ink Formula Formatter</div>
+
+        <div class="header-inputs">
+          <div class="input-group">
+            <label for="formula-name">Client Name:</label>
+            <input type="text" id="formula-name" value="" placeholder="(client name)">
+          </div>
+          <div class="input-group">
+            <label for="formula-age">Job Name:</label>
+            <input type="text" id="formula-age" value="" placeholder="(job name)">
+          </div>
+          <div class="input-group">
+            <label for="print-location">Print Location:</label>
+            <input type="text" id="print-location" placeholder="(e.g., Full Front)">
+          </div>
+          <div class="input-group">
+            <label for="formula-date">Date:</label>
+            <input type="date" id="formula-date">
+          </div>
+        </div>
+
+        <table id="formula-table">
+          <thead>
+            <tr>
+              <th>Color/Flash</th>
+              <th>Base</th>
+              <th>Formula</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+
+        <div class="button-container">
+          <button id="add-row-btn">Add Color</button>
+          <button id="add-flash-btn">Add Flash</button>
+        </div>
+
+        <div class="output-section">
+          <h2>Formatted Output</h2>
+          <textarea id="output-text" readonly></textarea>
+          <button id="copy-btn">Copy to Clipboard</button>
+        </div>
+      </div>
+      <div class="back-to-top">
+        <a href="#top">Back to Top</a>
+      </div>
+    </section>
+
     <footer>
       <div class="container">
         <p>
@@ -311,9 +364,12 @@
       </div>
     </footer>
 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
     <script src="production-time-calculator.js"></script>
     <script src="inventory-search.js"></script>
     <script src="apparel-production-checklist.js"></script>
     <script src="inventory-receiver.js"></script>
+    <script src="ink-formula-formatter.js"></script>
   </body>
 </html>
