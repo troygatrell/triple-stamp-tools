@@ -1157,7 +1157,7 @@ footer a:hover {
   border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 12px;
   text-align: left;
-  vertical-align: top;
+  vertical-align: middle;
 }
 
 #formula-table th {
@@ -1167,16 +1167,36 @@ footer a:hover {
   text-shadow: 1px 1px 0 #000;
 }
 
-#formula-table td input,
+#formula-table td input[type="text"],
+#formula-table td input[type="number"],
 #formula-table td select {
   width: 100%;
-  padding: 5px;
+  height: 36px;
+  padding: 8px;
   border: 1px solid rgba(0, 0, 0, 0.3);
   border-radius: 4px;
   box-sizing: border-box;
   margin-bottom: 5px;
   background-color: rgba(255, 255, 255, 0.95);
   color: #333;
+  vertical-align: middle;
+  line-height: 1.2;
+  font-size: 14px;
+}
+
+#formula-table td input[type="date"] {
+  width: 100%;
+  height: 36px;
+  padding: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-bottom: 5px;
+  background-color: rgba(255, 255, 255, 0.95);
+  color: #333;
+  vertical-align: middle;
+  line-height: 1.2;
+  font-size: 14px;
 }
 
 /* Custom column widths for better layout */
@@ -1200,13 +1220,20 @@ footer a:hover {
 .remove-ingredient-btn,
 .add-ingredient-btn,
 .up-down-btn {
-  padding: 5px 10px;
+  height: 36px;
+  padding: 8px 10px;
   font-size: 14px;
   border-radius: 4px;
   margin: 2px auto;
   border: none;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  box-sizing: border-box;
+  line-height: 1.2;
+  vertical-align: middle;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .delete-btn {
@@ -1311,28 +1338,31 @@ footer a:hover {
 .formula-ingredients-container {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 5px;
 }
 
 .formula-ingredient-group {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
-  gap: 3px;
+  gap: 5px;
   border: none;
   padding: 0;
   border-radius: 4px;
 }
 
 .formula-ingredient-group input[type="number"] {
-  flex: 0 0 60px;
+  flex: 0 0 70px;
   margin-right: 0;
+  margin-bottom: 0;
+  width: 70px;
 }
 
 .formula-ingredient-group select {
   flex: 1;
-  min-width: 80px;
+  min-width: 100px;
   margin-right: 0;
+  margin-bottom: 0;
 }
 
 .formula-ingredient-group .other-input-container {
@@ -1340,9 +1370,16 @@ footer a:hover {
   margin-right: 0;
 }
 
+.formula-ingredient-group .other-input-container input {
+  margin-bottom: 0;
+}
+
 .formula-ingredient-group .remove-ingredient-btn {
   flex-shrink: 0;
-  margin-left: auto;
+  margin-left: 0;
+  margin-bottom: 0;
+  width: auto;
+  min-width: 36px;
 }
 
 /* Mobile-specific styles for collapse/expand */
@@ -1440,27 +1477,38 @@ footer a:hover {
     padding: 3px;
   }
 
+  .formula-ingredient-group {
+    flex-wrap: wrap;
+  }
+
   .formula-ingredient-group input[type="number"] {
-    flex: 0 0 50px;
+    flex: 0 0 60px;
+    height: 36px;
   }
 
   .formula-ingredient-group select {
     flex: 1;
-    min-width: 80px;
+    min-width: 100px;
+    height: 36px;
   }
 
   .formula-ingredient-group .other-input-container {
     flex: 1;
-    min-width: 80px;
+    min-width: 100px;
+  }
+
+  .formula-ingredient-group .other-input-container input {
+    height: 36px;
   }
 
   .formula-ingredient-group .remove-ingredient-btn {
     flex-shrink: 0;
     margin-left: 5px;
-    width: 30px;
-    height: 30px;
-    padding: 0;
-    line-height: 1;
+    width: auto;
+    min-width: 36px;
+    height: 36px;
+    padding: 8px 10px;
+    line-height: 1.2;
   }
 
   .collapse-toggle {
