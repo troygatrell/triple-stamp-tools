@@ -1,5 +1,18 @@
 let allData = []; // Global variable to store the data
 
+function normalizeId(id) {
+  if (!id) {
+    return "";
+  }
+  if (typeof id === "string") {
+    return id;
+  }
+  if (typeof id === "object" && "$oid" in id) {
+    return id.$oid;
+  }
+  return String(id);
+}
+
 // --- Data Loading (from your server) ---
 
 async function loadData() {
@@ -15,13 +28,13 @@ async function loadData() {
       throw new Error(`Failed to fetch inventory: ${response.status}`);
     }
 
-    allData = await response.json();
+    const rawData = await response.json();
 
     // Add the _id from MongoDB to each item as a property called 'id'
-    allData = allData.map((item) => ({ id: item._id, ...item }));
-
-    // Remove the original _id property from each item
-    allData.forEach((item) => delete item._id);
+    allData = rawData.map((item) => {
+      const { _id, ...rest } = item;
+      return { id: normalizeId(_id), ...rest };
+    });
 
     allData = sortData(allData); // Sort the data initially
 
@@ -243,10 +256,7 @@ function editEntryUI(resultItem, item) {
             <option value="2024" ${
               item.sheet === "2024" ? "selected" : ""
             }>2024</option>
-            <option value="2025" ${
-              item.sheet === "2025" ? "selected" : ""
-            }>2025</option>
-            // Add more year options as needed
+            <option value="2025" ${item.sheet === "2025" ? "selected" : ""}>2025</option>
         </select>
     `;
   monthDiv.innerHTML = `
@@ -257,10 +267,7 @@ function editEntryUI(resultItem, item) {
         <option value="February" ${
           item.month === "February" ? "selected" : ""
         }>February</option>
-        <option value="March" ${
-          item.month === "March" ? "selected" : ""
-        }>March</option>
-        // Add options for all months
+        <option value="March" ${item.month === "March" ? "selected" : ""}>March</option>
         <option value="April" ${
           item.month === "April" ? "selected" : ""
         }>April</option>
@@ -393,7 +400,7 @@ async function saveChanges(resultItem, item) {
       // Update allData after successful save
       const index = allData.findIndex((i) => i.id === item.id);
       if (index !== -1) {
-        allData[index] = { id: item.id, ...updatedItem };
+        allData[index] = { ...allData[index], ...updatedItem };
       }
 
       // Update the display after successful save
@@ -402,9 +409,11 @@ async function saveChanges(resultItem, item) {
       resultItem.querySelector(".result-value").innerHTML = updatedItem.value;
 
       // Update item
-      item.value = newValue;
-      item.sheet = year;
-      item.month = month;
+      Object.assign(item, {
+        value: newValue,
+        sheet: year,
+        month,
+      });
 
       // Update the buttons after saving
       const buttonsDiv = resultItem.querySelector(".result-buttons");
@@ -426,55 +435,56 @@ async function saveChanges(resultItem, item) {
     };
 
     try {
-      fetch("https://inventory-search.onrender.com/api/inventory", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newItem),
-      })
-        .then(async (response) => {
-          if (!response.ok) {
-            const errorData = await response.json(); // Try to parse error response
-            throw new Error(
-              `Failed to create new entry: ${response.status} - ${
-                errorData.message || "Unknown error"
-              }`
-            );
-          }
+      const response = await fetch(
+        "https://inventory-search.onrender.com/api/inventory",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newItem),
+        }
+      );
 
-          const savedItem = await response.json();
+      if (!response.ok) {
+        const errorData = await response.json(); // Try to parse error response
+        throw new Error(
+          `Failed to create new entry: ${response.status} - ${
+            errorData.message || "Unknown error"
+          }`
+        );
+      }
 
-          // Store original values directly on the item object
-          savedItem.originalValue = savedItem.value;
-          savedItem.originalSheet = savedItem.sheet;
-          savedItem.originalMonth = savedItem.month;
+      const { _id, ...rest } = await response.json();
+      const normalizedId = normalizeId(_id);
+      const savedItem = {
+        id: normalizedId,
+        ...rest,
+        originalValue: rest.value,
+        originalSheet: rest.sheet,
+        originalMonth: rest.month,
+      };
 
-          // Add the newly created item to allData
-          allData.push(savedItem);
+      // Add the newly created item to allData
+      allData.push(savedItem);
 
-          // Update the display with the saved item's data and ID
-          resultItem.dataset.id = savedItem.id; // Set the data-id attribute
-          resultItem.querySelector(".result-year").innerHTML = savedItem.sheet;
-          resultItem.querySelector(".result-month").innerHTML = savedItem.month;
-          resultItem.querySelector(".result-value").innerHTML = savedItem.value;
+      // Update the display with the saved item's data and ID
+      resultItem.dataset.id = savedItem.id; // Set the data-id attribute
+      resultItem.querySelector(".result-year").innerHTML = savedItem.sheet;
+      resultItem.querySelector(".result-month").innerHTML = savedItem.month;
+      resultItem.querySelector(".result-value").innerHTML = savedItem.value;
 
-          location.reload();
+      location.reload();
 
-          // Update the data-original-* attributes
-          resultItem.dataset.originalValue = savedItem.value;
-          resultItem.dataset.originalSheet = savedItem.sheet;
-          resultItem.dataset.originalMonth = savedItem.month;
+      // Update the data-original-* attributes
+      resultItem.dataset.originalValue = savedItem.value;
+      resultItem.dataset.originalSheet = savedItem.sheet;
+      resultItem.dataset.originalMonth = savedItem.month;
 
-          // Update the buttons after saving
-          const buttonsDiv = resultItem.querySelector(".result-buttons");
-          buttonsDiv.innerHTML = `<button class="edit-button" data-index="${savedItem.id}">Edit</button>
+      // Update the buttons after saving
+      const buttonsDiv = resultItem.querySelector(".result-buttons");
+      buttonsDiv.innerHTML = `<button class="edit-button" data-index="${savedItem.id}">Edit</button>
                                    <button class="delete-button" data-index="${savedItem.id}">Delete</button>`;
-        })
-        .catch((error) => {
-          console.error("Error creating new item:", error);
-          alert("Failed to create new entry. See console for details.");
-        });
     } catch (error) {
       console.error("Error creating new item:", error);
       alert("Failed to create new entry. See console for details.");
@@ -501,7 +511,6 @@ function createNewEntryUI() {
               <option value="2025">2025</option>
               <option value="2024">2024</option>
               <option value="2023">2023</option>
-              // Add more year options as needed
             </select>
         </div>
         <div class="result-column result-month">
@@ -535,6 +544,43 @@ function createNewEntryUI() {
 
   saveButton.addEventListener("click", () => saveChanges(resultItem, null)); // Pass null for item
   cancelButton.addEventListener("click", () => cancelChanges(resultItem, null)); // Pass null for item
+
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear().toString();
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const currentMonth = monthNames[currentDate.getMonth()];
+
+  const yearSelect = resultItem.querySelector(".edit-year");
+  if (
+    yearSelect &&
+    !Array.from(yearSelect.options).some((option) => option.value === currentYear)
+  ) {
+    const newYearOption = document.createElement("option");
+    newYearOption.value = currentYear;
+    newYearOption.textContent = currentYear;
+    yearSelect.prepend(newYearOption);
+  }
+  if (yearSelect) {
+    yearSelect.value = currentYear;
+  }
+
+  const monthSelect = resultItem.querySelector(".edit-month");
+  if (monthSelect) {
+    monthSelect.value = currentMonth;
+  }
 }
 
 // --- Delete Entry ---

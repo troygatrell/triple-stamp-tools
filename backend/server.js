@@ -7,6 +7,13 @@ const port = process.env.PORT || 3000;
 // Get the MongoDB connection string from the environment variable
 const mongoURI = process.env.MONGO_URI;
 
+if (!mongoURI) {
+  console.error(
+    "Missing required environment variable MONGO_URI. Please set it before starting the server."
+  );
+  process.exit(1);
+}
+
 // --- Middleware ---
 app.use(express.json()); // Parse JSON request bodies
 

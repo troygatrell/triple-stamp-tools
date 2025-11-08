@@ -10,6 +10,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const printLocationInput = document.getElementById("print-location"); // 1. GET THE NEW ELEMENT
   const dateInput = document.getElementById("formula-date");
 
+  if (dateInput && !dateInput.value) {
+    dateInput.value = new Date().toISOString().split("T")[0];
+  }
+
   function validateForm() {
     const clientName = clientNameInput.value.trim();
     const jobName = jobNameInput.value.trim();

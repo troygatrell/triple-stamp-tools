@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Triple Stamp Tools</title>
+    <link rel="stylesheet" href="frontend/styles.css" />
+  </head>
+  <body id="top">
+    <header>
+      <h1>Triple Stamp Tools</h1>
+      <nav>
+        <ul>
+          <li><a href="#inventory-search">Sample Inventory Search</a></li>
+          <li>
+            <a href="#production-time-calculator">Production Time Calculator</a>
+          </li>
+          <li>
+            <a href="#apparel-production-checklist"
+              >Apparel Production Checklist</a
+            >
+          </li>
+          <li><a href="#ink-formula-tool">Ink Formula Tool</a></li>
+          <li><a href="#inventory-receiver">Check-In Assistant</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <section id="ink-formula-tool">
+        <div class="container">
+          <div class="title">Ink Formula Tool</div>
+  
+          <input type="text" id="formula-search-input" class="search-input" placeholder="Search Ink Color...">
+          <div class="controls">
+               <button id="add-formula-button">Add Formula</button>
+          </div>
+  
+          <div id="formula-list" class="results-section">
+            </div>
+  
+          <script src="ink-formula-tool.js"></script>
+        </div>
+      </section>
+    <script src="frontend/ink-formula-tool.js"></script>
+  </body>
+</html>
