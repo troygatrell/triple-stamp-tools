@@ -78,6 +78,7 @@ function addStyleTable() {
   document.getElementById('tablesContainer').appendChild(tableDiv);
 
   updateRemoveButtons(); // Check and update the state of the remove buttons
+  initializeRowSorting(); // Enable drag-and-drop sorting
 
   generateSummary(); // Update summary after adding a new style
 }
@@ -139,6 +140,8 @@ function addRow(tableNumber) {
   const tbody = document.getElementById(`shirtRows${tableNumber}`);
   tbody.appendChild(row);
 
+  enableSortableForBody(tbody); // Refresh sortable behavior after adding a row
+
   generateSummary(); // Update summary after adding a new size
 }
 
@@ -160,21 +163,12 @@ function formatDateForSummary(value) {
     return value;
   }
 
-  const [year, month, day] = parts.map(Number);
+  const [year, month, day] = parts;
   if (!year || !month || !day) {
     return value;
   }
 
-  const date = new Date(year, month - 1, day);
-  if (Number.isNaN(date.getTime())) {
-    return value;
-  }
-
-  return date.toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric"
-  });
+  return `${month}-${day}-${year}`;
 }
 
 function getHeaderValues() {
@@ -235,7 +229,7 @@ function generateSummary() {
     const styleLines = [];
 
     rows.forEach((row) => {
-      const sizeCell = row.querySelector("td:nth-child(2)");
+      const sizeCell = row.querySelector("td:first-child");
       if (!sizeCell) {
         return;
       }
@@ -281,7 +275,7 @@ function generateSummary() {
   });
 
   if (!hasDifferences && styleTables.length > 0) {
-    summaryLines.push("All quantities match the expected counts.");
+    summaryLines.push("All quantities even.");
   } else if (
     summaryLines.length > 0 &&
     summaryLines[summaryLines.length - 1] === ""
@@ -345,7 +339,11 @@ function fallbackCopy(text) {
 function initializeCheckInAssistant() {
   const receivedDateInput = document.getElementById("receivedDateInput");
   if (receivedDateInput && !receivedDateInput.value) {
-    receivedDateInput.value = new Date().toISOString().split("T")[0];
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    receivedDateInput.value = `${year}-${month}-${day}`;
   }
 
   addStyleTable();
@@ -368,3 +366,33 @@ function initializeCheckInAssistant() {
 }
 
 window.addEventListener("load", initializeCheckInAssistant);
+
+function initializeRowSorting() {
+  const bodies = document.querySelectorAll("#tablesContainer .styleTable tbody");
+  bodies.forEach(enableSortableForBody);
+}
+
+function enableSortableForBody(tbody) {
+  if (!tbody || !window.jQuery || !jQuery.fn.sortable) {
+    return;
+  }
+
+  const $tbody = $(tbody);
+
+  if ($tbody.data("uiSortable")) {
+    $tbody.sortable("destroy");
+  }
+
+  $tbody.sortable({
+    axis: "y",
+    items: "> tr",
+    cursor: "move",
+    helper: function (e, ui) {
+      ui.children().each(function () {
+        $(this).width($(this).width());
+      });
+      return ui;
+    },
+    stop: () => generateSummary()
+  });
+}

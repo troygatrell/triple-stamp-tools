@@ -3,15 +3,112 @@ document.addEventListener("DOMContentLoaded", () => {
   const addRowBtn = document.getElementById("add-row-btn");
   const addFlashBtn = document.getElementById("add-flash-btn");
   const copyBtn = document.getElementById("copy-btn");
-  const outputTextarea = document.getElementById("output-text");
+  const outputFrame = document.getElementById("output-frame");
+  let latestOutput = { html: "", text: "" };
 
   const clientNameInput = document.getElementById("formula-name");
   const jobNameInput = document.getElementById("formula-age");
   const printLocationInput = document.getElementById("print-location"); // 1. GET THE NEW ELEMENT
   const dateInput = document.getElementById("formula-date");
 
+  const easternIsoFormatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/New_York",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  });
+
+  function formatDateForDisplay(value) {
+    if (!value) {
+      return "";
+    }
+    const [year, month, day] = value.split("-");
+    if (!year || !month || !day) {
+      return "";
+    }
+    return `${month}-${day}-${year}`;
+  }
+
   if (dateInput && !dateInput.value) {
-    dateInput.value = new Date().toISOString().split("T")[0];
+    dateInput.value = easternIsoFormatter.format(new Date());
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function setOutputContent(displayHtml, text, clipboardHtml) {
+    if (!outputFrame) {
+      return;
+    }
+
+    const hasContent = displayHtml && displayHtml.trim().length > 0;
+    const clipboardMarkup = hasContent
+      ? `<div style="font-family:'Roboto','Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:1.2;font-weight:400;color:#000;text-decoration:none;">${clipboardHtml}</div>`
+      : "";
+
+    latestOutput = {
+      html: clipboardMarkup,
+      text: hasContent ? text : ""
+    };
+
+    const displayMarkup = hasContent
+      ? `<div class="line-stack">${displayHtml}</div>`
+      : '<p class="empty-state">Formatted output will appear here once all required fields are complete.</p>';
+
+    const doc = outputFrame.contentDocument || outputFrame.contentWindow?.document;
+    if (!doc) {
+      return;
+    }
+
+    doc.open();
+    doc.write(`<!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8" />
+          <style>
+            :root {
+              color-scheme: dark;
+            }
+            body {
+              margin: 0;
+              padding: 12px 14px;
+              font-family: "Roboto", "Helvetica Neue", Arial, sans-serif;
+              background: transparent;
+              color: #e7fff4;
+              line-height: 1.15;
+            }
+            .line-stack {
+              display: block;
+            }
+            .line {
+              margin: 0;
+            }
+            .line + .line {
+              margin-top: 2px;
+            }
+            .line strong {
+              font-weight: 700;
+            }
+            .empty-state {
+              opacity: 0.65;
+            }
+            strong {
+              font-weight: 700;
+            }
+            u {
+              text-decoration-color: rgba(231, 255, 244, 0.9);
+            }
+          </style>
+        </head>
+        <body>${displayMarkup}</body>
+      </html>`);
+    doc.close();
   }
 
   function validateForm() {
@@ -20,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const printLocation = printLocationInput.value.trim(); // 2. GET ITS VALUE
     const date = dateInput.value.trim();
 
-    if (!clientName || !jobName || !printLocation || !date) {
+    if (!clientName || !jobName || !date) {
       // 3. ADD TO VALIDATION CHECK
       return false;
     }
@@ -434,43 +531,107 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function generateOutput() {
-    let output = "";
-
     const clientName = clientNameInput.value.trim();
     const jobName = jobNameInput.value.trim();
-    const printLocation = printLocationInput.value.trim(); // 4. GET ITS VALUE AGAIN
+    const printLocation = printLocationInput.value.trim();
     const date = dateInput.value.trim();
 
-    if (clientName && jobName && printLocation && date) {
-      // 5. UPDATE THE OUTPUT LINE
-      output += `${clientName} - ${jobName} - ${date}\n`;
-    }
-
-    output += `--------------------------------------------------------------\n`;
-    output += `${printLocation.toUpperCase()}\n`;
+    const rows = Array.from(tableBody.querySelectorAll("tr"));
     const colorOrder = [];
-    const rows = tableBody.querySelectorAll("tr");
+
     rows.forEach((row) => {
       if (row.dataset.type === "flash") {
-        colorOrder.push("FLASH");
-      } else {
-        const color = row.querySelector(".color-input").value.trim();
-        if (color) {
-          colorOrder.push(color);
-        }
+        colorOrder.push("flash");
+        return;
+      }
+
+      const colorInput = row.querySelector(".color-input");
+      const colorValue = colorInput ? colorInput.value.trim() : "";
+      if (colorValue) {
+        colorOrder.push(colorValue.toLowerCase());
       }
     });
 
-    output += "color order: " + colorOrder.join(" / ") + "\n";
+    const displayLines = [];
+    const clipboardLines = [];
+    const textLines = [];
 
-    output += `--------------------------------------------------------------\n`;
+    const pushLine = (displayHtml, clipboardHtml, textContent) => {
+      if (!textContent) {
+        return;
+      }
+      displayLines.push(`<div class="line">${displayHtml}</div>`);
+      clipboardLines.push(
+        `<p style="margin:0 0 2px 0;font-weight:normal;text-decoration:none;">${clipboardHtml}</p>`
+      );
+      textLines.push(textContent);
+    };
+
+    if (clientName) {
+      pushLine(
+        `<strong><u>${escapeHtml(clientName)}</u></strong>`,
+        `<b><u>${escapeHtml(clientName)}</u></b>`,
+        clientName
+      );
+    }
+
+    if (jobName || date) {
+      const formattedDate = formatDateForDisplay(date);
+      let jobLineHtml = "";
+      let jobLineText = "";
+
+      if (jobName) {
+        jobLineHtml += `<strong>${escapeHtml(jobName)}</strong>`;
+        jobLineText += jobName;
+      }
+
+      if (formattedDate) {
+        const prefix = jobLineHtml ? " " : "";
+        const textPrefix = jobLineText ? " " : "";
+        jobLineHtml += `${prefix}(${escapeHtml(formattedDate)})`;
+        jobLineText += `${textPrefix}(${formattedDate})`;
+      }
+
+      if (jobLineHtml) {
+        const clipboardJobHtml = [
+          jobName ? `<b>${escapeHtml(jobName)}</b>` : "",
+          formattedDate
+            ? `<span style="font-weight:normal;text-decoration:none;"> (${escapeHtml(formattedDate)})</span>`
+            : ""
+        ].join("");
+
+        pushLine(jobLineHtml, clipboardJobHtml, jobLineText);
+      }
+    }
+
+    if (printLocation) {
+      pushLine(
+        escapeHtml(printLocation),
+        `<span style="font-weight:normal;text-decoration:none;">${escapeHtml(printLocation)}</span>`,
+        printLocation
+      );
+    }
+
+    if (colorOrder.length > 1) {
+      pushLine(
+        `color order: ${escapeHtml(colorOrder.join(" / "))}`,
+        `<span style="font-weight:normal;text-decoration:none;">color order: ${escapeHtml(colorOrder.join(" / "))}</span>`,
+        `color order: ${colorOrder.join(" / ")}`
+      );
+    }
 
     rows.forEach((row) => {
       if (row.dataset.type === "flash") {
         return;
       }
 
-      const color = row.querySelector(".color-input").value.trim();
+      const colorInput = row.querySelector(".color-input");
+      const colorValueRaw = colorInput ? colorInput.value.trim() : "";
+      const colorValue = colorValueRaw.toLowerCase();
+      if (!colorValue) {
+        return;
+      }
+
       const baseDropdown = row.querySelector(".base-dropdown");
       let base = "";
 
@@ -490,9 +651,8 @@ document.addEventListener("DOMContentLoaded", () => {
         ".formula-ingredient-group"
       );
       ingredientGroups.forEach((group) => {
-        const percentage = group
-          .querySelector(".percentage-input")
-          .value.trim();
+        const percentageInput = group.querySelector(".percentage-input");
+        const percentage = percentageInput ? percentageInput.value.trim() : "";
         const ingredientDropdown = group.querySelector(".ingredient-dropdown");
         let ingredient = "";
 
@@ -510,26 +670,50 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (percentage || ingredient) {
-          formulaIngredients.push(`${percentage}% ${ingredient}`);
+          formulaIngredients.push(`${percentage}% ${ingredient}`.trim());
         }
       });
-      const formattedFormula = formulaIngredients.join(" / ");
 
-      if (color) {
-        let line = `${color.toLowerCase()}\t\t${base.toLowerCase()}`;
+      const baseText = base ? base.toLowerCase() : "";
+      const formulaText = formulaIngredients
+        .map((item) => item.toLowerCase())
+        .join(" / ");
 
-        if (base === "cdb" || base === "wdb") {
-          line += `\t\t`;
-        } else {
-          line += `\t`;
-        }
+      const textSegments = [colorValue];
+      const htmlSegments = [`<strong>${escapeHtml(colorValue)}</strong>`];
 
-        line += formattedFormula.toLowerCase();
-        output += line + "\n";
+      if (baseText) {
+        textSegments.push(baseText);
+        htmlSegments.push(escapeHtml(baseText));
       }
+      if (formulaText) {
+        textSegments.push(formulaText);
+        htmlSegments.push(escapeHtml(formulaText));
+      }
+
+      const lineText = textSegments.join(" - ");
+      const lineHtml = htmlSegments.join(" - ");
+      const clipboardLineParts = [`<b>${escapeHtml(colorValue)}</b>`];
+      if (baseText) {
+        clipboardLineParts.push(
+          `<span style="font-weight:normal;text-decoration:none;"> - ${escapeHtml(baseText)}</span>`
+        );
+      }
+      if (formulaText) {
+        clipboardLineParts.push(
+          `<span style="font-weight:normal;text-decoration:none;"> - ${escapeHtml(formulaText)}</span>`
+        );
+      }
+      const clipboardLine = clipboardLineParts.join("");
+
+      pushLine(lineHtml, clipboardLine, lineText);
     });
 
-    outputTextarea.value = output;
+    const displayHtml = displayLines.join("");
+    const clipboardHtml = clipboardLines.join("");
+    const textOutput = textLines.join("\n");
+
+    setOutputContent(displayHtml, textOutput, clipboardHtml);
   }
 
   function updateCopyButtonState() {
@@ -561,9 +745,39 @@ document.addEventListener("DOMContentLoaded", () => {
     updateCopyButtonState();
   });
 
-  copyBtn.addEventListener("click", () => {
-    outputTextarea.select();
-    document.execCommand("copy");
+  copyBtn.addEventListener("click", async () => {
+    if (!latestOutput.html) {
+      return;
+    }
+
+    const htmlForClipboard = latestOutput.html || "";
+
+    try {
+      if (
+        navigator.clipboard &&
+        typeof navigator.clipboard.write === "function" &&
+        typeof ClipboardItem !== "undefined"
+      ) {
+        const clipboardItem = new ClipboardItem({
+          "text/html": new Blob([htmlForClipboard], { type: "text/html" }),
+          "text/plain": new Blob([latestOutput.text], { type: "text/plain" })
+        });
+        await navigator.clipboard.write([clipboardItem]);
+      } else {
+        throw new Error("Clipboard API not available");
+      }
+    } catch (error) {
+      const fallbackTextarea = document.createElement("textarea");
+      fallbackTextarea.value = latestOutput.text;
+      fallbackTextarea.setAttribute("readonly", "");
+      fallbackTextarea.style.position = "absolute";
+      fallbackTextarea.style.left = "-9999px";
+      document.body.appendChild(fallbackTextarea);
+      fallbackTextarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(fallbackTextarea);
+    }
+
     alert("Ink formula copied to clipboard!");
   });
 

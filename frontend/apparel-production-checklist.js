@@ -1,6 +1,11 @@
 function resetChecklist() {
+    const checklistRoot = document.getElementById('apparel-production-checklist');
+    const isTeamMode = checklistRoot?.classList.contains('team-mode');
+
     // Reset all checklist item checkboxes
-    const itemCheckboxes = document.querySelectorAll('.checklist-items input[type="checkbox"]');
+    const itemCheckboxes = document.querySelectorAll(
+        '#apparel-production-checklist .checklist-items input[type="checkbox"], #apparel-production-checklist .worker-task-list input[type="checkbox"]'
+    );
     itemCheckboxes.forEach(checkbox => {
         checkbox.checked = false;
     });
@@ -12,11 +17,19 @@ function resetChecklist() {
 
         // Also ensure all checklist items are visible again
         const checklistItems = checkbox.parentElement.querySelector('.checklist-items');
-        checklistItems.style.display = 'block';
+        if (checklistItems) {
+            checklistItems.style.display = '';
+        }
     });
 
     // Re-apply the event listeners for section toggling
     applySectionToggleListeners();
+
+    if (isTeamMode) {
+        applyTeamLayouts();
+    } else {
+        applySoloLayouts();
+    }
 }
 
 // Function to apply section toggle listeners
@@ -115,6 +128,7 @@ function applyTeamLayouts() {
 
         listElement.style.display = 'none';
         layout.container.classList.add('active');
+        layout.container.setAttribute('aria-hidden', 'false');
     });
 }
 
@@ -127,6 +141,8 @@ function applySoloLayouts() {
         layout.soloOrder.forEach(item => {
             listElement.appendChild(item);
         });
+
+        layout.container.setAttribute('aria-hidden', 'true');
     });
 }
 
