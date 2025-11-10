@@ -67,7 +67,7 @@ function computeDisplayedResults() {
 
   if (!searchTerm) {
     if (hidePulledSamples) {
-      return allData.filter((item) => item.hold !== true);
+      return [];
     }
     return getHeldItems();
   }
