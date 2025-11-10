@@ -943,475 +943,6 @@ footer a {
 }
 
 /* ==========================================================================
-     Media Queries
-     ========================================================================== */
-
-/* Mobile devices - sidebar slides over content */
-@media (max-width: 768px) {
-  body {
-    padding-left: 0;
-    padding-top: 60px;
-    background-attachment: scroll;
-  }
-
-  header {
-    height: 60px;
-    padding: 12px 16px;
-  }
-
-  header h1 {
-    font-size: 28px;
-    max-width: 640px;
-    padding: 0 20px;
-  }
-
-  .title {
-    font-size: 32px;
-    margin-bottom: 26px;
-    padding-bottom: 18px;
-    gap: 10px;
-  }
-
-  .title-icon {
-    font-size: 36px;
-  }
-
-  .sidebar {
-    transform: translateX(-100%);
-    width: max-content;
-    min-width: 250px;
-    max-width: 320px;
-    top: 60px;
-  }
-
-  .sidebar.open {
-    transform: translateX(0);
-  }
-
-  /* Add overlay when sidebar is open on mobile */
-  .sidebar.open::after {
-    content: '';
-    position: fixed;
-    top: 60px;
-    left: 100%;
-    width: 100vw;
-    height: calc(100vh - 60px);
-    background: rgba(0, 0, 0, 0.5);
-    z-index: -1;
-  }
-
-  section {
-    scroll-margin-top: 80px;
-  }
-
-  .container {
-    width: calc(100% - 32px);
-    max-width: 640px;
-    margin: 20px auto 32px;
-    padding: 20px;
-  }
-
-  .section-group,
-  .information-group {
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .section {
-    width: 100%;
-    margin: 0;
-    min-width: 0;
-  }
-
-  .controls {
-    gap: 10px;
-  }
-
-  .controls button,
-  .controls .checklist-button {
-    flex: 1 1 calc(50% - 12px);
-    max-width: calc(50% - 12px);
-  }
-
-  .button-container {
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .button-container button {
-    flex: 1 1 calc(50% - 12px);
-    max-width: calc(50% - 12px);
-  }
-
-  .value-display {
-    font-size: 48px;
-  }
-
-  .value-label {
-    font-size: 20px;
-  }
-
-  .title {
-    font-size: 30px;
-    margin-bottom: 24px;
-    padding-bottom: 18px;
-  }
-
-  .progress-bar-container {
-    width: 100%;
-    height: 24px;
-  }
-
-  .progress-text {
-    font-size: 1.2rem;
-  }
-
-  #inventory-receiver .header-inputs,
-  #ink-formula-formatter .header-inputs {
-    gap: 12px;
-  }
-
-  #inventory-receiver .input-group,
-  #ink-formula-formatter .input-group {
-    flex: 1 1 240px;
-    min-width: 200px;
-  }
-}
-
-/* Adjusting the layout for smaller screens */
-
-@media (max-width: 877px) {
-  .container {
-    max-width: 90%;
-  }
-}
-
-@media (max-width: 632px) {
-  header h1 {
-    font-size: 24px;
-    max-width: 640px;
-    padding: 0 18px;
-  }
-
-  .container {
-    width: calc(100% - 32px);
-    margin: 24px 16px;
-    padding: 18px;
-  }
-
-  .title {
-    font-size: 26px;
-    margin-bottom: 22px;
-    padding-bottom: 16px;
-    gap: 10px;
-  }
-
-  .title-icon {
-    font-size: 34px;
-  }
-
-  .value-display {
-    font-size: 40px;
-  }
-
-  .value-label {
-    font-size: 18px;
-    margin: 2px auto;
-  }
-
-  .controls {
-    gap: 8px;
-  }
-
-  .controls button,
-  .controls .checklist-button {
-    flex: 1 1 100%;
-    max-width: 100%;
-    font-size: 15px;
-  }
-
-  button {
-    font-size: 15px;
-  }
-
-  .result-item {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-  }
-
-  .result-item > div:not(.result-buttons) {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .result-buttons {
-    width: 100%;
-    margin-top: 4px;
-  }
-
-  .information-box {
-    margin: 8px 0;
-  }
-
-  .button-container {
-    width: 100%;
-    gap: 8px;
-  }
-
-  .button-container button {
-    flex: 1 1 100%;
-    max-width: 100%;
-  }
-
-  input[type="text"],
-  input[type="number"] {
-    font-size: 15px;
-    padding: 6px;
-  }
-
-  .checklist-items {
-    line-height: 1.3;
-    font-size: 0.95rem;
-  }
-
-  .progress-text {
-    font-size: 1rem;
-  }
-
-  #inventory-receiver .header-inputs,
-  #ink-formula-formatter .header-inputs {
-    flex-direction: column;
-  }
-
-  #inventory-receiver .input-group,
-  #ink-formula-formatter .input-group {
-    flex: 1 1 100%;
-    min-width: 100%;
-  }
-
-  .output-section textarea,
-  .summary-output {
-    min-height: 140px;
-  }
-}
-
-@media (max-width: 555px) {
-  html {
-    font-size: 0.95rem;
-  }
-
-  body {
-    padding-top: 56px;
-  }
-
-  header {
-    height: 56px;
-    padding: 10px 14px;
-  }
-
-  header h1 {
-    font-size: 22px;
-    max-width: 640px;
-    padding: 0 16px;
-  }
-
-  .hamburger {
-    top: 10px;
-    left: 10px;
-    width: 36px;
-    height: 36px;
-  }
-
-  .hamburger span {
-    width: 22px;
-  }
-
-  .container {
-    margin: 20px 12px;
-    padding: 16px;
-  }
-
-  .title {
-    font-size: 24px;
-    margin-bottom: 20px;
-    padding-bottom: 14px;
-    gap: 8px;
-  }
-
-  .title-icon {
-    font-size: 32px;
-  }
-
-  .value-display {
-    font-size: 34px;
-  }
-
-  .value-label {
-    font-size: 16px;
-  }
-
-  button {
-    font-size: 14px;
-    padding: 10px 12px;
-  }
-
-  .controls button,
-  .controls .checklist-button {
-    padding: 10px 12px;
-  }
-
-  input[type="text"],
-  input[type="number"],
-  textarea {
-    font-size: 14px;
-    padding: 6px;
-  }
-
-  .progress-bar-container {
-    height: 22px;
-  }
-
-  .progress-text {
-    font-size: 0.95rem;
-  }
-}
-
-/* Media query for screens with a width of 412px or less */
-@media (max-width: 412px) {
-  body {
-    padding-top: 52px;
-  }
-
-  header {
-    height: 52px;
-    padding: 8px 12px;
-  }
-
-  header h1 {
-    font-size: 20px;
-    max-width: 640px;
-    padding: 0 14px;
-  }
-
-  .sidebar {
-    top: 52px;
-  }
-
-  .sidebar.open::after {
-    top: 52px;
-    height: calc(100vh - 52px);
-  }
-
-  .container {
-    margin: 18px 10px;
-    padding: 14px;
-  }
-
-  .title {
-    font-size: 20px;
-    margin-bottom: 16px;
-    padding-bottom: 12px;
-    gap: 8px;
-  }
-
-  .title-icon {
-    font-size: 28px;
-  }
-
-  .value-display {
-    font-size: 30px;
-  }
-
-  .value-label {
-    font-size: 15px;
-  }
-
-  .controls button,
-  .controls .checklist-button {
-    padding: 9px 10px;
-  }
-
-  .button-container {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .button-container button {
-    width: 90%;
-    max-width: 300px;
-    margin: 5px 0;
-    padding: 10px 15px;
-    box-sizing: border-box;
-  }
-
-  td {
-    margin: 5px;
-    padding: 0.5px;
-    text-align: center;
-  }
-
-  #inventory-receiver .input-group label,
-  #ink-formula-formatter .input-group label {
-    font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 318px) {
-  header h1 {
-    font-size: 18px;
-    max-width: 640px;
-    padding: 0 12px;
-  }
-
-  .container {
-    margin: 14px 6px;
-    padding: 12px;
-  }
-
-  .title {
-    font-size: 18px;
-    margin-bottom: 14px;
-    padding-bottom: 10px;
-    gap: 8px;
-  }
-
-  .title-icon {
-    font-size: 26px;
-  }
-
-  .value-display {
-    font-size: 26px;
-  }
-
-  .value-label {
-    font-size: 14px;
-  }
-
-  .controls button,
-  .controls .checklist-button {
-    padding: 8px 10px;
-    font-size: 12px;
-  }
-
-  button {
-    font-size: 12px;
-    padding: 8px 10px;
-  }
-
-  .button-container button {
-    font-size: 12px;
-  }
-
-  input[type="text"],
-  input[type="number"],
-  textarea {
-    font-size: 12px;
-    padding: 5px;
-  }
-}
-
-/* ==========================================================================
    Enhanced Calculator Button Styles
    ========================================================================== */
 
@@ -1421,7 +952,7 @@ footer a {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  gap: 20px; /* Increased spacing between button groups */
+  gap: 20px;
 }
 
 /* Button group containers for visual separation */
@@ -1479,7 +1010,6 @@ footer a {
 }
 
 /* Color intensity differentiation - darker/more saturated for larger values */
-/* Increment buttons (positive) - using green tones */
 .btn-increment.btn-small {
   background: linear-gradient(135deg, rgba(80, 140, 100, 0.7), rgba(60, 120, 80, 0.7));
   color: hsl(158deg, 40%, 95%);
@@ -1498,7 +1028,6 @@ footer a {
   border-color: rgba(40, 180, 100, 0.7);
 }
 
-/* Decrement buttons (negative) - using red/orange tones */
 .btn-decrement.btn-small {
   background: linear-gradient(135deg, rgba(140, 80, 60, 0.7), rgba(120, 60, 40, 0.7));
   color: hsl(158deg, 40%, 95%);
@@ -1517,7 +1046,6 @@ footer a {
   border-color: rgba(180, 60, 40, 0.7);
 }
 
-/* Enhanced hover states - brightens and adds glow */
 @media (hover: hover) {
   .btn-increment.btn-small:hover {
     background: linear-gradient(135deg, rgba(90, 150, 110, 0.85), rgba(70, 130, 90, 0.85));
@@ -1562,93 +1090,14 @@ footer a {
   }
 }
 
-/* Active/pressed state - provides tactile feedback */
 .controls-enhanced button:active {
   transform: translateY(1px);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Focus state for accessibility */
 .controls-enhanced button:focus {
   outline: 3px solid rgba(255, 255, 255, 0.5);
   outline-offset: 2px;
-}
-
-/* Responsive adjustments for smaller screens */
-@media (max-width: 632px) {
-  .controls-enhanced {
-    gap: 15px;
-  }
-
-  .btn-small {
-    padding: 7px 14px;
-    font-size: 13px;
-    min-width: 55px;
-  }
-
-  .btn-medium {
-    padding: 10px 18px;
-    font-size: 15px;
-    min-width: 70px;
-  }
-
-  .btn-large {
-    padding: 13px 22px;
-    font-size: 17px;
-    min-width: 85px;
-  }
-}
-
-@media (max-width: 555px) {
-  .controls-enhanced {
-    gap: 12px;
-  }
-
-  .btn-small {
-    padding: 6px 12px;
-    font-size: 12px;
-    min-width: 50px;
-  }
-
-  .btn-medium {
-    padding: 9px 16px;
-    font-size: 14px;
-    min-width: 65px;
-  }
-
-  .btn-large {
-    padding: 12px 20px;
-    font-size: 16px;
-    min-width: 80px;
-  }
-}
-
-@media (max-width: 412px) {
-  .controls-enhanced {
-    gap: 10px;
-  }
-
-  .button-group {
-    gap: 6px;
-  }
-
-  .btn-small {
-    padding: 5px 10px;
-    font-size: 11px;
-    min-width: 45px;
-  }
-
-  .btn-medium {
-    padding: 8px 14px;
-    font-size: 13px;
-    min-width: 60px;
-  }
-
-  .btn-large {
-    padding: 10px 18px;
-    font-size: 15px;
-    min-width: 75px;
-  }
 }
 
 /* ==========================================================================
@@ -1799,7 +1248,6 @@ footer a {
   display: inline-block;
 }
 
-/* Add custom select arrow */
 #formula-table td select {
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
   background-repeat: no-repeat;
@@ -1893,7 +1341,6 @@ footer a {
   text-align: center;
   white-space: nowrap;
 }
-
 
 #add-row-btn,
 #add-flash-btn {
@@ -2037,17 +1484,96 @@ footer a {
   display: none;
 }
 
-/* Responsive styles for Ink Formula Formatter */
-@media screen and (max-width: 716px) {
+/* ==========================================================================
+     Media Queries
+     ========================================================================== */
+
+/* Tablet landscape and small desktop adjustments */
+@media (max-width: 900px) {
+  .container {
+    width: min(700px, calc(100% - 96px));
+  }
+}
+
+/* Tablet portrait and large mobile */
+@media (max-width: 768px) {
+  body {
+    padding-left: 0;
+    padding-top: 60px;
+    background-attachment: scroll;
+  }
+
+  header {
+    height: 60px;
+    padding: 12px 16px;
+  }
+
+  header h1 {
+    font-size: 28px;
+    max-width: 640px;
+    padding: 0 20px;
+  }
+
+  .title {
+    font-size: 32px;
+    margin-bottom: 26px;
+    padding-bottom: 18px;
+    gap: 10px;
+  }
+
+  .title-icon {
+    font-size: 36px;
+  }
+
+  .sidebar {
+    transform: translateX(-100%);
+    width: min(320px, 80vw);
+    max-width: 320px;
+    top: 60px;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar.open::after {
+    content: "";
+    position: fixed;
+    top: 60px;
+    left: 100%;
+    width: 100vw;
+    height: calc(100vh - 60px);
+    background: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+  }
+
+  section {
+    scroll-margin-top: 80px;
+  }
+
+  .container {
+    width: calc(100% - 32px);
+    max-width: 640px;
+    margin: 20px auto 32px;
+    padding: 20px;
+  }
+
+  #inventory-receiver .header-inputs,
   #ink-formula-formatter .header-inputs {
-    flex-direction: column;
+    gap: 12px;
   }
 
+  #inventory-receiver .input-group,
   #ink-formula-formatter .input-group {
-    margin-right: 0;
-    margin-bottom: 10px;
+    flex: 1 1 240px;
+    min-width: 200px;
   }
 
+  .information-box {
+    margin: 8px 0;
+  }
+
+  /* Ink Formula Formatter table stacks vertically */
   #formula-table,
   #formula-table thead,
   #formula-table tbody,
@@ -2089,7 +1615,6 @@ footer a {
     text-shadow: 1px 1px 0 #000;
   }
 
-  /* Hide the Actions header */
   #formula-table td[data-label="Actions"]::before {
     content: none;
   }
@@ -2152,7 +1677,7 @@ footer a {
 
   .formula-ingredient-group .remove-ingredient-btn {
     flex-shrink: 0;
-    margin-left: 5px;
+    margin: 0;
     width: auto;
     min-width: 38px;
     height: 38px;
@@ -2251,5 +1776,280 @@ footer a {
   #formula-table tr[data-type="flash"] td[data-label="Base"]::before,
   #formula-table tr[data-type="flash"] td[data-label="Formula"]::before {
     content: none;
+  }
+}
+
+/* Small tablets and large phones */
+@media (max-width: 640px) {
+  header h1 {
+    font-size: 24px;
+    padding: 0 18px;
+  }
+
+  .container {
+    width: calc(100% - 32px);
+    margin: 24px 16px;
+    padding: 18px;
+  }
+
+  .title {
+    font-size: 26px;
+    margin-bottom: 22px;
+    padding-bottom: 16px;
+    gap: 10px;
+  }
+
+  .title-icon {
+    font-size: 34px;
+  }
+
+  .result-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .result-item > div:not(.result-buttons) {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .result-buttons {
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  input[type="text"],
+  input[type="number"] {
+    font-size: 15px;
+    padding: 6px;
+  }
+
+  #apparel-production-checklist .checklist-items {
+    line-height: 1.3;
+    font-size: 0.95rem;
+  }
+
+  #inventory-receiver .header-inputs,
+  #ink-formula-formatter .header-inputs {
+    flex-direction: column;
+  }
+
+  #inventory-receiver .input-group,
+  #ink-formula-formatter .input-group {
+    flex: 1 1 100%;
+    min-width: 100%;
+  }
+
+  .output-section textarea,
+  .summary-output {
+    min-height: 140px;
+  }
+
+  .controls-enhanced {
+    gap: 15px;
+  }
+
+  .btn-small {
+    padding: 7px 14px;
+    font-size: 13px;
+    min-width: 55px;
+  }
+
+  .btn-medium {
+    padding: 10px 18px;
+    font-size: 15px;
+    min-width: 70px;
+  }
+
+  .btn-large {
+    padding: 13px 22px;
+    font-size: 17px;
+    min-width: 85px;
+  }
+}
+
+/* Compact phones */
+@media (max-width: 560px) {
+  html {
+    font-size: 0.95rem;
+  }
+
+  body {
+    padding-top: 56px;
+  }
+
+  header {
+    height: 56px;
+    padding: 10px 14px;
+  }
+
+  header h1 {
+    font-size: 22px;
+    padding: 0 16px;
+  }
+
+  .hamburger {
+    top: 10px;
+    left: 10px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .hamburger span {
+    width: 22px;
+  }
+
+  .container {
+    margin: 20px 12px;
+    padding: 16px;
+  }
+
+  .title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+  }
+
+  .title-icon {
+    font-size: 32px;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  textarea {
+    font-size: 14px;
+    padding: 6px;
+  }
+
+  .controls-enhanced {
+    gap: 12px;
+  }
+
+  .btn-small {
+    padding: 6px 12px;
+    font-size: 12px;
+    min-width: 50px;
+  }
+
+  .btn-medium {
+    padding: 9px 16px;
+    font-size: 14px;
+    min-width: 65px;
+  }
+
+  .btn-large {
+    padding: 12px 20px;
+    font-size: 16px;
+    min-width: 80px;
+  }
+}
+
+/* Small phones */
+@media (max-width: 420px) {
+  body {
+    padding-top: 52px;
+  }
+
+  header {
+    height: 52px;
+    padding: 8px 12px;
+  }
+
+  header h1 {
+    font-size: 20px;
+    padding: 0 14px;
+  }
+
+  .sidebar {
+    top: 52px;
+  }
+
+  .sidebar.open::after {
+    top: 52px;
+    height: calc(100vh - 52px);
+  }
+
+  .container {
+    margin: 18px 10px;
+    padding: 14px;
+  }
+
+  .title {
+    font-size: 20px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+  }
+
+  .title-icon {
+    font-size: 28px;
+  }
+
+  td {
+    margin: 5px;
+    padding: 0.5px;
+    text-align: center;
+  }
+
+  #inventory-receiver .input-group label,
+  #ink-formula-formatter .input-group label {
+    font-size: 0.9rem;
+  }
+
+  .controls-enhanced {
+    gap: 10px;
+  }
+
+  .button-group {
+    gap: 6px;
+  }
+
+  .btn-small {
+    padding: 5px 10px;
+    font-size: 11px;
+    min-width: 45px;
+  }
+
+  .btn-medium {
+    padding: 8px 14px;
+    font-size: 13px;
+    min-width: 60px;
+  }
+
+  .btn-large {
+    padding: 10px 18px;
+    font-size: 15px;
+    min-width: 75px;
+  }
+}
+
+/* Extra small phones */
+@media (max-width: 360px) {
+  header h1 {
+    font-size: 18px;
+    padding: 0 12px;
+  }
+
+  .container {
+    margin: 14px 6px;
+    padding: 12px;
+  }
+
+  .title {
+    font-size: 18px;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+  }
+
+  .title-icon {
+    font-size: 26px;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  textarea {
+    font-size: 12px;
+    padding: 5px;
   }
 }
