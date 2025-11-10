@@ -1,4 +1,6 @@
 let allData = []; // Global variable to store the data
+let hidePulledSamples = false;
+let currentSearchTerm = "";
 
 function normalizeId(id) {
   if (!id) {
@@ -38,10 +40,9 @@ async function loadData() {
 
     allData = sortData(allData); // Sort the data initially
 
-    setupSearch(allData);
+    setupSearch();
 
-    // Display only held items initially
-    displayResults(getHeldItems());
+    updateDisplayedResults();
 
     console.log("Data loaded from server");
   } catch (error) {
@@ -61,32 +62,49 @@ function getHeldItems() {
   return allData.filter((item) => item.hold === true);
 }
 
+function computeDisplayedResults() {
+  const searchTerm = currentSearchTerm;
+
+  if (!searchTerm) {
+    if (hidePulledSamples) {
+      return allData.filter((item) => item.hold !== true);
+    }
+    return getHeldItems();
+  }
+
+  const heldItems = hidePulledSamples
+    ? []
+    : allData.filter((item) => item.hold === true);
+
+  const matchingItems = allData.filter(
+    (item) =>
+      item.hold !== true &&
+      typeof item.value === "string" &&
+      item.value.toLowerCase().includes(searchTerm)
+  );
+
+  return hidePulledSamples ? matchingItems : [...heldItems, ...matchingItems];
+}
+
+function updateDisplayedResults() {
+  const results = computeDisplayedResults();
+  displayResults(results);
+}
+
 // --- Search Setup ---
 
-function setupSearch(data) {
+function setupSearch() {
   const searchInput = document.getElementById("search-input");
 
+  if (!searchInput) {
+    return;
+  }
+
+  currentSearchTerm = searchInput.value.trim().toLowerCase();
+
   searchInput.addEventListener("input", () => {
-    const searchTerm = searchInput.value.toLowerCase();
-
-    if (!searchTerm) {
-      displayResults(getHeldItems());
-      return;
-    }
-
-    // Get held items (always show these)
-    const heldItems = data.filter((item) => item.hold === true);
-
-    // Get items matching the search term
-    const matchingItems = data.filter(
-      (item) =>
-        item.value.toLowerCase().includes(searchTerm) && item.hold !== true
-    );
-
-    // Combine held items with matching items (held items first due to sortData)
-    const results = [...heldItems, ...matchingItems];
-
-    displayResults(results);
+    currentSearchTerm = searchInput.value.trim().toLowerCase();
+    updateDisplayedResults();
   });
 }
 
@@ -666,5 +684,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Add event listener for the "New Entry" button
   const newEntryButton = document.getElementById("new-entry-button");
-  newEntryButton.addEventListener("click", createNewEntryUI);
+  if (newEntryButton) {
+    newEntryButton.addEventListener("click", createNewEntryUI);
+  }
+
+  const togglePulledButton = document.getElementById("toggle-pulled-button");
+  if (togglePulledButton) {
+    togglePulledButton.addEventListener("click", () => {
+      hidePulledSamples = !hidePulledSamples;
+      togglePulledButton.textContent = hidePulledSamples
+        ? "Show Pulled Samples"
+        : "Hide Pulled Samples";
+      updateDisplayedResults();
+    });
+  }
 });
