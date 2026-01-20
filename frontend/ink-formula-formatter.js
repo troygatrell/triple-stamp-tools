@@ -277,7 +277,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function handleOtherOption(dropdown, inputContainer, generateOutputCallback) {
     if (dropdown.value === "other") {
-      inputContainer.innerHTML = `<input type="text" class="other-input" placeholder="Enter custom name...">`;
+      inputContainer.innerHTML = `<input type="text" class="other-input">`;
       inputContainer.style.display = "block";
       // Toggle CSS classes so the dropdown becomes compact and the other-input expands
       dropdown.classList.add("compact-dropdown");
@@ -320,7 +320,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <input type="number" class="percentage-input" value="${initialPercentage}" min="0" step="0.1" pattern="[0-9]*[.]?[0-9]+" placeholder="%" title="Numbers only">
             ${ingredientDropdownHtml}
             <div class="other-input-container" style="display:${initialOtherIngredientValue ? "block" : "none"};">
-                ${initialOtherIngredientValue ? `<input type="text" class="other-input" value="${initialOtherIngredientValue}" placeholder="Enter ingredient name...">` : ""}
+                ${initialOtherIngredientValue ? `<input type="text" class="other-input" value="${initialOtherIngredientValue}">` : ""}
             </div>
             <button type="button" class="remove-ingredient-btn">x</button>
         `;
