@@ -1447,8 +1447,8 @@ footer a {
 }
 
 .formula-ingredient-group input[type="number"] {
-  flex: 0 0 70px;
-  width: 70px;
+  flex: 0 0 56px;
+  width: 56px;
   height: 38px;
   margin: 0;
 }
@@ -1463,6 +1463,24 @@ footer a {
 .formula-ingredient-group .other-input-container {
   flex: 1 1 100px;
   margin: 0;
+}
+
+/* Compact dropdown when 'other' is selected so adjacent text input can expand */
+.formula-ingredient-group select.compact-dropdown,
+.formula-ingredient-group .base-dropdown.compact-dropdown {
+  flex: 0 0 auto !important;
+  width: 72px !important;
+  min-width: 72px !important;
+  max-width: 72px !important;
+  padding-right: 24px !important;
+  box-sizing: border-box !important;
+  overflow: hidden;
+}
+
+.formula-ingredient-group .other-input-container.other-expanded,
+.formula-ingredient-group .base-other-input-container.other-expanded {
+  flex: 1 1 auto !important;
+  min-width: 120px !important;
 }
 
 .formula-ingredient-group .other-input-container input {
@@ -1656,7 +1674,7 @@ footer a {
   }
 
   .formula-ingredient-group input[type="number"] {
-    flex: 0 0 60px;
+    flex: 0 0 52px;
     height: 38px;
   }
 

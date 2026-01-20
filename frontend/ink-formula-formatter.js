@@ -279,6 +279,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (dropdown.value === "other") {
       inputContainer.innerHTML = `<input type="text" class="other-input" placeholder="Enter custom name...">`;
       inputContainer.style.display = "block";
+      // Toggle CSS classes so the dropdown becomes compact and the other-input expands
+      dropdown.classList.add("compact-dropdown");
+      inputContainer.classList.add("other-expanded");
+
       inputContainer
         .querySelector(".other-input")
         .addEventListener("input", () => {
@@ -288,6 +292,9 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       inputContainer.innerHTML = "";
       inputContainer.style.display = "none";
+      // remove classes when not 'other'
+      dropdown.classList.remove("compact-dropdown");
+      inputContainer.classList.remove("other-expanded");
     }
     generateOutputCallback();
     updateCopyButtonState();
@@ -340,6 +347,11 @@ document.addEventListener("DOMContentLoaded", () => {
         generateOutput
       );
     });
+    // If the row was created with an initial 'other' value, ensure sizes reflect that
+    if (initialOtherIngredientValue) {
+      ingredientDropdown.classList.add("compact-dropdown");
+      otherIngredientInputContainer.classList.add("other-expanded");
+    }
     if (ingredientGroup.querySelector(".other-input")) {
       ingredientGroup
         .querySelector(".other-input")
@@ -454,6 +466,12 @@ document.addEventListener("DOMContentLoaded", () => {
           generateOutput();
           updateCopyButtonState();
         });
+    }
+
+    // If base was created with an initial 'other' value, adjust sizing so the other-input gets more space
+    if (initialOtherBaseValue) {
+      baseDropdown.classList.add("compact-dropdown");
+      otherBaseInputContainer.classList.add("other-expanded");
     }
 
     addIngredientBtn.addEventListener("click", () => {
