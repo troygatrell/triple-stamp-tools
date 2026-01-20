@@ -312,7 +312,7 @@ document.addEventListener("DOMContentLoaded", () => {
       selectHtml: ingredientDropdownHtml,
       otherValue: initialOtherIngredientValue
     } = (function () {
-      const built = buildSelect(INGREDIENT_OPTIONS, initialIngredient, "ingredient-dropdown", "(select ingredient)");
+      const built = buildSelect(INGREDIENT_OPTIONS, initialIngredient, "ingredient-dropdown", "(ingredient)");
       return { selectHtml: built.selectHtml, otherValue: built.otherValue };
     })();
 
@@ -378,7 +378,7 @@ document.addEventListener("DOMContentLoaded", () => {
       selectHtml: baseDropdownHtml,
       otherValue: initialOtherBaseValue
     } = (function () {
-      const built = buildSelect(BASE_OPTIONS, data.base || "", "base-dropdown", "(select base)");
+      const built = buildSelect(BASE_OPTIONS, data.base || "", "base-dropdown", "(base)");
       return { selectHtml: built.selectHtml, otherValue: built.otherValue };
     })();
 
