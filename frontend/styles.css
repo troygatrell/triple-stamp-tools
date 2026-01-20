@@ -1290,7 +1290,7 @@ footer a {
 
 #formula-table th:nth-child(2),
 #formula-table td:nth-child(2) {
-  width: 165px;
+  width: 140px;
 }
 
 #formula-table th:nth-child(3),
@@ -1300,7 +1300,7 @@ footer a {
 
 #formula-table th:nth-child(4),
 #formula-table td:nth-child(4) {
-  width: 140px;
+  width: 135px;
 }
 
 /* Action buttons in the table - use default site button styling */
@@ -1324,15 +1324,6 @@ footer a {
   color: white;
 }
 
-#formula-table td[data-label="Actions"] {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 8px;
-  padding: 12px 12px;
-  background: transparent;
-}
-
 #formula-table td[data-label="Actions"] .add-ingredient-btn,
 #formula-table td[data-label="Actions"] .delete-btn {
   width: 100%;
@@ -1340,6 +1331,7 @@ footer a {
   align-self: stretch;
   text-align: center;
   white-space: nowrap;
+  margin:2px;
 }
 
 #add-row-btn,
