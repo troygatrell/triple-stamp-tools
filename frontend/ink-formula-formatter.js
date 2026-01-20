@@ -233,7 +233,13 @@ document.addEventListener("DOMContentLoaded", () => {
       "process",
       "reflex",
       "agent",
-      "other"
+      "other",
+      "flo yellow",
+      "flo pink",
+      "flo orange",
+      "flo green",
+      "flo blue"
+
     ];
 
     const ingredientGroup = document.createElement("div");
