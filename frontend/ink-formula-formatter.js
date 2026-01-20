@@ -238,8 +238,9 @@ document.addEventListener("DOMContentLoaded", () => {
       "flo pink",
       "flo orange",
       "flo green",
-      "flo blue"
-
+      "flo blue",
+      "flo red",
+      "warm red"
     ];
 
     const ingredientGroup = document.createElement("div");
