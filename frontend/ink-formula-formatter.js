@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const addRowBtn = document.getElementById("add-row-btn");
   const addFlashBtn = document.getElementById("add-flash-btn");
   const copyBtn = document.getElementById("copy-btn");
+  const resetBtn = document.getElementById("reset-btn");
   const outputFrame = document.getElementById("output-frame");
   let latestOutput = { html: "", text: "" };
 
@@ -40,6 +41,94 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#39;");
+  }
+
+  // Top-level option lists extracted for reuse
+  // Option lists: define raw lists, sort alphabetically (case-insensitive),
+  // then ensure the explicit 'other' option is moved to the end.
+  const INGREDIENT_OPTIONS_RAW = [
+    "yellow",
+    "gold",
+    "pink",
+    "rubine",
+    "orange",
+    "black",
+    "green",
+    "violet",
+    "process",
+    "reflex",
+    "agent",
+    "other",
+    "flo yellow",
+    "flo pink",
+    "flo orange",
+    "flo green",
+    "flo blue",
+    "flo red",
+    "warm red"
+  ];
+
+  const INGREDIENT_OPTIONS = INGREDIENT_OPTIONS_RAW
+    .slice()
+    .filter((v) => v !== "other")
+    .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
+  if (INGREDIENT_OPTIONS_RAW.indexOf("other") !== -1) {
+    INGREDIENT_OPTIONS.push("other");
+  }
+
+  const BASE_OPTIONS_RAW = ["wdb", "cdb", "ez clear", "stretch", "301", "other"];
+  const BASE_OPTIONS = BASE_OPTIONS_RAW
+    .slice()
+    .filter((v) => v !== "other")
+    .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
+  if (BASE_OPTIONS_RAW.indexOf("other") !== -1) {
+    BASE_OPTIONS.push("other");
+  }
+
+  // Helper to build a <select> and indicate if an initial value should be rendered as an "other" input
+  function buildSelect(options, selectedValue = "", className = "", placeholder = "(select)") {
+    let selectHtml = `<select class="${className}">`;
+
+    const valueInOptions = options.indexOf(selectedValue) !== -1 && selectedValue !== "";
+
+    // 1) No selectedValue provided -> show placeholder selected (disabled so can't be re-selected)
+    if (!selectedValue) {
+      selectHtml += `<option value="" disabled selected>${placeholder}</option>`;
+      options.forEach((option) => {
+        selectHtml += `<option value="${option}">${option}</option>`;
+      });
+      selectHtml += `</select>`;
+      return { selectHtml, otherValue: "" };
+    }
+
+    // 2) selectedValue matches an option -> show placeholder (disabled) but not selected, mark option
+    if (valueInOptions) {
+      selectHtml += `<option value="" disabled>${placeholder}</option>`;
+      options.forEach((option) => {
+        selectHtml += `<option value="${option}" ${selectedValue === option ? "selected" : ""}>${option}</option>`;
+      });
+      selectHtml += `</select>`;
+      return { selectHtml, otherValue: "" };
+    }
+
+    // 3) selectedValue provided but not in options -> select 'other' and return otherValue for input
+    selectHtml += `<option value="" disabled>${placeholder}</option>`;
+    options.forEach((option) => {
+      selectHtml += `<option value="${option}" ${option === "other" ? "selected" : ""}>${option}</option>`;
+    });
+    selectHtml += `</select>`;
+    return { selectHtml, otherValue: selectedValue || "" };
+  }
+
+  // Helper to get selected value or the "other" input value from a container
+  function getSelectedOrOther(container, dropdownSelector, otherInputSelector) {
+    const dropdown = container.querySelector(dropdownSelector);
+    if (!dropdown) return "";
+    if (dropdown.value === "other") {
+      const otherInput = container.querySelector(otherInputSelector);
+      return otherInput ? otherInput.value.trim() : "";
+    }
+    return dropdown.value ? dropdown.value.trim() : "";
   }
 
   function setOutputContent(displayHtml, text, clipboardHtml) {
@@ -132,14 +221,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const baseDropdown = row.querySelector(".base-dropdown");
       let baseFilled = false;
       if (baseDropdown) {
-        if (baseDropdown.value === "other") {
-          const otherInput = row.querySelector(
-            ".base-other-input-container .other-input"
-          );
-          baseFilled = otherInput && otherInput.value.trim() !== "";
-        } else {
-          baseFilled = baseDropdown.value !== "";
-        }
+        const baseValue = getSelectedOrOther(row, ".base-dropdown", ".base-other-input-container .other-input");
+        baseFilled = baseValue.trim() !== "";
       }
 
       if (!color || !baseFilled) {
@@ -160,14 +243,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const ingredientDropdown = group.querySelector(".ingredient-dropdown");
         let ingredientFilled = false;
         if (ingredientDropdown) {
-          if (ingredientDropdown.value === "other") {
-            const otherInput = group.querySelector(
-              ".other-input-container .other-input"
-            );
-            ingredientFilled = otherInput && otherInput.value.trim() !== "";
-          } else {
-            ingredientFilled = ingredientDropdown.value !== "";
-          }
+          const ingredientValue = getSelectedOrOther(group, ".ingredient-dropdown", ".other-input-container .other-input");
+          ingredientFilled = ingredientValue.trim() !== "";
         }
 
         if (!percentage || !ingredientFilled) {
@@ -221,67 +298,22 @@ document.addEventListener("DOMContentLoaded", () => {
     initialIngredient = "",
     parentContainer
   ) {
-    const ingredientOptions = [
-      "yellow",
-      "gold",
-      "pink",
-      "rubine",
-      "orange",
-      "black",
-      "green",
-      "violet",
-      "process",
-      "reflex",
-      "agent",
-      "other",
-      "flo yellow",
-      "flo pink",
-      "flo orange",
-      "flo green",
-      "flo blue",
-      "flo red",
-      "warm red"
-    ];
-
     const ingredientGroup = document.createElement("div");
     ingredientGroup.className = "formula-ingredient-group";
 
-    let ingredientDropdownHtml = `<select class="ingredient-dropdown">`;
-    ingredientDropdownHtml += `<option value="" disabled selected>(select ingredient)</option>`;
-    ingredientOptions.forEach((option) => {
-      ingredientDropdownHtml += `<option value="${option}" ${
-        initialIngredient === option ? "selected" : ""
-      }>${option}</option>`;
-    });
-    ingredientDropdownHtml += `</select>`;
-
-    let initialOtherIngredientValue = "";
-    if (
-      ingredientOptions.indexOf(initialIngredient) === -1 &&
-      initialIngredient
-    ) {
-      ingredientDropdownHtml = `<select class="ingredient-dropdown">`;
-      ingredientDropdownHtml += `<option value="" disabled>(select one)</option>`;
-      ingredientOptions.forEach((option) => {
-        ingredientDropdownHtml += `<option value="${option}" ${
-          option === "other" ? "selected" : ""
-        }>${option}</option>`;
-      });
-      ingredientDropdownHtml += `</select>`;
-      initialOtherIngredientValue = initialIngredient;
-    }
+    const {
+      selectHtml: ingredientDropdownHtml,
+      otherValue: initialOtherIngredientValue
+    } = (function () {
+      const built = buildSelect(INGREDIENT_OPTIONS, initialIngredient, "ingredient-dropdown", "(select ingredient)");
+      return { selectHtml: built.selectHtml, otherValue: built.otherValue };
+    })();
 
     ingredientGroup.innerHTML = `
             <input type="number" class="percentage-input" value="${initialPercentage}" min="0" step="0.1" pattern="[0-9]*[.]?[0-9]+" placeholder="%" title="Numbers only">
             ${ingredientDropdownHtml}
-            <div class="other-input-container" style="display:${
-              initialOtherIngredientValue ? "block" : "none"
-            };">
-                ${
-                  initialOtherIngredientValue
-                    ? `<input type="text" class="other-input" value="${initialOtherIngredientValue}" placeholder="Enter ingredient name...">`
-                    : ""
-                }
+            <div class="other-input-container" style="display:${initialOtherIngredientValue ? "block" : "none"};">
+                ${initialOtherIngredientValue ? `<input type="text" class="other-input" value="${initialOtherIngredientValue}" placeholder="Enter ingredient name...">` : ""}
             </div>
             <button type="button" class="remove-ingredient-btn">x</button>
         `;
@@ -330,28 +362,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const row = document.createElement("tr");
 
     const baseOptions = ["wdb", "cdb", "ez clear", "stretch", "301", "other"];
-
-    let baseDropdownHtml = `<select class="base-dropdown">`;
-    baseDropdownHtml += `<option value="" disabled selected>(select base)</option>`;
-    baseOptions.forEach((option) => {
-      baseDropdownHtml += `<option value="${option}" ${
-        data.base === option ? "selected" : ""
-      }>${option}</option>`;
-    });
-    baseDropdownHtml += `</select>`;
-
-    let initialOtherBaseValue = "";
-    if (baseOptions.indexOf(data.base) === -1 && data.base) {
-      baseDropdownHtml = `<select class="base-dropdown">`;
-      baseDropdownHtml += `<option value="" disabled>(select one)</option>`;
-      baseOptions.forEach((option) => {
-        baseDropdownHtml += `<option value="${option}" ${
-          option === "other" ? "selected" : ""
-        }>${option}</option>`;
-      });
-      baseDropdownHtml += `</select>`;
-      initialOtherBaseValue = data.base;
-    }
+    const {
+      selectHtml: baseDropdownHtml,
+      otherValue: initialOtherBaseValue
+    } = (function () {
+      const built = buildSelect(BASE_OPTIONS, data.base || "", "base-dropdown", "(select base)");
+      return { selectHtml: built.selectHtml, otherValue: built.otherValue };
+    })();
 
     row.innerHTML = `
             <td data-label="Color">
@@ -643,14 +660,7 @@ document.addEventListener("DOMContentLoaded", () => {
       let base = "";
 
       if (baseDropdown) {
-        if (baseDropdown.value === "other") {
-          const otherInput = row.querySelector(
-            ".base-other-input-container .other-input"
-          );
-          base = otherInput ? otherInput.value.trim() : "";
-        } else {
-          base = baseDropdown.value.trim();
-        }
+        base = getSelectedOrOther(row, ".base-dropdown", ".base-other-input-container .other-input");
       }
 
       const formulaIngredients = [];
@@ -664,16 +674,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let ingredient = "";
 
         if (ingredientDropdown) {
-          if (ingredientDropdown.value === "other") {
-            const otherIngredientInput = group.querySelector(
-              ".other-input-container .other-input"
-            );
-            ingredient = otherIngredientInput
-              ? otherIngredientInput.value.trim()
-              : "";
-          } else {
-            ingredient = ingredientDropdown.value.trim();
-          }
+          ingredient = getSelectedOrOther(group, ".ingredient-dropdown", ".other-input-container .other-input");
         }
 
         if (percentage || ingredient) {
@@ -735,6 +736,23 @@ document.addEventListener("DOMContentLoaded", () => {
     generateOutput();
     updateCopyButtonState();
   });
+
+  if (resetBtn) {
+    resetBtn.addEventListener("click", () => {
+      clientNameInput.value = "";
+      jobNameInput.value = "";
+      printLocationInput.value = "";
+      dateInput.value = easternIsoFormatter.format(new Date());
+
+      // Clear table and create a single empty row
+      tableBody.innerHTML = "";
+      createRow();
+      initializeSortable();
+
+      generateOutput();
+      updateCopyButtonState();
+    });
+  }
 
   const initialData = [];
 
