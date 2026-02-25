@@ -24,7 +24,7 @@ The project consists of a **Node.js/Express** backend and a **Vanilla JS/jQuery*
 
 1.  **Sample Inventory Search:**
     - Interfaces with the backend to search, create, edit, and delete inventory items.
-    - Features a "Hold/Drop" system for tracking pulled samples.
+    - Features a "Hold/Return" system for tracking pulled samples.
 2.  **Production Time Calculator:**
     - Real-time estimation of job completion based on production rate (pieces/hour).
     - Includes a progress bar and "Time Left" countdown.
