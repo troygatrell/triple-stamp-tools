@@ -63,27 +63,31 @@ function getHeldItems() {
 }
 
 function computeDisplayedResults() {
-  const searchTerm = currentSearchTerm;
+  const searchTerm = currentSearchTerm.toLowerCase(); // Ensure searchTerm is always lowercase for comparison
 
   if (!searchTerm) {
+    // Scenario: No search query
     if (hidePulledSamples) {
+      // If no search term AND hiding pulled samples, show nothing
       return [];
+    } else {
+      // If no search term AND NOT hiding pulled samples, show ALL held items
+      return allData.filter(item => item.hold === true);
     }
-    return getHeldItems();
   }
 
-  const heldItems = hidePulledSamples
-    ? []
-    : allData.filter((item) => item.hold === true);
-
-  const matchingItems = allData.filter(
-    (item) =>
-      item.hold !== true &&
-      typeof item.value === "string" &&
-      item.value.toLowerCase().includes(searchTerm)
+  // Scenario: There IS a search query
+  const searchMatchedItems = allData.filter(item =>
+    typeof item.value === "string" && item.value.toLowerCase().includes(searchTerm)
   );
 
-  return hidePulledSamples ? matchingItems : [...heldItems, ...matchingItems];
+  if (hidePulledSamples) {
+    // If hiding pulled samples, filter out held items from the search-matched results
+    return searchMatchedItems.filter(item => item.hold !== true);
+  } else {
+    // If not hiding pulled samples, show all search-matched items (both held and non-held)
+    return searchMatchedItems;
+  }
 }
 
 function updateDisplayedResults() {
@@ -522,13 +526,22 @@ function createNewEntryUI() {
   resultItem.dataset.originalSheet = ""; // Or an appropriate default value
   resultItem.dataset.originalMonth = ""; // Or an appropriate default value
 
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const startYear = 2019;
+  const endYear = currentYear + 1; // Include one year into the future
+  let yearOptions = "";
+  for (let year = endYear; year >= startYear; year--) {
+    yearOptions += `<option value="${year}" ${
+      year === currentYear ? "selected" : ""
+    }>${year}</option>`;
+  }
+
   // Create the input fields directly, with placeholders. NO data-id yet.
   resultItem.innerHTML = `
         <div class="result-column result-year">
             <select class="edit-year">
-              <option value="2025">2025</option>
-              <option value="2024">2024</option>
-              <option value="2023">2023</option>
+              ${yearOptions}
             </select>
         </div>
         <div class="result-column result-month">
@@ -563,8 +576,6 @@ function createNewEntryUI() {
   saveButton.addEventListener("click", () => saveChanges(resultItem, null)); // Pass null for item
   cancelButton.addEventListener("click", () => cancelChanges(resultItem, null)); // Pass null for item
 
-  const currentDate = new Date();
-  const currentYear = currentDate.getFullYear().toString();
   const monthNames = [
     "January",
     "February",
@@ -580,20 +591,6 @@ function createNewEntryUI() {
     "December",
   ];
   const currentMonth = monthNames[currentDate.getMonth()];
-
-  const yearSelect = resultItem.querySelector(".edit-year");
-  if (
-    yearSelect &&
-    !Array.from(yearSelect.options).some((option) => option.value === currentYear)
-  ) {
-    const newYearOption = document.createElement("option");
-    newYearOption.value = currentYear;
-    newYearOption.textContent = currentYear;
-    yearSelect.prepend(newYearOption);
-  }
-  if (yearSelect) {
-    yearSelect.value = currentYear;
-  }
 
   const monthSelect = resultItem.querySelector(".edit-month");
   if (monthSelect) {
