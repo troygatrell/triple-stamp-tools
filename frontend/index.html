@@ -51,9 +51,25 @@
             <div class="loading-message">Loading Data...</div>
           </div>
         </div>
-        <input type="text" id="search-input" placeholder="Search..." />
-        <button id="new-entry-button">New Entry</button>
-        <button id="toggle-pulled-button">Hide Pulled Samples</button>
+        <div id="search-controls">
+          <div id="search-input-container">
+            <input type="text" id="search-input" placeholder="Search..." />
+            <button id="clear-search-button" style="display: none;">❌</button>
+          </div>
+          <div id="search-action-buttons">
+            <button id="new-entry-button">New Entry</button>
+            <button id="toggle-pulled-button">Hide Pulled Samples</button>
+            <button id="toggle-filters-button">Filters</button>
+            <button id="show-all-button">Show All</button>
+          </div>
+        </div>
+
+        <div id="filter-dropdowns-container" style="display: none;">
+          <select id="filter-year" class="filter-dropdown"></select>
+          <select id="filter-month" class="filter-dropdown"></select>
+          <button id="reset-filters-button">Reset</button>
+        </div>
+
         <div id="search-results"></div>
       </div>
 

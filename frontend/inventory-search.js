@@ -1,6 +1,9 @@
 let allData = []; // Global variable to store the data
 let hidePulledSamples = false;
 let currentSearchTerm = "";
+let currentFilterYear = "all"; // Default to show all years
+let currentFilterMonth = "all"; // Default to show all months
+let showAllDatabaseItems = false; // New global variable
 
 function normalizeId(id) {
   if (!id) {
@@ -63,31 +66,59 @@ function getHeldItems() {
 }
 
 function computeDisplayedResults() {
-  const searchTerm = currentSearchTerm.toLowerCase(); // Ensure searchTerm is always lowercase for comparison
+  const searchTerm = currentSearchTerm.toLowerCase();
+  let intermediateItems = allData; // Start with all data
 
-  if (!searchTerm) {
-    // Scenario: No search query
-    if (hidePulledSamples) {
-      // If no search term AND hiding pulled samples, show nothing
-      return [];
+  // --- Step 1: Determine the base set of items based on ShowAll/SearchTerm/HidePulled ---
+  if (!showAllDatabaseItems) {
+    // If "Show All" is NOT active, then apply the original search/hidePulled logic
+    if (!searchTerm) {
+      // Scenario: No search query AND "Show All" is NOT active
+      if (hidePulledSamples) {
+        // If no search term AND hiding pulled samples, show nothing
+        intermediateItems = [];
+      } else {
+        // If no search term AND NOT hiding pulled samples, show ALL held items
+        intermediateItems = allData.filter(item => item.hold === true);
+      }
     } else {
-      // If no search term AND NOT hiding pulled samples, show ALL held items
-      return allData.filter(item => item.hold === true);
+      // Scenario: There IS a search query AND "Show All" is NOT active
+      intermediateItems = allData.filter(item =>
+        typeof item.value === "string" && item.value.toLowerCase().includes(searchTerm)
+      );
+
+      if (hidePulledSamples) {
+        // If hiding pulled samples, filter out held items from the search-matched results
+        intermediateItems = intermediateItems.filter(item => item.hold !== true);
+      }
+    }
+  } else {
+    // If "Show All" IS active, start with allData.
+    // Then, if there's a search term, apply it.
+    if (searchTerm) {
+      intermediateItems = intermediateItems.filter(item =>
+        typeof item.value === "string" && item.value.toLowerCase().includes(searchTerm)
+      );
+    }
+
+    // After applying search term (if any), then apply hidePulledSamples if active
+    if (hidePulledSamples) {
+      intermediateItems = intermediateItems.filter(item => item.hold !== true);
     }
   }
 
-  // Scenario: There IS a search query
-  const searchMatchedItems = allData.filter(item =>
-    typeof item.value === "string" && item.value.toLowerCase().includes(searchTerm)
-  );
 
-  if (hidePulledSamples) {
-    // If hiding pulled samples, filter out held items from the search-matched results
-    return searchMatchedItems.filter(item => item.hold !== true);
-  } else {
-    // If not hiding pulled samples, show all search-matched items (both held and non-held)
-    return searchMatchedItems;
+  // --- Step 2: Apply Year Filter ---
+  if (currentFilterYear !== "all") {
+    intermediateItems = intermediateItems.filter(item => item.sheet === currentFilterYear);
   }
+
+  // --- Step 3: Apply Month Filter ---
+  if (currentFilterMonth !== "all") {
+    intermediateItems = intermediateItems.filter(item => item.month === currentFilterMonth);
+  }
+
+  return intermediateItems;
 }
 
 function updateDisplayedResults() {
@@ -95,10 +126,44 @@ function updateDisplayedResults() {
   displayResults(results);
 }
 
+// --- Filter Dropdown Population ---
+function populateFilterYearDropdown() {
+  const filterYearDropdown = document.getElementById("filter-year");
+  if (!filterYearDropdown) return;
+
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const startYear = 2019; // Starting year for the dropdown
+  const endYear = currentYear + 1; // Include one year into the future
+
+  let yearOptions = '<option value="all">All Years</option>';
+  for (let year = endYear; year >= startYear; year--) {
+    yearOptions += `<option value="${year}">${year}</option>`;
+  }
+  filterYearDropdown.innerHTML = yearOptions;
+}
+
+function populateFilterMonthDropdown() {
+  const filterMonthDropdown = document.getElementById("filter-month");
+  if (!filterMonthDropdown) return;
+
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+
+  let monthOptions = '<option value="all">All Months</option>';
+  monthNames.forEach((month) => {
+    monthOptions += `<option value="${month}">${month}</option>`;
+  });
+  filterMonthDropdown.innerHTML = monthOptions;
+}
+
 // --- Search Setup ---
 
 function setupSearch() {
   const searchInput = document.getElementById("search-input");
+  const clearSearchButton = document.getElementById("clear-search-button");
 
   if (!searchInput) {
     return;
@@ -106,10 +171,29 @@ function setupSearch() {
 
   currentSearchTerm = searchInput.value.trim().toLowerCase();
 
+  // Initial check for clear button visibility
+  if (clearSearchButton) {
+    clearSearchButton.style.display = searchInput.value ? "block" : "none";
+  }
+
   searchInput.addEventListener("input", () => {
     currentSearchTerm = searchInput.value.trim().toLowerCase();
     updateDisplayedResults();
+
+    // Toggle clear button visibility on input
+    if (clearSearchButton) {
+      clearSearchButton.style.display = searchInput.value ? "block" : "none";
+    }
   });
+
+  if (clearSearchButton) {
+    clearSearchButton.addEventListener("click", () => {
+      searchInput.value = ""; // Clear the input field
+      currentSearchTerm = ""; // Clear the search term
+      clearSearchButton.style.display = "none"; // Hide the clear button
+      updateDisplayedResults(); // Refresh results
+    });
+  }
 }
 
 // --- Display Results & Editing ---
@@ -692,6 +776,67 @@ document.addEventListener("DOMContentLoaded", () => {
       togglePulledButton.textContent = hidePulledSamples
         ? "Show Pulled Samples"
         : "Hide Pulled Samples";
+      updateDisplayedResults();
+    });
+  }
+
+  // New Filters button and dropdowns logic
+  const toggleFiltersButton = document.getElementById("toggle-filters-button");
+  const filterDropdownsContainer = document.getElementById(
+    "filter-dropdowns-container"
+  );
+  if (toggleFiltersButton && filterDropdownsContainer) {
+    toggleFiltersButton.addEventListener("click", () => {
+      const isHidden = filterDropdownsContainer.style.display === "none";
+      filterDropdownsContainer.style.display = isHidden ? "flex" : "none";
+      toggleFiltersButton.textContent = isHidden ? "Hide Filters" : "Show Filters";
+    });
+  }
+
+  populateFilterYearDropdown();
+  populateFilterMonthDropdown();
+
+  const filterYearDropdown = document.getElementById("filter-year");
+  const filterMonthDropdown = document.getElementById("filter-month");
+
+  if (filterYearDropdown) {
+    filterYearDropdown.addEventListener("change", () => {
+      currentFilterYear = filterYearDropdown.value;
+      updateDisplayedResults();
+    });
+  }
+
+  if (filterMonthDropdown) {
+    filterMonthDropdown.addEventListener("change", () => {
+      currentFilterMonth = filterMonthDropdown.value;
+      updateDisplayedResults();
+    });
+  }
+
+  const resetFiltersButton = document.getElementById("reset-filters-button");
+  if (resetFiltersButton) {
+    resetFiltersButton.addEventListener("click", () => {
+      currentFilterYear = "all";
+      currentFilterMonth = "all";
+
+      const filterYearDropdown = document.getElementById("filter-year");
+      if (filterYearDropdown) {
+        filterYearDropdown.value = "all";
+      }
+      const filterMonthDropdown = document.getElementById("filter-month");
+      if (filterMonthDropdown) {
+        filterMonthDropdown.value = "all";
+      }
+
+      updateDisplayedResults();
+    });
+  }
+
+  const showAllButton = document.getElementById("show-all-button");
+  if (showAllButton) {
+    showAllButton.addEventListener("click", () => {
+      showAllDatabaseItems = !showAllDatabaseItems;
+      showAllButton.textContent = showAllDatabaseItems ? "Hide All" : "Show All";
       updateDisplayedResults();
     });
   }
