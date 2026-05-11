@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const loadFormulaSelect = document.getElementById("load-formula-select");
   const loadFormulaBtn = document.getElementById("load-formula-btn");
   const deleteFormulaBtn = document.getElementById("delete-formula-btn");
+  const excludeColorOrderCheckbox = document.getElementById("exclude-color-order-checkbox");
 
   const easternIsoFormatter = new Intl.DateTimeFormat("en-CA", {
     timeZone: "America/New_York",
@@ -660,7 +661,7 @@ document.addEventListener("DOMContentLoaded", () => {
       );
     }
 
-    if (colorOrder.length > 1) {
+    if (!excludeColorOrderCheckbox.checked && colorOrder.length > 1) {
       pushLine(
         `color order: ${escapeHtml(colorOrder.join(" / "))}`,
         `<span style="font-weight:normal;text-decoration:none;">color order: ${escapeHtml(colorOrder.join(" / "))}</span>`,
@@ -1049,6 +1050,7 @@ document.addEventListener("DOMContentLoaded", () => {
     generateOutput();
     updateCopyButtonState();
   });
+  excludeColorOrderCheckbox.addEventListener("change", generateOutput);
 
   initializeSortable();
 });

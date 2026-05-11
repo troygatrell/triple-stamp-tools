@@ -422,7 +422,13 @@
 
         <div class="output-section">
           <iframe id="output-frame" title="Formatted Ink Formula Preview"></iframe>
-          <button id="copy-btn" class="copy-btn">Copy to Clipboard</button>
+          <div class="button-container">
+            <button id="copy-btn" class="copy-btn">Copy to Clipboard</button>
+            <label style="margin-left: 15px; color: hsl(158deg, 40%, 90%); text-shadow: 1px 1px 0 #000;">
+              <input type="checkbox" id="exclude-color-order-checkbox" style="transform: scale(1.2); margin-right: 5px;">
+              Exclude Color Order
+            </label>
+          </div>
         </div>
       </div>
     </section>
