@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const { connectToMongo } = require("./config/db");
 const inventoryRoutes = require("./routes/inventory");
+const inkFormulaRoutes = require("./routes/inkformulas");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -26,6 +27,7 @@ app.use(
 
 // --- Routes ---
 app.use("/api/inventory", inventoryRoutes);
+app.use("/api/inkformulas", inkFormulaRoutes);
 
 // --- Initialization ---
 connectToMongo().then(() => {

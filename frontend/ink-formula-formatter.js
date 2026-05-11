@@ -12,6 +12,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const printLocationInput = document.getElementById("print-location"); // 1. GET THE NEW ELEMENT
   const dateInput = document.getElementById("formula-date");
 
+  // New Save/Load elements
+  const saveFormulaBtn = document.getElementById("save-formula-btn");
+  const loadFormulaSelect = document.getElementById("load-formula-select");
+  const loadFormulaBtn = document.getElementById("load-formula-btn");
+  const deleteFormulaBtn = document.getElementById("delete-formula-btn");
+
   const easternIsoFormatter = new Intl.DateTimeFormat("en-CA", {
     timeZone: "America/New_York",
     year: "numeric",
@@ -746,7 +752,205 @@ document.addEventListener("DOMContentLoaded", () => {
     copyBtn.disabled = !validateForm();
   }
 
-  addRowBtn.textContent = "Add Color";
+  // --- Save/Load Functionality ---
+
+  function getSavedFormulas() {
+    const formulasJson = localStorage.getItem("inkFormulas");
+    return formulasJson ? JSON.parse(formulasJson) : {};
+  }
+
+  function saveFormulaToLocalStorage(name, data) {
+    const formulas = getSavedFormulas();
+    formulas[name] = data;
+    localStorage.setItem("inkFormulas", JSON.stringify(formulas));
+  }
+
+  function deleteFormulaFromLocalStorage(name) {
+    const formulas = getSavedFormulas();
+    delete formulas[name];
+    localStorage.setItem("inkFormulas", JSON.stringify(formulas));
+  }
+
+  function populateLoadDropdown() {
+    loadFormulaSelect.innerHTML = '<option value="">-- Select a saved formula --</option>';
+    const formulas = getSavedFormulas();
+    Object.keys(formulas).forEach(name => {
+      const option = document.createElement("option");
+      option.value = name;
+      
+      let displayName = name;
+      if (displayName.length > 60) {
+        const datePart = displayName.match(/\(.*?\)$/);
+        if (datePart) {
+          const mainPart = displayName.substring(0, displayName.length - datePart[0].length);
+          const truncatedMain = mainPart.substring(0, 60 - datePart[0].length - 3) + "...";
+          displayName = truncatedMain + datePart[0];
+        } else {
+          displayName = displayName.substring(0, 57) + "...";
+        }
+      }
+      
+      option.textContent = displayName;
+      loadFormulaSelect.appendChild(option);
+    });
+  }
+
+  function handleSaveFormula() {
+    const clientName = clientNameInput.value.trim();
+    const jobName = jobNameInput.value.trim();
+    const date = dateInput.value.trim();
+
+    if (!clientName || !jobName || !date) {
+      alert("Please enter Client Name, Job Name, and Date to save the formula.");
+      return;
+    }
+
+    const formattedDate = formatDateForDisplay(date);
+    const formulaName = `${clientName} // ${jobName} (${formattedDate})`;
+
+    const printLocation = printLocationInput.value.trim();
+
+    const rowsData = [];
+    const rows = tableBody.querySelectorAll("tr");
+    rows.forEach(row => {
+      if (row.dataset.type === "flash") {
+        rowsData.push({ type: "flash" });
+      } else {
+        const colorInput = row.querySelector(".color-input");
+        const color = colorInput ? colorInput.value.trim() : "";
+
+        const base = getSelectedOrOther(row, ".base-dropdown", ".base-other-input-container .other-input");
+
+        const formulaIngredients = [];
+        const ingredientGroups = row.querySelectorAll(".formula-ingredient-group");
+        ingredientGroups.forEach(group => {
+          const percentageInput = group.querySelector(".percentage-input");
+          const percentage = percentageInput ? percentageInput.value.trim() : "";
+          const ingredient = getSelectedOrOther(group, ".ingredient-dropdown", ".other-input-container .other-input");
+          formulaIngredients.push({ percentage, ingredient });
+        });
+        rowsData.push({ type: "color", color, base, formula: formulaIngredients });
+      }
+    });
+
+    const formulaData = { clientName, jobName, printLocation, date, rows: rowsData };
+    saveFormulaToLocalStorage(formulaName, formulaData);
+    populateLoadDropdown();
+    alert(`Formula "${formulaName}" saved successfully!`);
+  }
+
+  function handleLoadFormula() {
+    const formulaName = loadFormulaSelect.value;
+    if (!formulaName) {
+      resetBtn.click();
+      return;
+    }
+
+    const formulas = getSavedFormulas();
+    const formulaData = formulas[formulaName];
+
+    if (formulaData) {
+      clientNameInput.value = formulaData.clientName || "";
+      jobNameInput.value = formulaData.jobName || "";
+      printLocationInput.value = formulaData.printLocation || "";
+      dateInput.value = formulaData.date || "";
+
+      tableBody.innerHTML = ""; // Clear current table rows
+      formulaData.rows.forEach(rowData => {
+        if (rowData.type === "flash") {
+          createFlashRow();
+        } else {
+          createRow(rowData);
+        }
+      });
+      initializeSortable();
+      generateOutput();
+      updateCopyButtonState();
+    }
+  }
+
+  function handleDeleteFormula() {
+    const formulaName = loadFormulaSelect.value;
+    if (!formulaName) {
+      alert("Please select a formula to delete.");
+      return;
+    }
+
+    if (confirm(`Are you sure you want to delete formula "${formulaName}"?`)) {
+      deleteFormulaFromLocalStorage(formulaName);
+      populateLoadDropdown();
+      alert(`Formula "${formulaName}" deleted successfully!`);
+      // Optionally clear the form after deleting a loaded formula
+      resetBtn.click();
+    }
+  }
+
+  // --- Filtering Logic ---
+  function filterFormulas() {
+    const clientName = clientNameInput.value.trim().toLowerCase();
+    const jobName = jobNameInput.value.trim().toLowerCase();
+    const formulas = getSavedFormulas();
+
+    loadFormulaSelect.innerHTML = '<option value="">-- Select a saved formula --</option>';
+
+    Object.keys(formulas).forEach(name => {
+      const lowerName = name.toLowerCase();
+      if (lowerName.includes(clientName) && lowerName.includes(jobName)) {
+        const option = document.createElement("option");
+        option.value = name;
+        option.textContent = name;
+        loadFormulaSelect.appendChild(option);
+      }
+    });
+  }
+
+  clientNameInput.addEventListener("input", filterFormulas);
+  jobNameInput.addEventListener("input", filterFormulas);
+
+  // --- Backup/Restore Functionality ---
+
+  function backupFormulas() {
+    const formulas = getSavedFormulas();
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(formulas));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", "ink_formulas_backup.json");
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+  }
+
+  function restoreFormulas(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const importedFormulas = JSON.parse(e.target.result);
+        localStorage.setItem("inkFormulas", JSON.stringify(importedFormulas));
+        populateLoadDropdown();
+        alert("Formulas restored successfully!");
+      } catch (err) {
+        alert("Error restoring formulas. Please ensure the file is a valid JSON.");
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  // --- Event Listeners for Save/Load/Backup/Restore ---
+  saveFormulaBtn.addEventListener("click", handleSaveFormula);
+  loadFormulaSelect.addEventListener("change", handleLoadFormula);
+  deleteFormulaBtn.addEventListener("click", handleDeleteFormula);
+  
+  document.getElementById("backup-formulas-btn").addEventListener("click", backupFormulas);
+  document.getElementById("restore-formulas-btn").addEventListener("click", () => {
+    document.getElementById("restore-file-input").click();
+  });
+  document.getElementById("restore-file-input").addEventListener("change", restoreFormulas);
+
+  // Initial population of the dropdown
+  populateLoadDropdown();
 
   addFlashBtn.addEventListener("click", () => {
     createFlashRow();
@@ -769,6 +973,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       generateOutput();
       updateCopyButtonState();
+      
+      // Reset dropdown and show all
+      loadFormulaSelect.value = "";
+      populateLoadDropdown();
     });
   }
 

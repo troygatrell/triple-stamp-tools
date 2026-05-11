@@ -1394,12 +1394,12 @@ footer a {
 /* Custom column widths for better layout */
 #formula-table th:nth-child(1),
 #formula-table td:nth-child(1) {
-  width: 120px;
+  width: 100px;
 }
 
 #formula-table th:nth-child(2),
 #formula-table td:nth-child(2) {
-  width: 110px;
+  width: 100px;
 }
 
 #formula-table th:nth-child(3),
@@ -1409,7 +1409,7 @@ footer a {
 
 #formula-table th:nth-child(4),
 #formula-table td:nth-child(4) {
-  width: 135px;
+  width: 60px;
 }
 
 /* Action buttons in the table - use default site button styling */
@@ -1548,8 +1548,8 @@ footer a {
 }
 
 .formula-ingredient-group input[type="number"] {
-  flex: 0 0 60px;
-  width: 70px;
+  flex: 0 0 80px;
+  width: 80px;
   height: 38px;
   margin: 0;
 }
@@ -1775,7 +1775,7 @@ footer a {
   }
 
   .formula-ingredient-group input[type="number"] {
-    flex: 0 0 52px;
+    flex: 0 0 80px;
     height: 38px;
   }
 
@@ -2195,3 +2195,82 @@ footer a {
     padding: 5px;
   }
 }
+
+/* Styles for the formula management section */
+.formula-management {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.formula-management .input-group {
+  display: flex;
+  flex-direction: row; /* Changed to row for horizontal alignment */
+  align-items: center; /* Align items vertically in the middle */
+  gap: 10px; /* Space between elements */
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.formula-management .input-group label {
+  font-weight: bold;
+  color: hsl(158deg, 50%, 90%);
+  text-shadow: 1px 1px 0 #000;
+  margin-bottom: 0; /* Override default margin */
+  flex-shrink: 0; /* Prevent label from shrinking */
+}
+
+.formula-management .input-group input[type="text"],
+.formula-management .input-group select {
+  flex-grow: 1; /* Allow select to take up available space */
+  padding: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.95);
+  color: #333;
+  font-size: 16px;
+  box-sizing: border-box;
+  min-width: 150px; /* Minimum width for select */
+}
+
+.formula-management .input-group button {
+  padding: 10px 15px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  flex-shrink: 0; /* Prevent button from shrinking */
+  white-space: nowrap; /* Keep button text on one line */
+}
+
+@media (hover: hover) {
+  .formula-management .input-group button:hover {
+    background-color: hsl(158deg, 40%, 30%);
+  }
+}
+
+/* Small screen adjustments */
+@media (max-width: 768px) {
+  .formula-management {
+    padding: 10px;
+  }
+
+  .formula-management .input-group {
+    flex-direction: column; /* Stack elements vertically on small screens */
+    align-items: stretch; /* Stretch elements to full width */
+  }
+
+  .formula-management .input-group select,
+  .formula-management .input-group button {
+    width: 100%; /* Full width on small screens */
+    margin-bottom: 5px; /* Add some space between stacked elements */
+  }
+}
+

@@ -1,46 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Triple Stamp Tools</title>
-    <link rel="stylesheet" href="frontend/styles.css" />
-  </head>
-  <body id="top">
-    <header>
-      <h1>Triple Stamp Tools</h1>
-      <nav>
-        <ul>
-          <li><a href="#inventory-search">Sample Inventory Search</a></li>
-          <li>
-            <a href="#production-time-calculator">Production Time Calculator</a>
-          </li>
-          <li>
-            <a href="#apparel-production-checklist"
-              >Apparel Production Checklist</a
-            >
-          </li>
-          <li><a href="#ink-formula-tool">Ink Formula Tool</a></li>
-          <li><a href="#inventory-receiver">Check-In Assistant</a></li>
-        </ul>
-      </nav>
-    </header>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ink Formula Tool - Development</title>
+    <link rel="stylesheet" href="frontend/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+</head>
+<body>
+    <h1>Ink Formula Formatter with Save/Search (Development)</h1>
 
-    <section id="ink-formula-tool">
-        <div class="container">
-          <div class="title">Ink Formula Tool</div>
-  
-          <input type="text" id="formula-search-input" class="search-input" placeholder="Search Ink Color...">
-          <div class="controls">
-               <button id="add-formula-button">Add Formula</button>
-          </div>
-  
-          <div id="formula-list" class="results-section">
-            </div>
-  
-          <script src="ink-formula-tool.js"></script>
+    <div id="ink-formula-tool-container" class="tool-container">
+
+        <!-- Mock API Toggle -->
+        <div class="mock-api-toggle">
+            <label for="toggle-mock-api">
+                <input type="checkbox" id="toggle-mock-api"> Use Mock API (local testing)
+            </label>
         </div>
-      </section>
-    <script src="frontend/ink-formula-tool.js"></script>
-  </body>
+
+        <!-- Section for saving and searching formulas -->
+        <div class="formula-management-section">
+            <h2>Saved Formulas</h2>
+            <div class="search-controls">
+                <input type="text" id="saved-formula-search-input" placeholder="Search saved formulas...">
+                <button id="saved-formula-clear-search-button" class="clear-search-button" style="display: none;">X</button>
+                <button id="refresh-saved-formulas-button">Refresh</button>
+            </div>
+            <div id="saved-formula-results" class="results-container">
+                <p>Loading saved formulas...</p>
+            </div>
+            <hr>
+            <button id="new-formula-button" class="new-entry-button">Create New Formula</button>
+            <button id="save-current-formula-button" class="save-button" disabled>Save Current Formula</button>
+        </div>
+
+        <hr>
+
+        <!-- The Formatter UI will be injected here by InkFormulaFormatter.js -->
+        <div id="formatter-ui-container">
+            <!-- This content will be dynamically replaced by the formatter -->
+        </div>
+
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="frontend/ink-formula-formatter-module.js"></script>
+    <script src="frontend/ink-formula-integration.js"></script> 
+    <script>
+        // Ensure this runs after ink-formula-integration.js has loaded
+        // and its window.toggleMockApi is defined.
+        document.addEventListener('DOMContentLoaded', () => {
+            const mockApiCheckbox = document.getElementById('toggle-mock-api');
+            if (mockApiCheckbox) {
+                // Set initial state of the checkbox if it was saved by browser (e.g. on refresh)
+                // And then call the toggle function which also loads formulas
+                window.toggleMockApi(mockApiCheckbox.checked);
+
+                mockApiCheckbox.addEventListener('change', (event) => {
+                    window.toggleMockApi(event.target.checked);
+                });
+            }
+        });
+    </script>
+</body>
 </html>
