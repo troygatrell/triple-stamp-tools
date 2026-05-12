@@ -779,19 +779,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const option = document.createElement("option");
       option.value = name;
       
-      let displayName = name;
-      if (displayName.length > 60) {
-        const datePart = displayName.match(/\(.*?\)$/);
-        if (datePart) {
-          const mainPart = displayName.substring(0, displayName.length - datePart[0].length);
-          const truncatedMain = mainPart.substring(0, 60 - datePart[0].length - 3) + "...";
-          displayName = truncatedMain + datePart[0];
-        } else {
-          displayName = displayName.substring(0, 57) + "...";
-        }
-      }
-      
-      option.textContent = displayName;
+      option.textContent = name; // Directly use the original name, no truncation
       loadFormulaSelect.appendChild(option);
     });
   }
