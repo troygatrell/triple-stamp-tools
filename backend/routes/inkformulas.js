@@ -1,104 +1,69 @@
-const express = require("express");
-const { ObjectId } = require("mongodb");
-const { getDb } = require("../config/db");
-
+const express = require('express');
 const router = express.Router();
+const InkFormula = require('../models/InkFormula'); // Path to the new model
 
-// Get all ink formulas
-router.get("/", async (req, res) => {
-  try {
-    const db = getDb();
-    const inkFormulas = await db.collection("inkformulas").find({}).toArray();
-    res.json(inkFormulas);
-  } catch (error) {
-    console.error("Error fetching ink formulas:", error);
-    res.status(500).json({ error: "Failed to fetch ink formulas" });
-  }
+// GET all ink formulas
+router.get('/', async (req, res) => {
+    try {
+        const formulas = await InkFormula.findAll();
+        res.json(formulas);
+    } catch (err) {
+        console.error('Error fetching ink formulas:', err);
+        res.status(500).json({ message: err.message });
+    }
 });
 
-// Create a new ink formula
-router.post("/", async (req, res) => {
-  try {
-    const db = getDb();
-    const newFormula = req.body;
-
-    // Validation for required fields in the new structure
-    if (!newFormula.formulaName || !newFormula.structuredFormula) {
-      return res
-        .status(400)
-        .json({ error: "Missing required fields (formulaName, structuredFormula)" });
+// GET a single ink formula by ID
+router.get('/:id', async (req, res) => {
+    try {
+        const formula = await InkFormula.findById(req.params.id);
+        if (formula == null) {
+            return res.status(404).json({ message: 'Cannot find ink formula' });
+        }
+        res.json(formula);
+    } catch (err) {
+        console.error('Error fetching ink formula by ID:', err);
+        res.status(500).json({ message: err.message });
     }
-
-    const result = await db.collection("inkformulas").insertOne({
-      ...newFormula,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
-    const createdFormula = {
-      _id: result.insertedId,
-      ...newFormula,
-    };
-
-    res.status(201).json(createdFormula);
-  } catch (error) {
-    console.error("Error creating ink formula:", error);
-    res.status(500).json({ error: "Failed to create ink formula" });
-  }
 });
 
-// Update an ink formula
-router.put("/:id", async (req, res) => {
-  try {
-    const db = getDb();
-    const { id } = req.params;
-    const updatedFormula = req.body;
-
-    if (!id || !updatedFormula) {
-      return res.status(400).json({ error: "Missing ID or update data" });
+// POST a new ink formula
+router.post('/', async (req, res) => {
+    try {
+        const newFormula = await InkFormula.create(req.body);
+        res.status(201).json(newFormula);
+    } catch (err) {
+        console.error('Error creating ink formula:', err);
+        res.status(400).json({ message: err.message });
     }
-
-    // Ensure _id is not updated
-    delete updatedFormula._id;
-
-    const result = await db.collection("inkformulas").updateOne(
-      { _id: new ObjectId(id) },
-      { $set: { ...updatedFormula, updatedAt: new Date() } }
-    );
-
-    if (result.matchedCount === 0) {
-      return res.status(404).json({ error: "Ink formula not found" });
-    }
-
-    res.json({ message: "Ink formula updated successfully" });
-  } catch (error) {
-    console.error("Error updating ink formula:", error);
-    res.status(500).json({ error: "Failed to update ink formula" });
-  }
 });
 
-// Delete an ink formula
-router.delete("/:id", async (req, res) => {
-  try {
-    const db = getDb();
-    const { id } = req.params;
-
-    if (!id) {
-      return res.status(400).json({ error: "Missing ID" });
+// PUT (update) an existing ink formula
+router.put('/:id', async (req, res) => {
+    try {
+        const updatedFormula = await InkFormula.update(req.params.id, req.body);
+        if (updatedFormula == null) {
+            return res.status(404).json({ message: 'Cannot find ink formula to update' });
+        }
+        res.json(updatedFormula);
+    } catch (err) {
+        console.error('Error updating ink formula:', err);
+        res.status(400).json({ message: err.message });
     }
+});
 
-    const result = await db.collection("inkformulas").deleteOne(
-      { _id: new ObjectId(id) }
-    );
-
-    if (result.deletedCount === 0) {
-      return res.status(404).json({ error: "Ink formula not found" });
+// DELETE an ink formula
+router.delete('/:id', async (req, res) => {
+    try {
+        const deleted = await InkFormula.delete(req.params.id);
+        if (!deleted) {
+            return res.status(404).json({ message: 'Cannot find ink formula to delete' });
+        }
+        res.json({ message: 'Ink formula deleted' });
+    } catch (err) {
+        console.error('Error deleting ink formula:', err);
+        res.status(500).json({ message: err.message });
     }
-
-    res.json({ message: "Ink formula deleted successfully" });
-  } catch (error) {
-    console.error("Error deleting ink formula:", error);
-    res.status(500).json({ error: "Failed to delete ink formula" });
-  }
 });
 
 module.exports = router;
