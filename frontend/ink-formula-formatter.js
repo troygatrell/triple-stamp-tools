@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  const BASE_URL = 'http://localhost:3000';
+  const BASE_URL = 'https://triplestamptools.onrender.com';
   const tableBody = document.querySelector("#formula-table tbody");
   const addRowBtn = document.getElementById("add-row-btn");
   const addFlashBtn = document.getElementById("add-flash-btn");
