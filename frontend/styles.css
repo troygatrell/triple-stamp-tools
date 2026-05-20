@@ -56,7 +56,8 @@ h2 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 40px;
+  width: 40px;
+  height: 40px;
   filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.7));
 }
 
@@ -311,25 +312,37 @@ header h1 {
 }
 
 .sidebar-icon {
-  font-size: 26px;
-  min-width: 34px;
-  text-align: center;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.7));
   flex-shrink: 0;
   margin-right: 8px;
 }
 
+.sidebar-icon img,
+.title-icon img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.title .sidebar-icon {
+  width: 48px;
+  height: 48px;
+  margin-right: 0;
+}
+
 .sidebar-icon.larger-icon {
-  font-size: 2.2em;
-  font-weight: 900;
-  display: inline-block;
-  transform: scale(1.4);
-  vertical-align: middle;
+  width: 44px;
+  height: 44px;
 }
 
 .title-icon.larger-icon {
-  font-size: 1.2em;
-  transform: scale(1.1);
+  width: 48px;
+  height: 48px;
 }
 
 .sidebar-text {
@@ -1324,7 +1337,7 @@ footer a {
   border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 12px;
   text-align: left;
-  vertical-align: middle;
+  vertical-align: top;
 }
 
 #formula-table th,
@@ -1640,8 +1653,10 @@ footer a {
     gap: 10px;
   }
 
-  .title-icon {
-    font-size: 36px;
+  .title-icon,
+  .title .sidebar-icon {
+    width: 36px;
+    height: 36px;
   }
 
   .sidebar {
@@ -1932,8 +1947,10 @@ footer a {
     gap: 10px;
   }
 
-  .title-icon {
-    font-size: 34px;
+  .title-icon,
+  .title .sidebar-icon {
+    width: 34px;
+    height: 34px;
   }
 
   .result-item {
@@ -2044,8 +2061,10 @@ footer a {
     padding-bottom: 14px;
   }
 
-  .title-icon {
-    font-size: 32px;
+  .title-icon,
+  .title .sidebar-icon {
+    width: 32px;
+    height: 32px;
   }
 
   input[type="text"],
@@ -2120,8 +2139,10 @@ footer a {
     padding-bottom: 12px;
   }
 
-  .title-icon {
-    font-size: 28px;
+  .title-icon,
+  .title .sidebar-icon {
+    width: 28px;
+    height: 28px;
   }
 
   td {
@@ -2184,8 +2205,10 @@ footer a {
     padding-bottom: 10px;
   }
 
-  .title-icon {
-    font-size: 26px;
+  .title-icon,
+  .title .sidebar-icon {
+    width: 26px;
+    height: 26px;
   }
 
   input[type="text"],
