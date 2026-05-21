@@ -284,14 +284,13 @@ header h1 {
 .sidebar nav {
   display: flex;
   flex-direction: column;
-  padding: 16px 0;
   height: 100%;
 }
 
 .sidebar-link {
   display: flex;
   align-items: center;
-  padding: 14px 18px;
+  padding: 10px 12px;
   text-decoration: none;
   color: hsl(158deg, 40%, 90%);
   transition: background-color 0.3s ease, color 0.3s ease,
@@ -319,12 +318,12 @@ header h1 {
   justify-content: center;
   filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.7));
   flex-shrink: 0;
-  margin-right: 8px;
+  /* margin-right: 8px; */
 }
 
 .sidebar-icon img,
 .title-icon img {
-  max-width: 100%;
+  max-width: 55%;
   max-height: 100%;
   object-fit: contain;
 }
