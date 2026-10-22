@@ -16,6 +16,24 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Download backup of inventory collection as JSON file
+router.get("/backup", async (req, res) => {
+  try {
+    const db = getDb();
+    const items = await db.collection("inventory").find({}).toArray();
+    const dateStr = new Date().toISOString().split("T")[0];
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="sample-inventory-backup-${dateStr}.json"`
+    );
+    res.setHeader("Content-Type", "application/json");
+    res.send(JSON.stringify(items, null, 2));
+  } catch (error) {
+    console.error("Error generating inventory backup:", error);
+    res.status(500).json({ error: "Failed to generate backup" });
+  }
+});
+
 // Create a new inventory item
 router.post("/", async (req, res) => {
   try {

@@ -766,6 +766,64 @@ async function toggleHold(resultItem, item) {
   }
 }
 
+// --- Database Backup ---
+
+async function downloadDatabaseBackup() {
+  const backupButton = document.getElementById("backup-database-button");
+  const originalText = backupButton ? backupButton.textContent : "Download Backup";
+
+  try {
+    if (backupButton) {
+      backupButton.disabled = true;
+      backupButton.textContent = "Downloading...";
+    }
+
+    let data;
+    try {
+      const response = await fetch(INVENTORY_API_URL);
+      if (response.ok) {
+        data = await response.json();
+      }
+    } catch (fetchError) {
+      console.warn("Could not fetch fresh data from server, falling back to loaded data:", fetchError);
+    }
+
+    // Fall back to allData in memory if network request failed
+    if (!data && allData && allData.length > 0) {
+      data = allData;
+    }
+
+    if (!data || (Array.isArray(data) && data.length === 0)) {
+      alert("No inventory records found to back up.");
+      return;
+    }
+
+    const jsonString = JSON.stringify(data, null, 2);
+    const blob = new Blob([jsonString], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const now = new Date();
+    const dateStr = now.toISOString().split("T")[0]; // YYYY-MM-DD
+    const fileName = `sample-inventory-backup-${dateStr}.json`;
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Error downloading database backup:", error);
+    alert("Failed to download database backup. See console for details.");
+  } finally {
+    if (backupButton) {
+      backupButton.disabled = false;
+      backupButton.textContent = originalText;
+    }
+  }
+}
+
 // --- Initial Load ---
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -848,5 +906,10 @@ document.addEventListener("DOMContentLoaded", () => {
       showAllButton.textContent = showAllDatabaseItems ? "Hide All" : "Show All";
       updateDisplayedResults();
     });
+  }
+
+  const backupDatabaseButton = document.getElementById("backup-database-button");
+  if (backupDatabaseButton) {
+    backupDatabaseButton.addEventListener("click", downloadDatabaseBackup);
   }
 });
