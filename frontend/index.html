@@ -28,10 +28,6 @@
           <span class="sidebar-icon"><img src="img/icon-check.png" alt="Checklist Icon" /></span>
           <span class="sidebar-text">Apparel Production Checklist</span>
         </a>
-        <a href="#inventory-receiver" class="sidebar-link">
-          <span class="sidebar-icon"><img src="img/icon-receive.png" alt="Receive Icon" /></span>
-          <span class="sidebar-text">Check-In Assistant</span>
-        </a>
         <a href="#ink-formula-formatter" class="sidebar-link">
           <span class="sidebar-icon"><img src="img/icon-formula.png" alt="Formula Icon" /></span>
           <span class="sidebar-text">Ink Formula Formatter</span>
@@ -305,61 +301,6 @@
       </div>
     </section>
 
-    <section id="inventory-receiver">
-      <div class="container">
-        <div class="title">
-          <span class="sidebar-icon"><img src="img/icon-receive.png" alt="Receive Icon" /></span>
-          <span id="mainTitle" class="title-text">Check-In Assistant</span>
-        </div>
-
-        <div class="header-inputs">
-          <div class="input-group">
-            <label for="jobTitleInput">Job/Client Name:</label>
-            <input
-              type="text"
-              id="jobTitleInput"
-              placeholder="(job/client name)"
-              oninput="updateJobTitle()"
-            />
-          </div>
-          <div class="input-group">
-            <label for="poNumberInput">P.O. #:</label>
-            <input
-              type="text"
-              id="poNumberInput"
-              placeholder="(optional)"
-            />
-          </div>
-          <div class="input-group">
-            <label for="receiverNameInput">Received By:</label>
-            <input
-              type="text"
-              id="receiverNameInput"
-              placeholder="(receiver name)"
-            />
-          </div>
-          <div class="input-group">
-            <label for="receivedDateInput">Received Date:</label>
-            <input type="date" id="receivedDateInput" />
-          </div>
-        </div>
-
-        <div id="tablesContainer"></div>
-
-        <div class="output-section">
-          <textarea id="summaryBlock" class="summary-output" readonly></textarea>
-          <button
-            type="button"
-            id="copy-summary-btn"
-            class="copy-btn"
-            onclick="copyToClipboard()"
-          >
-            Copy to Clipboard
-          </button>
-        </div>
-      </div>
-    </section>
-
     <section id="ink-formula-formatter">
       <div class="container">
         <div class="title">
@@ -436,7 +377,6 @@
     <script src="production-time-calculator.js"></script>
     <script src="inventory-search.js"></script>
     <script src="apparel-production-checklist.js"></script>
-    <script src="inventory-receiver.js"></script>
     <script src="ink-formula-formatter.js"></script>
 
     <script>
