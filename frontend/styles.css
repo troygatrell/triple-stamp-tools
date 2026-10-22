@@ -71,11 +71,54 @@ h2 {
   color: hsl(158deg, 40%, 90%);
 }
 
-.value-display {
-  font-size: 70px;
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: hsl(158deg, 40%, 90%);
+.value-display,
+input.value-display,
+.section input[type="number"].value-display {
+  display: block;
+  width: 92%;
+  max-width: 220px;
+  margin: 4px auto 12px auto;
+  padding: 4px 8px;
+  font-family: inherit;
+  font-size: 68px;
+  font-weight: 900;
+  line-height: 1.1;
+  text-align: center;
+  color: hsl(158deg, 40%, 90%) !important;
+  text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.35);
+  border: 2px solid rgba(120, 255, 210, 0.35);
+  border-radius: 8px;
+  outline: none;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  appearance: textfield;
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+  cursor: text;
+}
+
+input.value-display:hover,
+.section input[type="number"].value-display:hover {
+  background: rgba(0, 0, 0, 0.5);
+  border-color: rgba(120, 255, 210, 0.65);
+  color: #ffffff !important;
+}
+
+input.value-display:focus,
+.section input[type="number"].value-display:focus {
+  background: rgba(0, 0, 0, 0.7);
+  border-color: hsl(158deg, 76%, 58%);
+  box-shadow: 0 0 16px rgba(90, 230, 190, 0.45);
+  color: #ffffff !important;
+}
+
+input.value-display::-webkit-outer-spin-button,
+input.value-display::-webkit-inner-spin-button,
+.section input[type="number"].value-display::-webkit-outer-spin-button,
+.section input[type="number"].value-display::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 /* ==========================================================================
@@ -959,8 +1002,8 @@ input[type="checkbox"]:checked + label {
        Input Fields
        ========================================================================== */
 
-input[type="text"],
-input[type="number"] {
+input[type="text"]:not(.value-display),
+input[type="number"]:not(.value-display) {
   display: block;
   width: 95%;
   margin: 10px auto;
@@ -971,7 +1014,7 @@ input[type="number"] {
   color: #000; /* Ensure text is legible */
 }
 
-input[type="number"] {
+input[type="number"]:not(.value-display) {
   width: 70%;
 }
 
@@ -1969,10 +2012,17 @@ footer a {
     margin-top: 4px;
   }
 
-  input[type="text"],
-  input[type="number"] {
+  input[type="text"]:not(.value-display),
+  input[type="number"]:not(.value-display) {
     font-size: 15px;
     padding: 6px;
+  }
+
+  .value-display,
+  input.value-display,
+  .section input[type="number"].value-display {
+    font-size: 56px;
+    max-width: 200px;
   }
 
   #apparel-production-checklist .checklist-items {
@@ -2066,11 +2116,18 @@ footer a {
     height: 32px;
   }
 
-  input[type="text"],
-  input[type="number"],
+  input[type="text"]:not(.value-display),
+  input[type="number"]:not(.value-display),
   textarea {
     font-size: 14px;
     padding: 6px;
+  }
+
+  .value-display,
+  input.value-display,
+  .section input[type="number"].value-display {
+    font-size: 48px;
+    max-width: 180px;
   }
 
   .controls-enhanced {
@@ -2210,87 +2267,30 @@ footer a {
     height: 26px;
   }
 
-  input[type="text"],
-  input[type="number"],
+  input[type="text"]:not(.value-display),
+  input[type="number"]:not(.value-display),
   textarea {
     font-size: 12px;
     padding: 5px;
   }
-}
 
-
-.formula-management .input-group {
-  display: flex;
-  flex-direction: row; /* Changed to row for horizontal alignment */
-  align-items: center; /* Align items vertically in the middle */
-  gap: 10px; /* Space between elements */
-  flex-wrap: wrap; /* Allow wrapping on smaller screens */
-}
-
-.formula-management .input-group label {
-  font-weight: bold;
-  color: hsl(158deg, 50%, 90%);
-  text-shadow: 1px 1px 0 #000;
-  margin-bottom: 0; /* Override default margin */
-  flex-shrink: 0; /* Prevent label from shrinking */
-}
-
-.formula-management .input-group input[type="text"],
-.formula-management .input-group select {
-  flex-grow: 1; /* Allow select to take up available space */
-  padding: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  border-radius: 5px;
-  background-color: rgba(255, 255, 255, 0.95);
-  color: #333;
-  font-size: 16px;
-  box-sizing: border-box;
-  min-width: 150px; /* Minimum width for select */
-}
-
-.formula-management .input-group button {
-  padding: 10px 15px;
-  background-color: rgba(0, 0, 0, 0.6);
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
-  flex-shrink: 0; /* Prevent button from shrinking */
-  white-space: nowrap; /* Keep button text on one line */
-}
-
-@media (hover: hover) {
-  .formula-management .input-group button:hover {
-    background-color: hsl(158deg, 40%, 30%);
-  }
-}
-
-/* Small screen adjustments */
-@media (max-width: 768px) {
-  .formula-management {
-    padding: 10px;
-  }
-
-  .formula-management .input-group {
-    flex-direction: column; /* Stack elements vertically on small screens */
-    align-items: stretch; /* Stretch elements to full width */
-  }
-
-  .formula-management .input-group select,
-  .formula-management .input-group button {
-    width: 100%; /* Full width on small screens */
-    margin-bottom: 5px; /* Add some space between stacked elements */
+  .value-display,
+  input.value-display,
+  .section input[type="number"].value-display {
+    font-size: 40px;
+    max-width: 150px;
   }
 }
 
 
-/* Styles for the formula management section */
+/* ==========================================================================
+   Formula Management Section
+   ========================================================================== */
+
 .formula-management {
   display: flex;
-  flex-direction: column; /* Stack input-groups vertically */
-  gap: 15px; /* Space between the dropdown group and the button group */
+  flex-direction: column;
+  gap: 15px;
   margin-bottom: 20px;
   padding: 15px;
   background-color: rgba(0, 0, 0, 0.4);
@@ -2299,16 +2299,15 @@ footer a {
 }
 
 .formula-management .input-group {
-  /* Default for all input-groups within formula-management */
-  display: flex; /* Make them flex containers */
-  flex-direction: column; /* Default to stacking children within each group */
-  gap: 8px; /* Space between elements within the group */
-  flex-grow: 1; /* Allow them to grow */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-grow: 1;
 }
 
 .formula-management .input-group select {
-  width: 100%; /* Ensure select takes full width */
-  flex-grow: 1; /* Allow it to grow */
+  width: 100%;
+  flex-grow: 1;
   padding: 10px;
   border: 1px solid rgba(0, 0, 0, 0.3);
   border-radius: 5px;
@@ -2316,24 +2315,23 @@ footer a {
   color: #333;
   font-size: 16px;
   box-sizing: border-box;
-  min-width: 150px; /* Minimum width for select */
-  -webkit-appearance: none; /* Remove default dropdown arrow */
+  min-width: 150px;
+  -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
   background-repeat: no-repeat;
   background-position: right 8px center;
   background-size: 16px;
-  padding-right: 32px; /* Make space for the custom arrow */
+  padding-right: 32px;
 }
 
-
 .formula-management .input-group.formula-management-buttons {
-  flex-direction: row; /* Buttons should be in a row */
-  align-items: center; /* Align buttons vertically */
-  flex-wrap: wrap; /* Allow buttons to wrap */
-  gap: 10px; /* Space between buttons */
-  justify-content: flex-start; /* Align buttons to the start */
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-start;
 }
 
 .formula-management .input-group.formula-management-buttons button {
@@ -2345,8 +2343,8 @@ footer a {
   cursor: pointer;
   font-size: 16px;
   transition: background-color 0.3s ease;
-  flex-shrink: 0; /* Prevent button from shrinking */
-  white-space: nowrap; /* Keep button text on one line */
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 @media (hover: hover) {
@@ -2355,19 +2353,19 @@ footer a {
   }
 }
 
-/* Small screen adjustments */
+/* Small screen adjustments for formula management */
 @media (max-width: 768px) {
   .formula-management {
     padding: 10px;
   }
 
   .formula-management .input-group.formula-management-buttons {
-    flex-direction: column; /* Stack buttons vertically on small screens */
-    align-items: stretch; /* Stretch buttons to full width */
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .formula-management .input-group.formula-management-buttons button {
-    width: 100%; /* Full width on small screens */
-    margin-bottom: 5px; /* Add some space between stacked buttons */
+    width: 100%;
+    margin-bottom: 5px;
   }
 }

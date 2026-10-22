@@ -1,7 +1,7 @@
 {
   "name": "triple-stamp-tools",
   "version": "1.0.0",
-  "main": "._apparel-production-checklist.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
@@ -21,7 +21,6 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.21.2",
-    "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.13.1"
   }
 }

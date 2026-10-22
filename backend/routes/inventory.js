@@ -52,6 +52,10 @@ router.put("/:id", async (req, res) => {
       return res.status(400).json({ error: "Missing ID or update data" });
     }
 
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "Invalid item ID" });
+    }
+
     const result = await db.collection("inventory").updateOne(
       { _id: new ObjectId(id) },
       { $set: updatedItem }
@@ -76,6 +80,10 @@ router.delete("/:id", async (req, res) => {
 
     if (!id) {
       return res.status(400).json({ error: "Missing ID" });
+    }
+
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "Invalid item ID" });
     }
 
     const result = await db.collection("inventory").deleteOne(

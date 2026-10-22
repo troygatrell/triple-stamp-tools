@@ -22,9 +22,6 @@ function resetChecklist() {
         }
     });
 
-    // Re-apply the event listeners for section toggling
-    applySectionToggleListeners();
-
     if (isTeamMode) {
         applyTeamLayouts();
     } else {

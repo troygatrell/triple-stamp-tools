@@ -5,22 +5,41 @@ let total = 400; // Initial total value
 
 // Function to update the rate display
 function updateRateDisplay() {
-    document.getElementById('rate').textContent = rate;
+    const el = document.getElementById('rate');
+    if (!el) return;
+    if (el.tagName === 'INPUT') {
+        if (document.activeElement !== el) el.value = rate;
+    } else {
+        el.textContent = rate;
+    }
 }
 
 // Function to update the counter display
 function updateCounterDisplay() {
-    document.getElementById('counter').textContent = Math.floor(counter); // Display whole number
+    const el = document.getElementById('counter');
+    if (el) {
+        if (el.tagName === 'INPUT') {
+            if (document.activeElement !== el) el.value = Math.floor(counter);
+        } else {
+            el.textContent = Math.floor(counter);
+        }
+    }
     
     // Update progress bar
-    const progressPercentage = (counter / total) * 100;
+    const progressPercentage = total > 0 ? Math.min((counter / total) * 100, 100) : 0;
     document.getElementById('progress-bar').style.width = `${progressPercentage}%`;
     document.getElementById('progress-text').textContent = `${Math.floor(progressPercentage)}%`;
 }
 
 // Function to update the total display
 function updateTotalDisplay() {
-    document.getElementById('total').textContent = total;
+    const el = document.getElementById('total');
+    if (!el) return;
+    if (el.tagName === 'INPUT') {
+        if (document.activeElement !== el) el.value = total;
+    } else {
+        el.textContent = total;
+    }
 }
 
 // Function to update pieces remaining
@@ -166,7 +185,77 @@ function stop() {
     setButtonState(false, false); // Reset both start and pause buttons
 }
 
+function setupCalculatorInputListeners() {
+    const totalEl = document.getElementById('total');
+    const rateEl = document.getElementById('rate');
+    const counterEl = document.getElementById('counter');
+
+    if (totalEl && totalEl.tagName === 'INPUT') {
+        totalEl.addEventListener('focus', () => {
+            totalEl.select();
+        });
+        totalEl.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value, 10);
+            if (!isNaN(val) && val >= 0) {
+                total = val;
+                updatePiecesRemaining();
+                updateTimeCalculations();
+                updateCounterDisplay();
+            }
+        });
+        totalEl.addEventListener('blur', () => {
+            if (totalEl.value === '' || isNaN(parseInt(totalEl.value, 10))) {
+                totalEl.value = total;
+            }
+            updateTotalDisplay();
+        });
+    }
+
+    if (rateEl && rateEl.tagName === 'INPUT') {
+        rateEl.addEventListener('focus', () => {
+            rateEl.select();
+        });
+        rateEl.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value, 10);
+            if (!isNaN(val) && val >= 0) {
+                rate = val;
+                updateTimeCalculations();
+            }
+        });
+        rateEl.addEventListener('blur', () => {
+            if (rateEl.value === '' || isNaN(parseInt(rateEl.value, 10))) {
+                rateEl.value = rate;
+            }
+            updateRateDisplay();
+        });
+    }
+
+    if (counterEl && counterEl.tagName === 'INPUT') {
+        counterEl.addEventListener('focus', () => {
+            counterEl.select();
+        });
+        counterEl.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value, 10);
+            if (!isNaN(val) && val >= 0) {
+                counter = val;
+                updatePiecesRemaining();
+                updateTimeCalculations();
+                const progressPercentage = total > 0 ? Math.min((counter / total) * 100, 100) : 0;
+                document.getElementById('progress-bar').style.width = `${progressPercentage}%`;
+                document.getElementById('progress-text').textContent = `${Math.floor(progressPercentage)}%`;
+            }
+        });
+        counterEl.addEventListener('blur', () => {
+            if (counterEl.value === '' || isNaN(parseInt(counterEl.value, 10))) {
+                counterEl.value = Math.floor(counter);
+            }
+            updateCounterDisplay();
+        });
+    }
+}
+
 // Initial display update
+setupCalculatorInputListeners();
 updateRateDisplay();
 updateCounterDisplay();
 updateTotalDisplay();

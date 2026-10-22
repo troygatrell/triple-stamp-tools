@@ -84,7 +84,7 @@
         <div class="section-group">
           <div class="section">
             <p class="value-label">Total</p>
-            <span id="total" class="value-display">400</span>
+            <input type="number" id="total" class="value-display" value="400" min="0" step="1" aria-label="Total pieces" />
             <div class="controls">
               <button onclick="incrementTotal(1)">+1</button>
               <button onclick="decrementTotal(1)">-1</button>
@@ -97,7 +97,7 @@
 
           <div class="section">
             <p class="value-label">Rate</p>
-            <span id="rate" class="value-display">400</span>
+            <input type="number" id="rate" class="value-display" value="400" min="1" step="1" aria-label="Rate pieces per hour" />
             <div class="controls">
               <button onclick="incrementRate(1)">+1</button>
               <button onclick="decrementRate(1)">-1</button>
@@ -110,7 +110,7 @@
 
           <div class="section">
             <p class="value-label">Counter</p>
-            <span id="counter" class="value-display">0</span>
+            <input type="number" id="counter" class="value-display" value="0" min="0" step="1" aria-label="Current piece counter" />
             <div class="controls">
               <button onclick="incrementCounter(1)">+1</button>
               <button onclick="decrementCounter(1)">-1</button>
@@ -432,6 +432,7 @@
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <script src="config.js"></script>
     <script src="production-time-calculator.js"></script>
     <script src="inventory-search.js"></script>
     <script src="apparel-production-checklist.js"></script>

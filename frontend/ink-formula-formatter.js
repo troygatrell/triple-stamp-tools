@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  const BASE_URL = 'https://ink-formulas.onrender.com';
+  const BASE_URL = (typeof API_CONFIG !== 'undefined' && API_CONFIG.INK_FORMULA_API)
+    ? API_CONFIG.INK_FORMULA_API
+    : 'https://ink-formulas.onrender.com';
   const tableBody = document.querySelector("#formula-table tbody");
   const addRowBtn = document.getElementById("add-row-btn");
   const addFlashBtn = document.getElementById("add-flash-btn");

@@ -18,6 +18,7 @@ function addStyleTable() {
   const tableDiv = document.createElement('div');
   tableDiv.classList.add('styleTable');
   tableDiv.setAttribute('id', `styleTable${tableCount}`);
+  tableDiv.dataset.styleIndex = tableCount;
   tableDiv.innerHTML = `
       <h2>Shirt Style ${tableCount}</h2>
       <input type="text" placeholder="Enter Shirt Style Title" oninput="updateTableTitle(this)">
@@ -104,9 +105,11 @@ function updateRemoveButtons() {
 
 // Function to update the title of each shirt style table
 function updateTableTitle(input) {
-  const title = input.value;
+  const title = input.value.trim();
   const h2 = input.previousElementSibling;
-  h2.textContent = title || `Shirt Style ${h2.textContent.split(" ")[2]}`;
+  const tableDiv = input.closest(".styleTable");
+  const styleIndex = tableDiv?.dataset.styleIndex || "";
+  h2.textContent = title || (styleIndex ? `Shirt Style ${styleIndex}` : "Shirt Style");
   generateSummary();
 }
 
@@ -114,9 +117,9 @@ function updateTableTitle(input) {
 function calculateDifference(input) {
   const row = input.closest("tr");
   const expected =
-    parseInt(row.querySelector('input[name="expected"]').value) || 0;
+    parseInt(row.querySelector('input[name="expected"]').value, 10) || 0;
   const received =
-    parseInt(row.querySelector('input[name="received"]').value) || 0;
+    parseInt(row.querySelector('input[name="received"]').value, 10) || 0;
   const difference = received - expected;
   row.querySelector(".difference").textContent =
     difference === 0
@@ -131,7 +134,7 @@ function calculateDifference(input) {
 function addRow(tableNumber) {
   const row = document.createElement('tr');
   row.innerHTML = `
-      <td><input type="text" id="additional-size-input" name="size" placeholder="(size)"></td>
+      <td><input type="text" class="additional-size-input" name="size" placeholder="(size)"></td>
       <td><input type="number" name="expected" placeholder="Expected" oninput="calculateDifference(this)"></td>
       <td><input type="number" name="received" placeholder="Received" oninput="calculateDifference(this)"></td>
       <td class="difference">---</td>

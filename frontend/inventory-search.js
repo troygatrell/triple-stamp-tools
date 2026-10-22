@@ -1,3 +1,16 @@
+const INVENTORY_API_URL = (typeof API_CONFIG !== "undefined" && API_CONFIG.INVENTORY_API)
+  ? API_CONFIG.INVENTORY_API
+  : "https://inventory-search.onrender.com/api/inventory";
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 let allData = []; // Global variable to store the data
 let hidePulledSamples = false;
 let currentSearchTerm = "";
@@ -25,9 +38,7 @@ async function loadData() {
     // Hide the search input box
     document.getElementById("search-input").style.display = "none";
 
-    const response = await fetch(
-      "https://inventory-search.onrender.com/api/inventory"
-    );
+    const response = await fetch(INVENTORY_API_URL);
 
     if (!response.ok) {
       throw new Error(`Failed to fetch inventory: ${response.status}`);
@@ -219,7 +230,7 @@ function displayResults(results = allData) {
 
     let yearColumn = "";
     if (item.sheet !== lastYear) {
-      yearColumn = `<div class="result-column result-year">${item.sheet}</div>`;
+      yearColumn = `<div class="result-column result-year">${escapeHtml(item.sheet)}</div>`;
       lastYear = item.sheet;
     } else {
       yearColumn = `<div class="result-column result-year"></div>`;
@@ -230,12 +241,12 @@ function displayResults(results = allData) {
 
     resultItem.innerHTML = `
             ${yearColumn}
-            <div class="result-column result-month">${item.month}</div>
-            <div class="result-column result-value">${item.value}</div>
+            <div class="result-column result-month">${escapeHtml(item.month)}</div>
+            <div class="result-column result-value">${escapeHtml(item.value)}</div>
             <div class="result-column result-buttons">
-                <button class="edit-button" data-index="${item.id}">Edit</button>
-                <button class="delete-button" data-index="${item.id}">Delete</button>
-                <button class="${holdButtonClass}" data-index="${item.id}">${holdButtonText}</button>
+                <button class="edit-button" data-index="${escapeHtml(item.id)}">Edit</button>
+                <button class="delete-button" data-index="${escapeHtml(item.id)}">Delete</button>
+                <button class="${holdButtonClass}" data-index="${escapeHtml(item.id)}">${holdButtonText}</button>
             </div>
         `;
 
@@ -353,16 +364,30 @@ function editEntryUI(resultItem, item) {
   monthDiv.dataset.originalContent = monthDiv.innerHTML;
   valueDiv.dataset.originalContent = valueDiv.innerHTML;
 
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const startYear = 2019;
+  const endYear = currentYear + 1;
+  const currentItemYear = String(item.sheet || "");
+  const yearList = [];
+  for (let yr = endYear; yr >= startYear; yr--) {
+    yearList.push(String(yr));
+  }
+  if (currentItemYear && !yearList.includes(currentItemYear)) {
+    yearList.unshift(currentItemYear);
+  }
+
+  let yearOptions = "";
+  yearList.forEach((yr) => {
+    yearOptions += `<option value="${escapeHtml(yr)}" ${
+      currentItemYear === yr ? "selected" : ""
+    }>${escapeHtml(yr)}</option>`;
+  });
+
   // Replace content with input fields
   yearDiv.innerHTML = `
         <select class="edit-year">
-            <option value="2023" ${
-              item.sheet === "2023" ? "selected" : ""
-            }>2023</option>
-            <option value="2024" ${
-              item.sheet === "2024" ? "selected" : ""
-            }>2024</option>
-            <option value="2025" ${item.sheet === "2025" ? "selected" : ""}>2025</option>
+          ${yearOptions}
         </select>
     `;
   monthDiv.innerHTML = `
@@ -403,7 +428,7 @@ function editEntryUI(resultItem, item) {
         }>December</option>
     </select>
 `;
-  valueDiv.innerHTML = `<input type="text" class="edit-value" value="${item.value}">`;
+  valueDiv.innerHTML = `<input type="text" class="edit-value" value="${escapeHtml(item.value)}">`;
 
   buttonsDiv.innerHTML = `
         <button class="save-button">Save</button>
@@ -439,16 +464,16 @@ function cancelChanges(resultItem, item) {
     }
 
     // Update the displayed values (outside of edit mode)
-    yearDiv.innerHTML = item.sheet;
-    monthDiv.innerHTML = item.month;
-    valueDiv.innerHTML = item.value;
+    yearDiv.textContent = item.sheet;
+    monthDiv.textContent = item.month;
+    valueDiv.textContent = item.value;
 
     // Switch back to the Edit, Delete, and Hold buttons
     const holdButtonText = item.hold ? "Return" : "Hold";
     const holdButtonClass = item.hold ? "hold-button active-hold" : "hold-button";
-    buttonsDiv.innerHTML = `<button class="edit-button" data-index="${resultItem.dataset.id}">Edit</button>
-                             <button class="delete-button" data-index="${resultItem.dataset.id}">Delete</button>
-                             <button class="${holdButtonClass}" data-index="${resultItem.dataset.id}">${holdButtonText}</button>`;
+    buttonsDiv.innerHTML = `<button class="edit-button" data-index="${escapeHtml(resultItem.dataset.id)}">Edit</button>
+                             <button class="delete-button" data-index="${escapeHtml(resultItem.dataset.id)}">Delete</button>
+                             <button class="${holdButtonClass}" data-index="${escapeHtml(resultItem.dataset.id)}">${holdButtonText}</button>`;
   } else {
     // If there is no item, it was canceled.
     resultItem.remove();
@@ -475,7 +500,7 @@ async function saveChanges(resultItem, item) {
 
     try {
       const response = await fetch(
-        `https://inventory-search.onrender.com/api/inventory/${item.id}`,
+        `${INVENTORY_API_URL}/${item.id}`,
         {
           method: "PUT",
           headers: {
@@ -509,11 +534,6 @@ async function saveChanges(resultItem, item) {
         allData[index] = { ...allData[index], ...updatedItem };
       }
 
-      // Update the display after successful save
-      resultItem.querySelector(".result-year").innerHTML = updatedItem.sheet;
-      resultItem.querySelector(".result-month").innerHTML = updatedItem.month;
-      resultItem.querySelector(".result-value").innerHTML = updatedItem.value;
-
       // Update item
       Object.assign(item, {
         value: newValue,
@@ -521,13 +541,9 @@ async function saveChanges(resultItem, item) {
         month,
       });
 
-      // Update the buttons after saving
-      const buttonsDiv = resultItem.querySelector(".result-buttons");
-      const holdButtonText = item.hold ? "Return" : "Hold";
-      const holdButtonClass = item.hold ? "hold-button active-hold" : "hold-button";
-      buttonsDiv.innerHTML = `<button class="edit-button" data-index="${item.id}">Edit</button>
-                               <button class="delete-button" data-index="${item.id}">Delete</button>
-                               <button class="${holdButtonClass}" data-index="${item.id}">${holdButtonText}</button>`;
+      // Resort and update results in place
+      allData = sortData(allData);
+      updateDisplayedResults();
     } catch (error) {
       console.error("Error updating item:", error);
       alert("Failed to save changes. See console for details.");
@@ -542,7 +558,7 @@ async function saveChanges(resultItem, item) {
 
     try {
       const response = await fetch(
-        "https://inventory-search.onrender.com/api/inventory",
+        INVENTORY_API_URL,
         {
           method: "POST",
           headers: {
@@ -571,26 +587,13 @@ async function saveChanges(resultItem, item) {
         originalMonth: rest.month,
       };
 
-      // Add the newly created item to allData
+      // Add the newly created item to allData and re-sort
       allData.push(savedItem);
+      allData = sortData(allData);
 
-      // Update the display with the saved item's data and ID
-      resultItem.dataset.id = savedItem.id; // Set the data-id attribute
-      resultItem.querySelector(".result-year").innerHTML = savedItem.sheet;
-      resultItem.querySelector(".result-month").innerHTML = savedItem.month;
-      resultItem.querySelector(".result-value").innerHTML = savedItem.value;
-
-      location.reload();
-
-      // Update the data-original-* attributes
-      resultItem.dataset.originalValue = savedItem.value;
-      resultItem.dataset.originalSheet = savedItem.sheet;
-      resultItem.dataset.originalMonth = savedItem.month;
-
-      // Update the buttons after saving
-      const buttonsDiv = resultItem.querySelector(".result-buttons");
-      buttonsDiv.innerHTML = `<button class="edit-button" data-index="${savedItem.id}">Edit</button>
-                                   <button class="delete-button" data-index="${savedItem.id}">Delete</button>`;
+      // Remove the draft creation element and update the displayed list
+      resultItem.remove();
+      updateDisplayedResults();
     } catch (error) {
       console.error("Error creating new item:", error);
       alert("Failed to create new entry. See console for details.");
@@ -688,7 +691,7 @@ async function deleteEntry(resultItem, item) {
   if (confirm("Are you sure you want to delete this entry?")) {
     try {
       const response = await fetch(
-        `https://inventory-search.onrender.com/api/inventory/${item.id}`,
+        `${INVENTORY_API_URL}/${item.id}`,
         {
           method: "DELETE",
         }
@@ -734,7 +737,7 @@ async function toggleHold(resultItem, item) {
     };
 
     const response = await fetch(
-      `https://inventory-search.onrender.com/api/inventory/${item.id}`,
+      `${INVENTORY_API_URL}/${item.id}`,
       {
         method: "PUT",
         headers: {
@@ -749,8 +752,14 @@ async function toggleHold(resultItem, item) {
       throw new Error(`Failed to update hold status: ${response.status}`);
     }
 
-    // Reload the page to refresh the results with the new hold status
-    location.reload();
+    // Update item and refresh in-place without page reload
+    item.hold = newHoldValue;
+    const index = allData.findIndex((i) => i.id === item.id);
+    if (index !== -1) {
+      allData[index].hold = newHoldValue;
+    }
+    allData = sortData(allData);
+    updateDisplayedResults();
   } catch (error) {
     console.error("Error toggling hold status:", error);
     alert("Failed to toggle hold status. See console for details.");
