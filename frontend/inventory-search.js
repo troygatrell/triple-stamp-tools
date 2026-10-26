@@ -752,42 +752,50 @@ function createNewEntryUI() {
 // --- Delete Entry ---
 
 async function deleteEntry(resultItem, item) {
-  if (confirm("Are you sure you want to delete this entry?")) {
-    try {
-      if (typeof supabaseClient !== "undefined" && supabaseClient) {
-        const { error } = await supabaseClient
-          .from("inventory")
-          .delete()
-          .eq("id", item.id);
+  const enteredPassword = prompt("Enter admin password to delete this item:");
+  if (enteredPassword === null) return; // User pressed Cancel
+  if (!enteredPassword.trim()) {
+    alert("Password cannot be empty.");
+    return;
+  }
 
-        if (error) throw error;
-      } else {
-        const response = await fetch(
-          `${INVENTORY_API_URL}/${item.id}`,
-          {
-            method: "DELETE",
-          }
-        );
+  try {
+    if (typeof supabaseClient !== "undefined" && supabaseClient) {
+      const { error } = await supabaseClient.rpc("delete_inventory_item", {
+        item_id: Number(item.id),
+        admin_password: enteredPassword.trim()
+      });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(
-            `Failed to delete entry: ${response.status} - ${JSON.stringify(
-              errorData
-            )}`
-          );
-        }
+      if (error) {
+        alert(error.message || "Failed to delete item: incorrect password.");
+        return;
       }
+    } else {
+      const response = await fetch(
+        `${INVENTORY_API_URL}/${item.id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
-      // Remove the item from allData
-      allData = allData.filter((i) => i.id !== item.id);
-
-      // Remove the item from the DOM
-      resultItem.remove();
-    } catch (error) {
-      console.error("Error deleting item:", error);
-      alert("Failed to delete entry. See console for details.");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          `Failed to delete entry: ${response.status} - ${JSON.stringify(
+            errorData
+          )}`
+        );
+      }
     }
+
+    // Remove the item from allData
+    allData = allData.filter((i) => i.id !== item.id);
+
+    // Remove the item from the DOM
+    resultItem.remove();
+  } catch (error) {
+    console.error("Error deleting item:", error);
+    alert(error.message || "Failed to delete entry. See console for details.");
   }
 }
 

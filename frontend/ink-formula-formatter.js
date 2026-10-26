@@ -429,27 +429,81 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function fetchFormulasFromBackend() {
     try {
-      const response = await fetch(`${BASE_URL}/api/inkformulas`);
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      return await response.json();
+      if (typeof supabaseClient !== "undefined" && supabaseClient) {
+        const { data, error } = await supabaseClient
+          .from("ink_formulas")
+          .select("*")
+          .order("formulaName", { ascending: true });
+        if (error) throw error;
+        return (data || []).map(f => ({ ...f, _id: String(f.id) }));
+      } else {
+        const response = await fetch(`${BASE_URL}/api/inkformulas`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        return await response.json();
+      }
     } catch (error) { console.error("Error fetching ink formulas:", error); alert("Failed to load ink formulas. Please try again later."); return []; }
   }
 
   async function saveFormulaToBackend(formulaData, id = null) {
     try {
-      const method = id ? 'PUT' : 'POST'; const url = id ? `${BASE_URL}/api/inkformulas/${id}` : `${BASE_URL}/api/inkformulas`;
-      const response = await fetch(url, { method: method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formulaData) });
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      return await response.json();
+      if (typeof supabaseClient !== "undefined" && supabaseClient) {
+        const payload = {
+          clientName: formulaData.clientName,
+          jobName: formulaData.jobName,
+          printLocation: formulaData.printLocation || "",
+          date: formulaData.date,
+          formulaName: `${formulaData.clientName} // ${formulaData.jobName} (${formulaData.date})`,
+          rows: formulaData.rows || [],
+          updated_at: new Date().toISOString()
+        };
+
+        let result;
+        if (id) {
+          const { data, error } = await supabaseClient
+            .from("ink_formulas")
+            .update(payload)
+            .eq("id", id)
+            .select()
+            .single();
+          if (error) throw error;
+          result = data;
+        } else {
+          const { data, error } = await supabaseClient
+            .from("ink_formulas")
+            .insert([payload])
+            .select()
+            .single();
+          if (error) throw error;
+          result = data;
+        }
+        return result ? { ...result, _id: String(result.id) } : null;
+      } else {
+        const method = id ? 'PUT' : 'POST'; const url = id ? `${BASE_URL}/api/inkformulas/${id}` : `${BASE_URL}/api/inkformulas`;
+        const response = await fetch(url, { method: method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formulaData) });
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        return await response.json();
+      }
     } catch (error) { console.error("Error saving ink formula:", error); alert("Failed to save ink formula. Please try again later."); return null; }
   }
 
-  async function deleteFormulaFromBackend(id) {
+  async function deleteFormulaFromBackend(id, adminPassword) {
     try {
-      const response = await fetch(`${BASE_URL}/api/inkformulas/${id}`, { method: 'DELETE' });
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      return true;
-    } catch (error) { console.error("Error deleting ink formula:", error); alert("Failed to delete ink formula. Please try again later."); return false; }
+      if (typeof supabaseClient !== "undefined" && supabaseClient) {
+        const { error } = await supabaseClient.rpc("delete_ink_formula", {
+          formula_id: Number(id),
+          admin_password: adminPassword
+        });
+        if (error) {
+          alert(error.message || "Failed to delete formula: incorrect password.");
+          return false;
+        }
+        return true;
+      } else {
+        const response = await fetch(`${BASE_URL}/api/inkformulas/${id}`, { method: 'DELETE' });
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        return true;
+      }
+    } catch (error) { console.error("Error deleting ink formula:", error); alert(error.message || "Failed to delete ink formula. Please try again later."); return false; }
   }
 
   async function populateLoadDropdown() {
@@ -457,7 +511,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     cachedFormulas = await fetchFormulasFromBackend();
     cachedFormulas.sort((a, b) => a.formulaName.localeCompare(b.formulaName));
     cachedFormulas.forEach(formula => {
-      const option = document.createElement("option"); option.value = formula._id; option.textContent = formula.formulaName;
+      const option = document.createElement("option"); option.value = formula._id || formula.id; option.textContent = formula.formulaName;
       loadFormulaSelect.appendChild(option);
     });
   }
@@ -486,16 +540,28 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const formulaData = { clientName, jobName, printLocation, date, rows: rowsData };
     const savedFormula = await saveFormulaToBackend(formulaData, currentFormulaId);
-    if (savedFormula) { currentFormulaId = savedFormula._id; await populateLoadDropdown(); alert(`Formula "${savedFormula.formulaName}" saved successfully!`); }
+    if (savedFormula) { currentFormulaId = savedFormula._id || savedFormula.id; await populateLoadDropdown(); alert(`Formula "${savedFormula.formulaName}" saved successfully!`); }
   }
 
   async function handleLoadFormula() {
     const formulaId = loadFormulaSelect.value;
     if (!formulaId) { currentFormulaId = null; resetBtn.click(); return; }
     try {
-      const response = await fetch(`${BASE_URL}/api/inkformulas/${formulaId}`);
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      const formulaData = await response.json();
+      let formulaData;
+      if (typeof supabaseClient !== "undefined" && supabaseClient) {
+        const { data, error } = await supabaseClient
+          .from("ink_formulas")
+          .select("*")
+          .eq("id", formulaId)
+          .single();
+        if (error) throw error;
+        formulaData = data;
+      } else {
+        const response = await fetch(`${BASE_URL}/api/inkformulas/${formulaId}`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        formulaData = await response.json();
+      }
+
       if (formulaData) {
         clientNameInput.value = formulaData.clientName || "";
         jobNameInput.value = formulaData.jobName || "";
@@ -503,7 +569,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         dateInput.value = formulaData.date || "";
         tableBody.innerHTML = "";
         formulaData.rows.forEach(rowData => { if (rowData.type === "flash") createFlashRow(); else createRow(rowData); });
-        currentFormulaId = formulaData._id; initializeSortable(); generateOutput(); updateCopyButtonState();
+        currentFormulaId = formulaData._id || formulaData.id; initializeSortable(); generateOutput(); updateCopyButtonState();
       }
     } catch (error) { console.error("Error loading ink formula:", error); alert("Failed to load ink formula. Please try again later."); }
   }
@@ -512,8 +578,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     const formulaId = loadFormulaSelect.value;
     if (!formulaId) { alert("Please select a formula to delete."); return; }
     const selectedOptionText = loadFormulaSelect.options[loadFormulaSelect.selectedIndex].textContent;
-    if (confirm(`Are you sure you want to delete formula "${selectedOptionText}"?`)) {
-      if (await deleteFormulaFromBackend(formulaId)) { await populateLoadDropdown(); alert(`Formula "${selectedOptionText}" deleted successfully!`); currentFormulaId = null; resetBtn.click(); }
+
+    const enteredPassword = prompt(`Enter admin password to delete formula "${selectedOptionText}":`);
+    if (enteredPassword === null) return; // User pressed Cancel
+    if (!enteredPassword.trim()) {
+      alert("Password cannot be empty.");
+      return;
+    }
+
+    if (await deleteFormulaFromBackend(formulaId, enteredPassword.trim())) {
+      await populateLoadDropdown();
+      alert(`Formula "${selectedOptionText}" deleted successfully!`);
+      currentFormulaId = null;
+      resetBtn.click();
     }
   }
 
@@ -529,7 +606,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     filteredFormulas.forEach(formula => {
-      const option = document.createElement("option"); option.value = formula._id; option.textContent = formula.formulaName;
+      const option = document.createElement("option"); option.value = formula._id || formula.id; option.textContent = formula.formulaName;
       loadFormulaSelect.appendChild(option);
     });
   }

@@ -4,6 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Triple Stamp Tools</title>
+    <link rel="icon" type="image/svg+xml" href="img/shirt.svg" />
+    <link rel="alternate icon" type="image/png" href="img/shirt.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body id="top">
@@ -50,7 +55,7 @@
         <div id="search-controls">
           <div id="search-input-container">
             <input type="text" id="search-input" placeholder="Search..." />
-            <button id="clear-search-button" style="display: none;">❌</button>
+            <button id="clear-search-button" style="display: none;" aria-label="Clear search">✕</button>
           </div>
           <div id="search-action-buttons">
             <button id="new-entry-button">New Entry</button>
@@ -363,8 +368,8 @@
           <iframe id="output-frame" title="Formatted Ink Formula Preview"></iframe>
           <div class="button-container">
             <button id="copy-btn" class="copy-btn">Copy to Clipboard</button>
-            <label style="margin-left: 15px; color: hsl(158deg, 40%, 90%); text-shadow: 1px 1px 0 #000;">
-              <input type="checkbox" id="exclude-color-order-checkbox" style="transform: scale(1.2); margin-right: 5px;" checked>
+            <label style="margin-left: 15px; color: var(--text-muted); font-size: 13.5px; font-weight: 500; display: inline-flex; align-items: center; cursor: pointer;">
+              <input type="checkbox" id="exclude-color-order-checkbox" style="transform: scale(1.2); margin-right: 8px; cursor: pointer;" checked>
               Exclude Color Order
             </label>
           </div>
