@@ -38,18 +38,54 @@ async function loadData() {
     // Hide the search input box
     document.getElementById("search-input").style.display = "none";
 
-    const response = await fetch(INVENTORY_API_URL);
+    let rawData = [];
+    if (typeof supabaseClient !== "undefined" && supabaseClient) {
+      let from = 0;
+      const pageSize = 1000;
+      let hasMore = true;
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch inventory: ${response.status}`);
+      while (hasMore) {
+        const { data, error } = await supabaseClient
+          .from("inventory")
+          .select("*")
+          .order("id", { ascending: true })
+          .range(from, from + pageSize - 1);
+
+        if (error) {
+          throw error;
+        }
+
+        if (data && data.length > 0) {
+          rawData = rawData.concat(data);
+          if (data.length < pageSize) {
+            hasMore = false;
+          } else {
+            from += pageSize;
+          }
+        } else {
+          hasMore = false;
+        }
+      }
+    } else {
+      const response = await fetch(INVENTORY_API_URL);
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch inventory: ${response.status}`);
+      }
+
+      rawData = await response.json();
     }
 
-    const rawData = await response.json();
-
-    // Add the _id from MongoDB to each item as a property called 'id'
+    // Map each item to have a standardized string 'id'
     allData = rawData.map((item) => {
-      const { _id, ...rest } = item;
-      return { id: normalizeId(_id), ...rest };
+      const id = item.id !== undefined ? String(item.id) : normalizeId(item._id);
+      return {
+        ...item,
+        id,
+        originalValue: item.originalValue || item.value,
+        originalSheet: item.originalSheet || item.sheet,
+        originalMonth: item.originalMonth || item.month,
+      };
     });
 
     allData = sortData(allData); // Sort the data initially
@@ -58,7 +94,7 @@ async function loadData() {
 
     updateDisplayedResults();
 
-    console.log("Data loaded from server");
+    console.log("Data loaded successfully:", allData.length, "items");
   } catch (error) {
     console.error("Error loading data:", error);
   } finally {
@@ -499,33 +535,42 @@ async function saveChanges(resultItem, item) {
     };
 
     try {
-      const response = await fetch(
-        `${INVENTORY_API_URL}/${item.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatedItem),
-          credentials: "include", // Add this line
-        }
-      );
+      if (typeof supabaseClient !== "undefined" && supabaseClient) {
+        const { error } = await supabaseClient
+          .from("inventory")
+          .update(updatedItem)
+          .eq("id", item.id);
 
-      if (!response.ok) {
-        // Try to parse the error response as JSON
-        let errorData = {};
-        try {
-          errorData = await response.json();
-        } catch (jsonError) {
-          console.error("Failed to parse error response as JSON:", jsonError);
-        }
-
-        // Check if the error response contains a 'message' property
-        const errorMessage = errorData.message || "Unknown error";
-
-        throw new Error(
-          `Failed to update entry: ${response.status} - ${errorMessage}`
+        if (error) throw error;
+      } else {
+        const response = await fetch(
+          `${INVENTORY_API_URL}/${item.id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedItem),
+            credentials: "include", // Add this line
+          }
         );
+
+        if (!response.ok) {
+          // Try to parse the error response as JSON
+          let errorData = {};
+          try {
+            errorData = await response.json();
+          } catch (jsonError) {
+            console.error("Failed to parse error response as JSON:", jsonError);
+          }
+
+          // Check if the error response contains a 'message' property
+          const errorMessage = errorData.message || "Unknown error";
+
+          throw new Error(
+            `Failed to update entry: ${response.status} - ${errorMessage}`
+          );
+        }
       }
 
       // Update allData after successful save
@@ -557,35 +602,54 @@ async function saveChanges(resultItem, item) {
     };
 
     try {
-      const response = await fetch(
-        INVENTORY_API_URL,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newItem),
-        }
-      );
+      let savedItem;
+      if (typeof supabaseClient !== "undefined" && supabaseClient) {
+        const { data, error } = await supabaseClient
+          .from("inventory")
+          .insert([newItem])
+          .select()
+          .single();
 
-      if (!response.ok) {
-        const errorData = await response.json(); // Try to parse error response
-        throw new Error(
-          `Failed to create new entry: ${response.status} - ${
-            errorData.message || "Unknown error"
-          }`
+        if (error) throw error;
+
+        savedItem = {
+          id: String(data.id),
+          ...data,
+          originalValue: data.value,
+          originalSheet: data.sheet,
+          originalMonth: data.month,
+        };
+      } else {
+        const response = await fetch(
+          INVENTORY_API_URL,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newItem),
+          }
         );
-      }
 
-      const { _id, ...rest } = await response.json();
-      const normalizedId = normalizeId(_id);
-      const savedItem = {
-        id: normalizedId,
-        ...rest,
-        originalValue: rest.value,
-        originalSheet: rest.sheet,
-        originalMonth: rest.month,
-      };
+        if (!response.ok) {
+          const errorData = await response.json(); // Try to parse error response
+          throw new Error(
+            `Failed to create new entry: ${response.status} - ${
+              errorData.message || "Unknown error"
+            }`
+          );
+        }
+
+        const { _id, ...rest } = await response.json();
+        const normalizedId = normalizeId(_id);
+        savedItem = {
+          id: normalizedId,
+          ...rest,
+          originalValue: rest.value,
+          originalSheet: rest.sheet,
+          originalMonth: rest.month,
+        };
+      }
 
       // Add the newly created item to allData and re-sort
       allData.push(savedItem);
@@ -690,20 +754,29 @@ function createNewEntryUI() {
 async function deleteEntry(resultItem, item) {
   if (confirm("Are you sure you want to delete this entry?")) {
     try {
-      const response = await fetch(
-        `${INVENTORY_API_URL}/${item.id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      if (typeof supabaseClient !== "undefined" && supabaseClient) {
+        const { error } = await supabaseClient
+          .from("inventory")
+          .delete()
+          .eq("id", item.id);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          `Failed to delete entry: ${response.status} - ${JSON.stringify(
-            errorData
-          )}`
+        if (error) throw error;
+      } else {
+        const response = await fetch(
+          `${INVENTORY_API_URL}/${item.id}`,
+          {
+            method: "DELETE",
+          }
         );
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(
+            `Failed to delete entry: ${response.status} - ${JSON.stringify(
+              errorData
+            )}`
+          );
+        }
       }
 
       // Remove the item from allData
@@ -725,31 +798,40 @@ async function toggleHold(resultItem, item) {
     // Toggle the hold value
     const newHoldValue = !item.hold;
 
-    // Update the item in the database
-    const updatedItem = {
-      sheet: item.sheet,
-      month: item.month,
-      value: item.value,
-      originalValue: item.originalValue,
-      originalSheet: item.originalSheet,
-      originalMonth: item.originalMonth,
-      hold: newHoldValue,
-    };
+    if (typeof supabaseClient !== "undefined" && supabaseClient) {
+      const { error } = await supabaseClient
+        .from("inventory")
+        .update({ hold: newHoldValue })
+        .eq("id", item.id);
 
-    const response = await fetch(
-      `${INVENTORY_API_URL}/${item.id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedItem),
-        credentials: "include",
+      if (error) throw error;
+    } else {
+      // Update the item in the database
+      const updatedItem = {
+        sheet: item.sheet,
+        month: item.month,
+        value: item.value,
+        originalValue: item.originalValue,
+        originalSheet: item.originalSheet,
+        originalMonth: item.originalMonth,
+        hold: newHoldValue,
+      };
+
+      const response = await fetch(
+        `${INVENTORY_API_URL}/${item.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedItem),
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Failed to update hold status: ${response.status}`);
       }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Failed to update hold status: ${response.status}`);
     }
 
     // Update item and refresh in-place without page reload
@@ -779,18 +861,23 @@ async function downloadDatabaseBackup() {
     }
 
     let data;
-    try {
-      const response = await fetch(INVENTORY_API_URL);
-      if (response.ok) {
-        data = await response.json();
-      }
-    } catch (fetchError) {
-      console.warn("Could not fetch fresh data from server, falling back to loaded data:", fetchError);
-    }
-
-    // Fall back to allData in memory if network request failed
-    if (!data && allData && allData.length > 0) {
+    if (typeof supabaseClient !== "undefined" && supabaseClient) {
+      // Use the latest in-memory data loaded from Supabase
       data = allData;
+    } else {
+      try {
+        const response = await fetch(INVENTORY_API_URL);
+        if (response.ok) {
+          data = await response.json();
+        }
+      } catch (fetchError) {
+        console.warn("Could not fetch fresh data from server, falling back to loaded data:", fetchError);
+      }
+
+      // Fall back to allData in memory if network request failed
+      if (!data && allData && allData.length > 0) {
+        data = allData;
+      }
     }
 
     if (!data || (Array.isArray(data) && data.length === 0)) {

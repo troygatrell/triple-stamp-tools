@@ -24,3 +24,14 @@ const API_CONFIG = {
       : "https://ink-formulas.onrender.com"
   )
 };
+
+// Supabase Configuration
+const SUPABASE_CONFIG = {
+  URL: (window.CUSTOM_API_CONFIG && window.CUSTOM_API_CONFIG.SUPABASE_URL) || "https://ajztkwmnkxvfoakkepxs.supabase.co",
+  ANON_KEY: (window.CUSTOM_API_CONFIG && window.CUSTOM_API_CONFIG.SUPABASE_ANON_KEY) || "sb_publishable_roT3E5sRppxA36HYL6ImDg_zWJ2gu7z",
+};
+
+let supabaseClient = null;
+if (typeof supabase !== "undefined" && typeof supabase.createClient === "function" && SUPABASE_CONFIG.URL && SUPABASE_CONFIG.ANON_KEY) {
+  supabaseClient = supabase.createClient(SUPABASE_CONFIG.URL, SUPABASE_CONFIG.ANON_KEY);
+}
