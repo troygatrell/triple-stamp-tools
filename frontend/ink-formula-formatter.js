@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const jobNameInput = document.getElementById("formula-age");
   const printLocationInput = document.getElementById("print-location");
   const dateInput = document.getElementById("formula-date");
+  const notesInput = document.getElementById("formula-notes");
 
   const saveFormulaBtn = document.getElementById("save-formula-btn");
   const loadFormulaSelect = document.getElementById("load-formula-select");
@@ -259,6 +260,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       <td data-label="Formula"><div class="formula-ingredients-container"></div></td>
       <td data-label="Actions">
         <button type="button" class="add-ingredient-btn">Add Ingredient</button>
+        <button type="button" class="scale-row-btn" title="Send this color to Ink Batch Scaler">Scale</button>
         <button class="delete-btn">Delete Color</button>
       </td>
     `;
@@ -268,6 +270,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const otherBaseInputContainer = row.querySelector(".base-other-input-container");
     const formulaIngredientsContainer = row.querySelector(".formula-ingredients-container");
     const addIngredientBtn = row.querySelector(".add-ingredient-btn");
+    const scaleRowBtn = row.querySelector(".scale-row-btn");
     const colorInput = row.querySelector(".color-input");
     const upBtn = row.querySelector(".up-btn");
     const downBtn = row.querySelector(".down-btn");
@@ -312,6 +315,31 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     row.querySelector(".delete-btn").addEventListener("click", () => {
       row.remove(); generateOutput(); updateCopyButtonState();
+    });
+
+    scaleRowBtn.addEventListener("click", () => {
+      const clientName = clientNameInput ? clientNameInput.value.trim() : "";
+      const jobName = jobNameInput ? jobNameInput.value.trim() : "";
+      const color = colorInput.value.trim() || "Selected Color";
+      const base = getSelectedOrOther(row, ".base-dropdown", ".base-other-input-container .other-input");
+      const ingredients = [];
+      row.querySelectorAll(".formula-ingredient-group").forEach((group) => {
+        const percentage = group.querySelector(".percentage-input")?.value.trim() || "";
+        const ingredient = getSelectedOrOther(group, ".ingredient-dropdown", ".other-input-container .other-input");
+        if (percentage || ingredient) {
+          ingredients.push({ percentage, ingredient });
+        }
+      });
+
+      window.dispatchEvent(new CustomEvent("scale-ink-formula", {
+        detail: {
+          clientName,
+          jobName,
+          color,
+          base,
+          ingredients
+        }
+      }));
     });
 
     colorInput.addEventListener("input", () => { generateOutput(); updateCopyButtonState(); });
@@ -430,12 +458,22 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function fetchFormulasFromBackend() {
     try {
       if (typeof supabaseClient !== "undefined" && supabaseClient) {
-        const { data, error } = await supabaseClient
-          .from("ink_formulas")
-          .select("*")
-          .order("formulaName", { ascending: true });
-        if (error) throw error;
-        return (data || []).map(f => ({ ...f, _id: String(f.id) }));
+        let allData = [];
+        let from = 0;
+        const PAGE_SIZE = 1000;
+        while (true) {
+          const { data, error } = await supabaseClient
+            .from("ink_formulas")
+            .select("*")
+            .order("formulaName", { ascending: true })
+            .range(from, from + PAGE_SIZE - 1);
+          if (error) throw error;
+          if (!data || data.length === 0) break;
+          allData = allData.concat(data);
+          if (data.length < PAGE_SIZE) break;
+          from += PAGE_SIZE;
+        }
+        return allData.map(f => ({ ...f, _id: String(f.id) }));
       } else {
         const response = await fetch(`${BASE_URL}/api/inkformulas`);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -452,7 +490,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           jobName: formulaData.jobName,
           printLocation: formulaData.printLocation || "",
           date: formulaData.date,
-          formulaName: `${formulaData.clientName} // ${formulaData.jobName} (${formulaData.date})`,
+          formulaName: `${formulaData.clientName} // ${formulaData.jobName}${formulaData.date ? ` (${formulaData.date})` : ""}`,
+          notes: formulaData.notes || "",
           rows: formulaData.rows || [],
           updated_at: new Date().toISOString()
         };
@@ -538,7 +577,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
 
-    const formulaData = { clientName, jobName, printLocation, date, rows: rowsData };
+    const notes = notesInput ? notesInput.value.trim() : "";
+    const formulaData = { clientName, jobName, printLocation, date, notes, rows: rowsData };
     const savedFormula = await saveFormulaToBackend(formulaData, currentFormulaId);
     if (savedFormula) { currentFormulaId = savedFormula._id || savedFormula.id; await populateLoadDropdown(); alert(`Formula "${savedFormula.formulaName}" saved successfully!`); }
   }
@@ -567,6 +607,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         jobNameInput.value = formulaData.jobName || "";
         printLocationInput.value = formulaData.printLocation || "";
         dateInput.value = formulaData.date || "";
+        if (notesInput) notesInput.value = formulaData.notes || "";
         tableBody.innerHTML = "";
         formulaData.rows.forEach(rowData => { if (rowData.type === "flash") createFlashRow(); else createRow(rowData); });
         currentFormulaId = formulaData._id || formulaData.id; initializeSortable(); generateOutput(); updateCopyButtonState();
@@ -623,6 +664,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (resetBtn) {
     resetBtn.addEventListener("click", async () => {
       clientNameInput.value = ""; jobNameInput.value = ""; printLocationInput.value = "";
+      if (notesInput) notesInput.value = "";
       dateInput.value = easternIsoFormatter.format(new Date());
       tableBody.innerHTML = ""; createRow(); initializeSortable(); generateOutput(); updateCopyButtonState();
       loadFormulaSelect.value = ""; currentFormulaId = null; await populateLoadDropdown();

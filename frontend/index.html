@@ -37,6 +37,10 @@
           <span class="sidebar-icon"><img src="img/icon-formula.png" alt="Formula Icon" /></span>
           <span class="sidebar-text">Ink Formula Formatter</span>
         </a>
+        <a href="#ink-batch-scaler" class="sidebar-link">
+          <span class="sidebar-icon"><img src="img/icon-scale.svg" alt="Scale Icon" /></span>
+          <span class="sidebar-text">Ink Batch Scaler</span>
+        </a>
       </nav>
     </aside>
 
@@ -331,6 +335,10 @@
             <label for="formula-date">Date:</label>
             <input type="date" id="formula-date">
           </div>
+          <div class="input-group">
+            <label for="formula-notes">Notes:</label>
+            <input type="text" id="formula-notes" placeholder="(press notes, mesh, sequence)">
+          </div>
         </div>
 
         <div class="formula-management">
@@ -377,6 +385,226 @@
       </div>
     </section>
 
+    <section id="ink-batch-scaler">
+      <div class="container">
+        <div class="title">
+          <span class="sidebar-icon"><img src="img/icon-scale.svg" alt="Scale Icon" /></span>
+          <span class="title-text">Ink Batch Scaler</span>
+        </div>
+
+        <!-- Formula Search Controls -->
+        <div id="scaler-search-controls">
+          <div id="scaler-search-input-container">
+            <input type="text" id="scaler-search-input" placeholder="Search saved formulas by client, job, color, or date..." autocomplete="off" />
+            <button id="scaler-clear-search-btn" type="button" style="display: none;" aria-label="Clear search">✕</button>
+          </div>
+        </div>
+
+        <!-- Search Results Container -->
+        <div id="scaler-search-results" style="display: none;"></div>
+
+        <!-- Collapsible Custom Formula Section -->
+        <div class="scaler-custom-panel">
+          <div class="scaler-custom-header" id="scaler-custom-toggle">
+            <span class="scaler-custom-icon">🧪</span>
+            <span class="scaler-custom-title">Custom Formula</span>
+            <span class="scaler-custom-arrow" id="scaler-custom-arrow">▼</span>
+          </div>
+          <div class="scaler-custom-body" id="scaler-custom-body" style="display: none;">
+            <p class="scaler-custom-desc">Build an ad-hoc formula from scratch or customize ingredients for this mix.</p>
+            <div class="scaler-custom-meta-row">
+              <div class="input-group">
+                <label for="scaler-custom-name-input">Formula / Color Name:</label>
+                <input type="text" id="scaler-custom-name-input" placeholder="e.g. Custom Red Discharge" value="Custom Formula" />
+              </div>
+              <div class="input-group">
+                <label for="scaler-custom-base-select">Starting Base:</label>
+                <select id="scaler-custom-base-select">
+                  <option value="wdb" selected>WDB (Water Based Discharge)</option>
+                  <option value="cdb">CDB (Clear Discharge Base)</option>
+                  <option value="ez clear">EZ Clear</option>
+                  <option value="ez white">EZ White</option>
+                  <option value="stretch white">Stretch White</option>
+                  <option value="mix">Mix</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="scaler-ingredients-header">
+              <span>Component / Pigment</span>
+              <span>Formula %</span>
+              <span></span>
+            </div>
+            <div id="scaler-custom-ingredients-list">
+              <!-- Dynamically populated or editable -->
+            </div>
+            <div class="scaler-editor-actions">
+              <button id="scaler-custom-add-btn" class="secondary-btn" type="button">+ Add Pigment</button>
+              <button id="scaler-custom-reset-btn" class="secondary-btn" type="button">Reset</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Loaded Job & Color Selector Banner -->
+        <div id="scaler-active-job-bar" style="display: none;">
+          <div class="active-job-header-row">
+            <div class="active-job-info">
+              <span class="active-job-label">LOADED JOB</span>
+              <span id="scaler-active-job-title" class="active-job-title"></span>
+              <span id="scaler-active-job-meta" class="active-job-meta"></span>
+            </div>
+            <button id="scaler-unload-job-btn" class="scaler-unload-btn" type="button" title="Unload this job">Unload Job ✕</button>
+          </div>
+          <div id="scaler-color-chips-container" class="active-color-chips">
+            <!-- Clickable chips for multi-color jobs -->
+          </div>
+        </div>
+
+        <!-- Calculation Mode Tabs -->
+        <div class="scaler-mode-tabs">
+          <button id="scaler-mode-target-btn" class="scaler-tab active" type="button">Starting Base Weight</button>
+          <button id="scaler-mode-job-btn" class="scaler-tab" type="button">Estimate by Job Run</button>
+        </div>
+
+        <!-- Mode A: Target Weight -->
+        <div id="scaler-target-mode-panel" class="scaler-mode-panel">
+          <div class="scaler-input-row">
+            <div class="input-group target-input-group">
+              <label for="scaler-target-weight">Starting Base Weight (Grams):</label>
+              <input type="number" id="scaler-target-weight" class="value-display scaler-value-display" value="200" min="1" step="1" />
+            </div>
+            <div class="scaler-preset-buttons">
+              <button type="button" class="preset-btn" data-grams="200">200g</button>
+              <button type="button" class="preset-btn" data-grams="400">400g</button>
+              <button type="button" class="preset-btn" data-grams="600">600g</button>
+              <button type="button" class="preset-btn" data-grams="800">800g</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mode B: Job Run Estimator -->
+        <div id="scaler-job-mode-panel" class="scaler-mode-panel" style="display: none;">
+          <div class="scaler-estimator-grid">
+            <div class="input-group">
+              <label for="scaler-job-garments">Garment Count:</label>
+              <input type="number" id="scaler-job-garments" value="100" min="1" step="1" />
+            </div>
+            <div class="input-group">
+              <label for="scaler-job-coverage">Print Location / Size:</label>
+              <select id="scaler-job-coverage">
+                <option value="1.0">Left Chest / Pocket (~1.0g/shirt)</option>
+                <option value="4.0" selected>Standard Front / Back (~4.0g/shirt)</option>
+                <option value="7.5">Oversized / Full Bleed (~7.5g/shirt)</option>
+                <option value="custom">Custom (g per shirt)...</option>
+              </select>
+            </div>
+            <div class="input-group" id="scaler-job-custom-coverage-group" style="display: none;">
+              <label for="scaler-job-custom-coverage">Custom Grams / Shirt:</label>
+              <input type="number" id="scaler-job-custom-coverage" value="4.0" min="0.1" step="0.1" />
+            </div>
+            <div class="input-group">
+              <label for="scaler-job-mesh">Mesh Count:</label>
+              <select id="scaler-job-mesh">
+                <option value="1.35">Coarse (110 - 125) [+35% deposit]</option>
+                <option value="1.0" selected>Standard (156 - 196) [standard deposit]</option>
+                <option value="0.70">Fine (230 - 305) [-30% deposit]</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label for="scaler-job-buffer">Screen Well Buffer:</label>
+              <select id="scaler-job-buffer">
+                <option value="50">+50g (Small Screen)</option>
+                <option value="75" selected>+75g (Standard)</option>
+                <option value="100">+100g (Large Screen / Auto)</option>
+                <option value="0">0g (No Buffer)</option>
+              </select>
+            </div>
+          </div>
+          <div class="scaler-estimated-callout">
+            <span>Estimated Base Needed: <strong id="scaler-estimated-grams-display">475g</strong></span>
+            <button id="scaler-apply-estimated-btn" class="secondary-btn" type="button">Apply to Base Weight</button>
+          </div>
+        </div>
+
+        <!-- Scale Mixing Table Output -->
+        <div class="scaler-results-section">
+          <div class="scaler-results-header">
+            <div class="scaler-results-title-group">
+              <h3 id="scaler-active-color-name">Scale Mixing Targets</h3>
+            </div>
+          </div>
+
+          <!-- Color selector buttons directly above table -->
+          <div id="scaler-table-colors-bar" class="scaler-table-colors-bar" style="display: none;">
+            <div class="scaler-table-colors-group">
+              <span class="scaler-table-colors-label">Job Formulas:</span>
+              <div id="scaler-table-color-chips" class="active-color-chips">
+                <!-- Clickable chips for each ink formula in the job -->
+              </div>
+            </div>
+            <button id="scaler-table-unload-btn" class="scaler-unload-btn" type="button" title="Unload this job">Unload Job ✕</button>
+          </div>
+
+          <div class="scaler-table-responsive">
+            <table id="scaler-mixing-table" class="scaler-table">
+              <thead>
+                <tr>
+                  <th style="width: 50px;">Step</th>
+                  <th>Ingredient</th>
+                  <th>Formula %</th>
+                  <th>Pour Weight</th>
+                  <th>Cumulative Scale Target</th>
+                  <th style="width: 60px;">Done</th>
+                </tr>
+              </thead>
+              <tbody id="scaler-mixing-tbody">
+                <!-- Dynamically populated -->
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td></td>
+                  <td><strong>Total Yield</strong></td>
+                  <td id="scaler-total-pct">100%</td>
+                  <td id="scaler-total-weight">0.0 g</td>
+                  <td id="scaler-final-scale-weight">0.0 g</td>
+                  <td></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+          <!-- Over-Pour Fixer Panel -->
+          <div class="scaler-overpour-panel">
+            <div class="overpour-header" id="scaler-overpour-toggle">
+              <span class="overpour-icon">⚠️</span>
+              <span class="overpour-title">Batch Recalculator</span>
+              <span class="overpour-arrow">▼</span>
+            </div>
+            <div class="overpour-body" id="scaler-overpour-body" style="display: none;">
+              <p class="overpour-desc">If you accidentally poured too much of an ingredient onto the scale, enter the actual weight poured. The batch will automatically scale up to maintain the exact color ratio!</p>
+              <div class="overpour-inputs">
+                <div class="input-group">
+                  <label for="scaler-overpour-ingredient">Over-Poured Component:</label>
+                  <select id="scaler-overpour-ingredient"></select>
+                </div>
+                <div class="input-group">
+                  <label for="scaler-overpour-actual">Actual Grams Poured:</label>
+                  <input type="number" id="scaler-overpour-actual" min="0.1" step="0.1" placeholder="e.g. 45.5" />
+                </div>
+                <button type="button" id="scaler-apply-overpour-btn" class="primary-btn">Rescale Batch</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="button-container" style="margin-top: 24px;">
+            <button id="scaler-copy-ticket-btn" class="copy-btn" type="button">Copy Mixing Ticket</button>
+            <button id="scaler-reset-checks-btn" class="secondary-btn" type="button">Reset Checkmarks</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -385,6 +613,7 @@
     <script src="inventory-search.js"></script>
     <script src="apparel-production-checklist.js"></script>
     <script src="ink-formula-formatter.js"></script>
+    <script src="ink-batch-scaler.js"></script>
 
     <script>
       // Sidebar toggle functionality
